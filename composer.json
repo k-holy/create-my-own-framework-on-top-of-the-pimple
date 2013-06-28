@@ -1,0 +1,21 @@
+{
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "k-holy",
+            "email": "k.holy74@gmail.com"
+        }
+    ],
+    "config": {
+            "vendor-dir": "vendor"
+    },
+    "autoload": {
+        "psr-0": {
+            "Acme":"src"
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "pimple/pimple": "1.0.2"
+    }
+}
