@@ -10,10 +10,22 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
+use Acme\Renderer;
 
 use Symfony\Component\HttpFoundation\Request;
 
 $app = new Application();
+
+$app->renderer = $app->share(function(Application $app) {
+    $renderer = new Renderer(array(
+        'template_dir' => __DIR__ . DIRECTORY_SEPARATOR . 'templates',
+    ));
+    // $app
+    $renderer->assign('app', $app);
+    // $_SERVER
+    $renderer->assign('server', $app->request->server->all());
+    return $renderer;
+});
 
 // リクエストオブジェクトを生成
 $app->request = $app->share(function(Application $app) {
