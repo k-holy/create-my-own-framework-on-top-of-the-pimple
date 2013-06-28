@@ -2,7 +2,7 @@
 /**
  * Create my own framework on top of the Pimple
  *
- * Step 1
+ * Step 2
  *
  * @copyright 2011-2013 k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -42,12 +42,40 @@ $app->findVar = $app->protect(function($key, $name, $default = null) {
     }
     return $value;
 });
-// ?name=foo
+
+// HTMLエスケープ
+$app->escape = $app->protect(function($value, $default = '') {
+    $map = function($filter, $value) use (&$map) {
+        if (is_array($value) || $value instanceof \Traversable) {
+            $results = array();
+            foreach ($value as $val) {
+                $results[] = $map($filter, $val);
+            }
+            return $results;
+        }
+        return $filter($value);
+    };
+    return $map(function($value) use ($default) {
+        $value = (string)$value;
+        if (strlen($value) > 0) {
+            return htmlspecialchars($value, ENT_QUOTES);
+        }
+        return $default;
+    }, $value);
+});
 // ?name=<script>alert('hello')</script>
+// ?name[]=foo&name[]=<script>alert('hello!')</script>
+$name = $app->findVar('G', 'name');
 ?>
 <html>
 <body>
 <h1>test</h1>
-<p><?=$app->findVar('G', 'name')?></p>
+<?php if (is_array($name)) : ?>
+<?php foreach ($name as $_name) : ?>
+<p><?=$app->escape($_name)?></p>
+<?php endforeach ?>
+<?php else : ?>
+<p><?=$app->escape($name)?></p>
+<?php endif ?>
 </body>
 </html>
