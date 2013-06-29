@@ -90,13 +90,36 @@ class Renderer
 	}
 
 	/**
+	 * 出力データに値を追加します。
+	 *
+	 * @param string 名前
+	 * @param mixed 値
+	 * @return string
+	 */
+	public function assign($name, $value)
+	{
+		$this->data[$name] = $value;
+	}
+
+	/**
+	 * 指定パスのテンプレートを読み込んで配列をローカルスコープの変数に展開し、結果を出力します。
+	 *
+	 * @param string テンプレートファイルのパス
+	 * @param array テンプレートに展開する変数の配列
+	 */
+	public function render($view, array $data)
+	{
+		echo $this->fetch($view, $data);
+	}
+
+	/**
 	 * 指定パスのテンプレートを読み込んで配列をローカルスコープの変数に展開します。
 	 *
 	 * @param string テンプレートファイルのパス
 	 * @param array テンプレートに展開する変数の配列
 	 * @return string
 	 */
-	public function render($view, array $data)
+	public function fetch($view, array $data)
 	{
 		$dir = $this->config('template_dir');
 		if (isset($dir)) {
@@ -115,18 +138,6 @@ class Renderer
 			ob_end_clean();
 			return $contents;
 		}
-	}
-
-	/**
-	 * 出力データに値を追加します。
-	 *
-	 * @param string 名前
-	 * @param mixed 値
-	 * @return string
-	 */
-	public function assign($name, $value)
-	{
-		$this->data[$name] = $value;
 	}
 
 }

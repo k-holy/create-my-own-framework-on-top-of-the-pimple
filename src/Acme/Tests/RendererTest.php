@@ -44,7 +44,7 @@ class RendererTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($this->template_dir, $renderer->config('template_dir'));
 	}
 
-	public function testRender()
+	public function testFetch()
 	{
 		$renderer = new Renderer(array(
 			'template_dir' => $this->template_dir,
@@ -64,14 +64,14 @@ class RendererTest extends \PHPUnit_Framework_TestCase
 TEMPLATE
 		);
 
-		$xml = simplexml_load_string($renderer->render($template, array('title' => 'TITLE')));
+		$xml = simplexml_load_string($renderer->fetch($template, array('title' => 'TITLE')));
 		$titles = $xml->xpath('/html/head/title');
 		$title = (string)$titles[0];
 
 		$this->assertEquals('TITLE', $title);
 	}
 
-	public function testAssignAndRender()
+	public function testAssignAndFetch()
 	{
 		$renderer = new Renderer(array(
 			'template_dir' => $this->template_dir,
@@ -94,7 +94,7 @@ TEMPLATE
 		$renderer->assign('prefix', 'PREFIX');
 		$renderer->assign('suffix', 'SUFFIX');
 
-		$xml = simplexml_load_string($renderer->render($template, array('title' => 'TITLE')));
+		$xml = simplexml_load_string($renderer->fetch($template, array('title' => 'TITLE')));
 		$titles = $xml->xpath('/html/head/title');
 		$title = (string)$titles[0];
 
