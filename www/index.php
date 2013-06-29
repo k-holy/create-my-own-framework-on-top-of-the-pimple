@@ -14,6 +14,6 @@ $form = array(
     'comment' => $app->findVar('P', 'comment'),
 );
 
-echo $app->renderer->render('index.php', array(
+$app->render('index.html', array(
     'form' => $form,
 ));

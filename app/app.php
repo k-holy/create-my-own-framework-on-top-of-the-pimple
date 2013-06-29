@@ -13,6 +13,7 @@ use Acme\Application;
 use Acme\Renderer;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 $app = new Application();
 
@@ -26,6 +27,12 @@ $app->renderer = $app->share(function(Application $app) {
     // $_SERVER
     $renderer->assign('server', $app->request->server->all());
     return $renderer;
+});
+
+// レスポンスオブジェクトでレンダラオブジェクトからテンプレート出力
+$app->render = $app->protect(function($view, array $data = array(), $statusCode = 200, $headers = array()) use ($app) {
+    $response = new Response($app->renderer->fetch($view, $data), $statusCode, $headers);
+    $response->send();
 });
 
 // リクエストオブジェクトを生成
