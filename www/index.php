@@ -9,9 +9,9 @@
  */
 $app = include realpath(__DIR__ . '/../app/app.php');
 
-$app->onRequestBy('GET|POST', function($app, $method) {
+$app->on('GET|POST', function($app, $method) {
 
-	$errors = array();
+    $errors = array();
 
     $form = array(
         'name'    => $app->findVar('P', 'name'),

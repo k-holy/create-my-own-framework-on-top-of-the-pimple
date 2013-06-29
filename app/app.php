@@ -126,29 +126,29 @@ $app->map = $app->protect(function($filter, $value) use ($app) {
 });
 
 // アプリケーションへのリクエストハンドラ登録
-$app->onRequestBy = $app->protect(function($allowableMethod, $function) use ($app) {
+$app->on = $app->protect(function($allowableMethod, $function) use ($app) {
     $allowableMethods = explode('|', $allowableMethod);
     $handler = $app->protect(function(Application $app, $method) use ($function) {
         return $function($app, $method);
     });
     if (in_array('GET', $allowableMethods)) {
-        $app->onRequestByGet = $handler;
+        $app->onGet = $handler;
     }
     if (in_array('POST', $allowableMethods)) {
-        $app->onRequestByPost = $handler;
+        $app->onPost = $handler;
     }
     if (in_array('PUT', $allowableMethods)) {
-        $app->onRequestByPut = $handler;
+        $app->onPut = $handler;
     }
     if (in_array('DELETE', $allowableMethods)) {
-        $app->onRequestByDelete = $handler;
+        $app->onDelete = $handler;
     }
 });
 
 // アプリケーション実行
 $app->run = $app->protect(function() use ($app) {
     $method = $app->request->getMethod();
-    $handlerName = 'onRequestBy' . ucfirst(strtolower($method));
+    $handlerName = 'on' . ucfirst(strtolower($method));
     if (!$app->offsetExists($handlerName)) {
         $response = new Response('Method Not Allowed', 405);
     } else {
