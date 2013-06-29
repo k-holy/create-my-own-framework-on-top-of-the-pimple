@@ -4,7 +4,7 @@
  *
  * アプリケーション共通初期処理
  *
- * @copyright 2011-2013 k-holy <k.holy74@gmail.com>
+ * @copyright 2013 k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 $app = new Application();
 
+// レンダラオブジェクトを生成、グローバルなテンプレート変数をセット
 $app->renderer = $app->share(function(Application $app) {
     $renderer = new Renderer(array(
         'template_dir' => __DIR__ . DIRECTORY_SEPARATOR . 'templates',
