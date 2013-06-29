@@ -14,6 +14,7 @@ use Acme\Renderer;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 $app = new Application();
 
@@ -29,10 +30,19 @@ $app->renderer = $app->share(function(Application $app) {
     return $renderer;
 });
 
-// レスポンスオブジェクトでレンダラオブジェクトからテンプレート出力
+// レンダラオブジェクトからのテンプレート出力でレスポンスを生成
 $app->render = $app->protect(function($view, array $data = array(), $statusCode = 200, $headers = array()) use ($app) {
-    $response = new Response($app->renderer->fetch($view, $data), $statusCode, $headers);
-    $response->send();
+    return new Response($app->renderer->fetch($view, $data), $statusCode, $headers);
+});
+
+// リダイレクトレスポンスを生成
+$app->redirect = $app->protect(function($url, $statusCode = 303, $headers = array()) use ($app) {
+    return new RedirectResponse(
+        (false === strpos($url, '://'))
+            ? $app->request->getSchemeAndHttpHost() . $url
+            : $url,
+        $statusCode, $headers
+    );
 });
 
 // リクエストオブジェクトを生成
@@ -113,6 +123,42 @@ $app->map = $app->protect(function($filter, $value) use ($app) {
         return $results;
     }
     return $filter($value);
+});
+
+// アプリケーションへのリクエストハンドラ登録
+$app->onRequestBy = $app->protect(function($allowableMethod, $function) use ($app) {
+    $allowableMethods = explode('|', $allowableMethod);
+    $handler = $app->protect(function(Application $app, $method) use ($function) {
+        return $function($app, $method);
+    });
+    if (in_array('GET', $allowableMethods)) {
+        $app->onRequestByGet = $handler;
+    }
+    if (in_array('POST', $allowableMethods)) {
+        $app->onRequestByPost = $handler;
+    }
+    if (in_array('PUT', $allowableMethods)) {
+        $app->onRequestByPut = $handler;
+    }
+    if (in_array('DELETE', $allowableMethods)) {
+        $app->onRequestByDelete = $handler;
+    }
+});
+
+// アプリケーション実行
+$app->run = $app->protect(function() use ($app) {
+    $method = $app->request->getMethod();
+    $handlerName = 'onRequestBy' . ucfirst(strtolower($method));
+    if (!$app->offsetExists($handlerName)) {
+        $response = new Response('Method Not Allowed', 405);
+    } else {
+        try {
+            $response = $app->{$handlerName}($app, $method);
+        } catch (\Exception $e) {
+            $response = new Response('Internal Server Error', 500);
+        }
+    }
+    $response->send();
 });
 
 return $app;
