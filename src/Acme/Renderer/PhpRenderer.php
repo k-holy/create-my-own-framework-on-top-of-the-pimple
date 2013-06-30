@@ -16,6 +16,8 @@ namespace Acme\Renderer;
 class PhpRenderer implements RendererInterface
 {
 
+	use RendererTrait;
+
 	/**
 	 * @var array 設定値
 	 */
@@ -87,28 +89,6 @@ class PhpRenderer implements RendererInterface
 			return $this;
 		}
 		throw new \InvalidArgumentException('Invalid argument count.');
-	}
-
-	/**
-	 * 出力データに値を追加します。
-	 *
-	 * @param string 名前
-	 * @param mixed 値
-	 */
-	public function assign($name, $value)
-	{
-		$this->data[$name] = $value;
-	}
-
-	/**
-	 * 指定パスのテンプレートを読み込んで配列をローカルスコープの変数に展開し、結果を出力します。
-	 *
-	 * @param string テンプレートファイルのパス
-	 * @param array テンプレートに展開する変数の配列
-	 */
-	public function render($view, array $data)
-	{
-		echo $this->fetch($view, $data);
 	}
 
 	/**
