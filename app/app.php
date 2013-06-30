@@ -10,7 +10,7 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
-use Acme\Renderer;
+use Acme\Renderer\PhpTalRenderer;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +20,12 @@ $app = new Application();
 
 // レンダラオブジェクトを生成、グローバルなテンプレート変数をセット
 $app->renderer = $app->share(function(Application $app) {
-    $renderer = new Renderer(array(
-        'template_dir' => __DIR__ . DIRECTORY_SEPARATOR . 'templates',
+    $renderer = new PhpTalRenderer(array(
+        'outputMode'         => \PHPTAL::XHTML,
+        'encoding'           => 'UTF-8',
+        'templateRepository' => realpath(__DIR__ . '/../www'),
+        'phpCodeDestination' => sys_get_temp_dir(),
+        'forceReparse'       => true,
     ));
     // $app
     $renderer->assign('app', $app);
