@@ -8,14 +8,14 @@
 
 namespace Acme\Tests;
 
-use Acme\Renderer;
+use Acme\Renderer\PhpRenderer;
 
 /**
- * RendererTest
+ * PhpRendererTest
  *
  * @author k.holy74@gmail.com
  */
-class RendererTest extends \PHPUnit_Framework_TestCase
+class PhpRendererTest extends \PHPUnit_Framework_TestCase
 {
 
 	private $template_dir;
@@ -39,14 +39,14 @@ class RendererTest extends \PHPUnit_Framework_TestCase
 
 	public function testConfig()
 	{
-		$renderer = new Renderer();
+		$renderer = new PhpRenderer();
 		$renderer->config('template_dir', $this->template_dir);
 		$this->assertEquals($this->template_dir, $renderer->config('template_dir'));
 	}
 
 	public function testFetch()
 	{
-		$renderer = new Renderer(array(
+		$renderer = new PhpRenderer(array(
 			'template_dir' => $this->template_dir,
 		));
 
@@ -73,7 +73,7 @@ TEMPLATE
 
 	public function testAssignAndFetch()
 	{
-		$renderer = new Renderer(array(
+		$renderer = new PhpRenderer(array(
 			'template_dir' => $this->template_dir,
 		));
 
