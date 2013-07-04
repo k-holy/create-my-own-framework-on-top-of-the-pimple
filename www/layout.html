@@ -8,7 +8,7 @@
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/latest/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/latest/css/bootstrap-combined.no-icons.min.css" />
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
-<title tal:content="title">ページタイトル</title>
+<title tal:content="title|default">ページタイトル</title>
 </head>
 
 <body metal:define-macro="body">
@@ -27,6 +27,7 @@
           <li><a href="/"><span class="icon-envelope"></span>投稿フォーム</a></li>
           <li><a href="/index.html"><span class="icon-envelope"></span>投稿フォーム（テンプレート）</a></li>
           <li><a href="/error.html"><span class="icon-warning-sign"></span>エラーページ（テンプレート）</a></li>
+          <li><a href="/layout.html"><span class="icon-file"></span>レイアウト（テンプレート）</a></li>
         </ul>
       </div>
     </div>
@@ -36,7 +37,7 @@
 <div class="container-fluid">
 
   <header class="header">
-    <h1><span tal:replace="title">ページタイトル</span>@<span tal:replace="server/HTTP_HOST">example.com</span></h1>
+    <h1><span tal:replace="title|default">ページタイトル</span>@<span tal:replace="server/HTTP_HOST">example.com</span></h1>
   </header>
 
   <div class="content" metal:define-slot="content">

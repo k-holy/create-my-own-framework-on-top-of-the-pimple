@@ -18,8 +18,6 @@ use Acme\Configuration;
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
 
-	private $config;
-
 	public function testConstructorAcceptArray()
 	{
 		$config = new Configuration(array(
@@ -46,14 +44,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testRaiseExceptionInvalidArgument()
 	{
 		$config = new Configuration('foo');
-	}
-
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testRaiseExceptionInvalidArgumentCount()
-	{
-		$config = new Configuration('foo', 'bar', 'baz');
 	}
 
 	public function testSetAndGetAnAttributeByArrayAccess()
