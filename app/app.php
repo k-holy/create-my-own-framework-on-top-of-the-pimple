@@ -18,6 +18,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
+
 $app = new Application();
 
 // アプリケーション設定オブジェクトを生成
@@ -76,6 +80,16 @@ $app->redirect = $app->protect(function($url, $statusCode = 303, $headers = arra
 // リクエストオブジェクトを生成
 $app->request = $app->share(function(Application $app) {
     return Request::createFromGlobals();
+});
+
+// セッションオブジェクトを生成
+$app->session = $app->share(function(Application $app) {
+    return new Session(
+        new NativeSessionStorage(
+            array(),
+            new NativeFileSessionHandler($app->config->app_root . DIRECTORY_SEPARATOR . 'session')
+        )
+    );
 });
 
 // リクエスト変数を取得する
@@ -179,6 +193,10 @@ $app->run = $app->protect(function() use ($app) {
     set_error_handler(function($errno, $errstr, $errfile, $errline) {
         throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
     });
+
+    // セッション開始
+    $app->session->start();
+
     try {
         $method = $app->request->getMethod();
         $handlerName = 'on' . ucfirst(strtolower($method));

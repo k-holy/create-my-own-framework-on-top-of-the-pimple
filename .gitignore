@@ -1,5 +1,6 @@
 vendor
 
 !app/log/.gitkeep
+!app/session/.gitkeep
 
 www/*.log
