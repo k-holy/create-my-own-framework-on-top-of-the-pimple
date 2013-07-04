@@ -1,6 +1,9 @@
 vendor
 
+app/log/*
 !app/log/.gitkeep
+
+app/session/*
 !app/session/.gitkeep
 
 www/*.log
