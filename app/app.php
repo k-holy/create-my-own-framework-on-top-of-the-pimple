@@ -10,7 +10,9 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
+use Acme\Configuration;
 use Acme\Renderer\PhpTalRenderer;
+use Acme\Exception\HttpException;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,12 +20,29 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 $app = new Application();
 
+// アプリケーション設定オブジェクトを生成
+$app->config = $app->share(function(Application $app) {
+    $config = new Configuration(array(
+        'debug'      => true,
+        'app_root'   => __DIR__,
+        'web_root'   => realpath(__DIR__ . '/../www'),
+        'log_dir'    => __DIR__ . DIRECTORY_SEPARATOR . 'log',
+        'log_file'   => date('Y-m') . '.log',
+        'error_log'  => null,
+        'error_view' => 'error.html',
+    ));
+    $config['error_log'] = function($config) {
+        return $config['log_dir'] . DIRECTORY_SEPARATOR . $config['log_file'];
+    };
+    return $config;
+});
+
 // レンダラオブジェクトを生成、グローバルなテンプレート変数をセット
 $app->renderer = $app->share(function(Application $app) {
     $renderer = new PhpTalRenderer(array(
         'outputMode'         => \PHPTAL::XHTML,
         'encoding'           => 'UTF-8',
-        'templateRepository' => realpath(__DIR__ . '/../www'),
+        'templateRepository' => $app->config->web_root,
         'phpCodeDestination' => sys_get_temp_dir(),
         'forceReparse'       => true,
     ));
@@ -37,6 +56,11 @@ $app->renderer = $app->share(function(Application $app) {
 // レンダラオブジェクトからのテンプレート出力でレスポンスを生成
 $app->render = $app->protect(function($view, array $data = array(), $statusCode = 200, $headers = array()) use ($app) {
     return new Response($app->renderer->fetch($view, $data), $statusCode, $headers);
+});
+
+// HTTPエラーを返す
+$app->abort = $app->protect(function($statusCode = 500, $message = null, $headers = array()) use ($app) {
+    throw new HttpException($statusCode, $headers, $message);
 });
 
 // リダイレクトレスポンスを生成
@@ -151,16 +175,33 @@ $app->on = $app->protect(function($allowableMethod, $function) use ($app) {
 
 // アプリケーション実行
 $app->run = $app->protect(function() use ($app) {
-    $method = $app->request->getMethod();
-    $handlerName = 'on' . ucfirst(strtolower($method));
-    if (!$app->offsetExists($handlerName)) {
-        $response = new Response('Method Not Allowed', 405);
-    } else {
-        try {
-            $response = $app->{$handlerName}($app, $method);
-        } catch (\Exception $e) {
-            $response = new Response('Internal Server Error', 500);
+    error_reporting(E_ALL);
+    set_error_handler(function($errno, $errstr, $errfile, $errline) {
+        throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
+    });
+    try {
+        $method = $app->request->getMethod();
+        $handlerName = 'on' . ucfirst(strtolower($method));
+        if (!$app->offsetExists($handlerName)) {
+            throw new HttpException(405);
         }
+        $response = $app->{$handlerName}($app, $method);
+    } catch (\Exception $e) {
+        error_log(sprintf("[%s] %s\n", date('Y-m-d H:i:s'), (string)$e), 3, $app->config->error_log);
+        $statusCode = 500;
+        $title = null;
+        if ($e instanceof HttpException) {
+            $statusCode = $e->getCode();
+            $title = $e->getStatusMessage();
+        }
+        $response = $app->render($app->config->error_view,
+            array(
+                'title' => $title,
+                'exception' => $e,
+                'exception_class' => get_class($e),
+            ),
+            $statusCode
+        );
     }
     $response->send();
 });
