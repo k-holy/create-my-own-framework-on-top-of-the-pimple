@@ -189,18 +189,25 @@ $app->run = $app->protect(function() use ($app) {
     } catch (\Exception $e) {
         error_log(sprintf("[%s] %s\n", date('Y-m-d H:i:s'), (string)$e), 3, $app->config->error_log);
         $statusCode = 500;
-        $title = null;
+        $statusMessage = null;
+        $message = null;
+        $headers = array();
         if ($e instanceof HttpException) {
             $statusCode = $e->getCode();
-            $title = $e->getStatusMessage();
+            $statusMessage = $e->getStatusMessage();
+            $message = $e->getMessage();
+            $headers = $e->getHeaders();
         }
         $response = $app->render($app->config->error_view,
             array(
-                'title' => $title,
+                'title' => 'エラーが発生しました',
+                'statusMessage' => $statusMessage,
+                'message' => $message,
                 'exception' => $e,
                 'exception_class' => get_class($e),
             ),
-            $statusCode
+            $statusCode,
+            $headers
         );
     }
     $response->send();

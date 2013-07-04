@@ -21,7 +21,8 @@
   <div class="content" metal:fill-slot="content">
 
     <div class="hero-unit">
-      <h2><span class="icon-warning-sign"></span>エラーが発生しました。</h2>
+      <h2 tal:content="statusMessage|default">500 Internal Server Error</h2>
+      <h3><span class="icon-warning-sign"></span><span tal:replace="message|default">エラーが発生しました。</span></h3>
       <div class="row-fluid debug" tal:condition="app/config/debug">
         <h2><span tal:replace="exception_class">RuntimeException</span> [<span tal:replace="exception/getCode">0</span>]</h2>
         <p>
