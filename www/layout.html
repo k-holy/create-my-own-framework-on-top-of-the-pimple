@@ -40,6 +40,34 @@
     <h1><span tal:replace="title|default">ページタイトル</span>@<span tal:replace="server/HTTP_HOST">example.com</span></h1>
   </header>
 
+  <div class="alert alert-error" tal:condition="app/flash/hasError">
+    <button class="close" data-dismiss="alert">×</button>
+    <ul>
+      <li tal:repeat="message app/flash/getError" tal:content="message">Error Flashメッセージ</li>
+    </ul>
+  </div>
+
+  <div class="alert" tal:condition="app/flash/hasAlert">
+    <button class="close" data-dismiss="alert">×</button>
+    <ul>
+      <li tal:repeat="message app/flash/getAlert" tal:content="message">Alert Flashメッセージ</li>
+    </ul>
+  </div>
+
+  <div class="alert alert-success" tal:condition="app/flash/hasSuccess">
+    <button class="close" data-dismiss="alert">×</button>
+    <ul>
+      <li tal:repeat="message app/flash/getSuccess" tal:content="message">Success Flashメッセージ</li>
+    </ul>
+  </div>
+
+  <div class="alert alert-info" tal:condition="app/flash/hasInfo">
+    <button class="close" data-dismiss="alert">×</button>
+    <ul>
+      <li tal:repeat="message app/flash/getInfo" tal:content="message">Info Flashメッセージ</li>
+    </ul>
+  </div>
+
   <div class="content" metal:define-slot="content">
     ページコンテンツ
   </div>

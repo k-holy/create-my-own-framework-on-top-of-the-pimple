@@ -11,6 +11,7 @@ include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
 use Acme\Configuration;
+use Acme\DataObject;
 use Acme\Renderer\PhpTalRenderer;
 use Acme\Exception\HttpException;
 
@@ -34,6 +35,7 @@ $app->config = $app->share(function(Application $app) {
         'log_file'   => date('Y-m') . '.log',
         'error_log'  => null,
         'error_view' => 'error.html',
+        'secret_key' => 'CCi:wYD-4:iV:@X%1zun[Y@:',
     ));
     $config['error_log'] = function($config) {
         return $config['log_dir'] . DIRECTORY_SEPARATOR . $config['log_file'];
@@ -90,12 +92,95 @@ $app->session = $app->share(function(Application $app) {
                 'use_only_cookies' => 1,
                 'cookie_httponly'  => 1,
                 'entropy_length'   => 2048,
+                'entropy_file'     => '/dev/urandom',
                 'hash_function'    => 1,
                 'hash_bits_per_character' => 5,
             ),
             new NativeFileSessionHandler($app->config->app_root . DIRECTORY_SEPARATOR . 'session')
         )
     );
+});
+
+// フラッシュメッセージ
+$app->flash = $app->share(function(Application $app) {
+    return new DataObject(array(
+        'add' => function($name, $message) use ($app) {
+            $app->session->getFlashBag()->add($name, $message);
+        },
+        'has' => function($name) use ($app) {
+            return $app->session->getFlashBag()->has($name);
+        },
+        'get' => function($name) use ($app) {
+            return $app->session->getFlashBag()->get($name);
+        },
+
+        // Error
+        'addError' => function($message) use ($app) {
+            $app->flash->add('error', $message);
+        },
+        'hasError' => function() use ($app) {
+            return $app->flash->has('error');
+        },
+        'getError' => function() use ($app) {
+            return $app->flash->get('error');
+        },
+
+        // Alert
+        'addAlert' => function($message) use ($app) {
+            $app->flash->add('alert', $message);
+        },
+        'hasAlert' => function() use ($app) {
+            return $app->flash->has('alert');
+        },
+        'getAlert' => function() use ($app) {
+            return $app->flash->get('alert');
+        },
+
+        // Success
+        'addSuccess' => function($message) use ($app) {
+            $app->flash->add('success', $message);
+        },
+        'hasSuccess' => function() use ($app) {
+            return $app->flash->has('success');
+        },
+        'getSuccess' => function() use ($app) {
+            return $app->flash->get('success');
+        },
+
+        // Info
+        'addInfo' => function($message) use ($app) {
+            $app->flash->add('info', $message);
+        },
+        'hasInfo' => function() use ($app) {
+            return $app->flash->has('info');
+        },
+        'getInfo' => function() use ($app) {
+            return $app->flash->get('info');
+        },
+    ));
+});
+
+// トークンオブジェクトを生成
+$app->token = $app->share(function(Application $app) {
+    return new DataObject(array(
+        'name'  => function() use ($app) {
+            return sha1($app->config->secret_key);
+        },
+        'value' => function() use ($app) {
+            return $app->session->getId();
+        },
+        'validate' => function($value) use ($app) {
+            if (is_null($value)) {
+                return false;
+            }
+            return ($value === $app->token->value());
+        },
+    ));
+});
+
+// CSRFトークンの検証
+$app->csrfVerify = $app->protect(function($method) use ($app) {
+    return $app->token->validate($app->findVar($method, $app->token->name()));
 });
 
 // リクエスト変数を取得する
@@ -234,6 +319,14 @@ $app->run = $app->protect(function() use ($app) {
             $headers
         );
     }
+
+    // CSRFトークン自動出力
+    ini_set('url_rewriter.tags', 'form=');
+    output_add_rewrite_var(
+        $app->escape($app->token->name()),
+        $app->escape($app->token->value())
+    );
+
     $response->send();
 });
 
