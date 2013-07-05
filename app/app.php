@@ -86,7 +86,13 @@ $app->request = $app->share(function(Application $app) {
 $app->session = $app->share(function(Application $app) {
     return new Session(
         new NativeSessionStorage(
-            array(),
+            array(
+                'use_only_cookies' => 1,
+                'cookie_httponly'  => 1,
+                'entropy_length'   => 2048,
+                'hash_function'    => 1,
+                'hash_bits_per_character' => 5,
+            ),
             new NativeFileSessionHandler($app->config->app_root . DIRECTORY_SEPARATOR . 'session')
         )
     );
