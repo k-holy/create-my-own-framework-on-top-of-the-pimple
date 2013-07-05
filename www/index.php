@@ -2,7 +2,7 @@
 /**
  * Create my own framework on top of the Pimple
  *
- * Step 6
+ * 投稿フォーム + エラー/例外テスト + CSRFトークン + フラッシュメッセージのテスト
  *
  * @copyright 2013 k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -14,10 +14,12 @@ $app->on('GET|POST', function($app, $method) {
     $errors = array();
 
     $form = array(
-        'name'         => $app->findVar('P', 'name'),
-        'comment'      => $app->findVar('P', 'comment'),
-        'enable_debug' => $app->findVar('P', 'enable_debug'),
-        'move_log_dir' => $app->findVar('P', 'move_log_dir'),
+        'name'              => $app->findVar('P', 'name'),
+        'comment'           => $app->findVar('P', 'comment'),
+        'enable_debug'      => $app->findVar('P', 'enable_debug'),
+        'move_log_dir'      => $app->findVar('P', 'move_log_dir'),
+        'change_secret_key' => $app->findVar('P', 'change_secret_key'),
+        'validate_token'    => $app->findVar('P', 'validate_token'),
     );
 
     // 設定を動的に切り替える
@@ -29,6 +31,17 @@ $app->on('GET|POST', function($app, $method) {
 
     if ($method === 'POST') {
 
+        // 秘密のキーを変更
+        if (isset($form['change_secret_key'])) {
+            $app->config->secret_key = bin2hex(openssl_random_pseudo_bytes(32));
+        }
+
+        // CSRFトークンの検証
+        if (isset($form['validate_token']) && !$app->csrfVerify('P')) {
+            $app->abort(403, 'リクエストは無効です。');
+        }
+
+        // PHPエラーのテスト
         if (!is_null($app->findVar('P', 'trigger-notice'))) {
             trigger_error('[E_USER_NOTICE]PHPエラーのテストです', E_USER_NOTICE);
         }
@@ -41,6 +54,7 @@ $app->on('GET|POST', function($app, $method) {
             trigger_error('[E_USER_ERROR]PHPエラーのテストです', E_USER_ERROR);
         }
 
+        // HTTP例外のテスト
         if (!is_null($app->findVar('P', 'throw-http-exception-400'))) {
             $app->abort(400, 'HttpException[400]のテストです');
         }
@@ -57,10 +71,33 @@ $app->on('GET|POST', function($app, $method) {
             $app->abort(405, 'HttpException[405]のテストです');
         }
 
+        // 組み込み例外のテスト
         if (!is_null($app->findVar('P', 'throw-runtime-exception'))) {
             throw new RuntimeException('RuntimeExceptionのテストです');
         }
 
+        // フラッシュメッセージのテスト
+        if (!is_null($app->findVar('P', 'flash-error'))) {
+            $app->flash->addError('フラッシュメッセージ[Error]のテストです');
+            return $app->redirect('/');
+        }
+
+        if (!is_null($app->findVar('P', 'flash-alert'))) {
+            $app->flash->addAlert('フラッシュメッセージ[Alert]のテストです');
+            return $app->redirect('/');
+        }
+
+        if (!is_null($app->findVar('P', 'flash-success'))) {
+            $app->flash->addSuccess('フラッシュメッセージ[Success]のテストです');
+            return $app->redirect('/');
+        }
+
+        if (!is_null($app->findVar('P', 'flash-info'))) {
+            $app->flash->addInfo('フラッシュメッセージ[Info]のテストです');
+            return $app->redirect('/');
+        }
+
+        // 投稿フォーム処理
         if (strlen($form['name']) === 0) {
             $errors['name'] = '名前を入力してください。';
         } elseif (mb_strlen($form['name']) > 20) {
@@ -74,7 +111,7 @@ $app->on('GET|POST', function($app, $method) {
         }
 
         if (empty($errors)) {
-            // $app->addFlashMessage('success', '投稿を受け付けました');
+            $app->flash->addSuccess('投稿を受け付けました');
             return $app->redirect('/');
         }
 

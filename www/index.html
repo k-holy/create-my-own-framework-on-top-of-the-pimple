@@ -80,6 +80,32 @@
         </div>
       </fieldset>
 
+      <fieldset>
+        <legend><span class="icon-repeat"></span>セッション関連のテスト</legend>
+        <dl class="control-group">
+          <dt class="control-label">CSRFトークン</dt>
+          <dd class="controls">
+            <label class="checkbox">
+              <input type="checkbox" name="validate_token" value="1" tal:attributes="checked exists:form/validate_token" />
+              検証を有効にする
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="change_secret_key" value="1" tal:attributes="checked exists:form/change_secret_key" />
+              秘密のキーを変更する
+            </label>
+          </dd>
+        </dl>
+        <dl class="control-group">
+          <dt class="control-label">フラッシュメッセージ</dt>
+          <dd class="controls">
+          <input type="submit" value="Error" class="btn btn-primary btn-danger" name="flash-error" />
+          <input type="submit" value="Alert" class="btn btn-primary btn-warning" name="flash-alert" />
+          <input type="submit" value="Success" class="btn btn-primary btn-success" name="flash-success" />
+          <input type="submit" value="Info" class="btn btn-primary btn-info" name="flash-info" />
+          </dd>
+        </dl>
+      </fieldset>
+
     </form>
 
   </div>
