@@ -13,7 +13,6 @@ $app->on('GET', function($app) {
 
     return $app->render('index.html', array(
         'title' => 'トップページ',
-        'source' => highlight_file(__FILE__, true),
     ));
 
 });
