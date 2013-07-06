@@ -2,6 +2,8 @@
 /**
  * Create my own framework on top of the Pimple
  *
+ * URLルーティング用ゲートウェイスクリプト
+ *
  * @copyright 2013 k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
@@ -14,13 +16,14 @@ use Volcanus\Routing\Exception\InvalidParameterException;
 
 use Symfony\Component\HttpFoundation\Response;
 
+$router = Router::instance(array(
+    'searchExtensions' => 'php,html',
+    'overwriteGlobals' => true,
+));
+
+$router->importGlobals();
+
 try {
-    $router = Router::instance(array(
-        'searchExtensions' => 'php,html',
-        'overwriteGlobals' => true,
-    ));
-    $router->importGlobals();
-    $router->prepare();
     $router->execute();
 } catch (\Exception $exception) {
     $statusCode = 500;
