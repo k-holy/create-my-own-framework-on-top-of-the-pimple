@@ -33,8 +33,8 @@
         on line <strong tal:content="exception/getLine">例外発生行番号...</strong>
       </p>
 
-      <h3>StackTrace(String)</h3>
-      <pre tal:content="stackTrace" class="stack-trace">#0 /path/to/file(999): function('argument')</pre>
+      <h3>StackTrace</h3>
+      <pre tal:content="exception/getTraceAsString" class="stack-trace">#0 /path/to/file(999): function('argument')</pre>
 
     </div>
 

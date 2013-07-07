@@ -47,6 +47,15 @@ $app->renderer = $app->share(function(Application $app) {
     return $renderer;
 });
 
+// ログ
+$app->log = $app->protect(function($level, $message) use ($app) {
+    error_log(
+        sprintf("[%s] %s: %s\n", date('Y-m-d H:i:s'), $level, $message),
+        3,
+        $app->config->error_log
+    );
+});
+
 // エラーページを返す
 $app->errorView = $app->protect(function(\Exception $exception, $message = null) use ($app) {
     return $app->renderer->fetch($app->config->error_view, array(
@@ -54,7 +63,6 @@ $app->errorView = $app->protect(function(\Exception $exception, $message = null)
         'message'         => $message,
         'exception'       => $exception,
         'exception_class' => get_class($exception),
-        'stackTrace'      => $exception->getTraceAsString(),
     ));
 });
 
@@ -64,6 +72,10 @@ $app->addHandler('init', function(Application $app) {
     error_reporting(E_ALL);
     set_error_handler(function($errno, $errstr, $errfile, $errline) {
         throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
+    });
+    set_exception_handler(function(\Exception $e) use ($app) {
+        $app->log('ERROR', (string)$e);
+        echo $app->errorView($e, $e->getMessage());
     });
 });
 

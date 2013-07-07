@@ -289,7 +289,7 @@ $app->run = $app->protect(function() use ($app) {
         }
         $response = $app->{$handlerName}($app, $method);
     } catch (\Exception $e) {
-        error_log(sprintf("[%s] %s\n", date('Y-m-d H:i:s'), (string)$e), 3, $app->config->error_log);
+        $app->log('ERROR', (string)$e);
         $response = $app->error($e);
     }
 
