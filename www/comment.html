@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head metal:use-macro="__layout.html/head">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" />
+<title>投稿フォーム</title>
+</head>
+
+<body metal:use-macro="__layout.html/body">
+
+<div class="container-fluid">
+
+  <header class="header">
+    <h1>投稿フォーム@example.com</h1>
+  </header>
+
+  <div class="content" metal:fill-slot="content">
+
+    <div class="alert alert-error" tal:condition="php:count(errors) > 0">
+      <button class="close" data-dismiss="alert">×</button>
+      <span class="icon-warning-sign"></span><strong>入力値にエラーがあります</strong>
+      <ul>
+        <li tal:repeat="error errors" tal:content="error">名前を入力してください。</li>
+      </ul>
+    </div>
+
+    <form class="form-horizontal" method="post" tal:attributes="action server/REQUEST_URI">
+      <fieldset>
+        <legend><span class="icon-envelope"></span>投稿フォーム</legend>
+        <dl class="control-group" tal:attributes="class php:isset(errors['name']) ? 'control-group error' : 'control-group'">
+          <dt class="control-label">名前</dt>
+          <dd class="controls">
+            <input type="text" name="name" class="input-xlarge" tal:attributes="value form/name" />
+          </dd>
+        </dl>
+        <dl class="control-group" tal:attributes="class php:isset(errors['comment']) ? 'control-group error' : 'control-group'">
+          <dt class="control-label">コメント</dt>
+          <dd class="controls">
+            <textarea name="comment" rows="5" class="input-xlarge" tal:content="form/comment">コメント内容....</textarea>
+          </dd>
+        </dl>
+        <div class="form-actions">
+          <input type="submit" value="送信" class="btn btn-primary btn-large" />
+        </div>
+      </fieldset>
+    </form>
+
+  </div>
+
+  <footer class="footer">
+    <p>Copyright &copy; 2013 k-holy &lt;k.holy74@gmail.com&gt; Code licensed under <a href="http://opensource.org/licenses/MIT">MIT</a></p>
+  </footer>
+
+</div>
+
+</body>
+</html>

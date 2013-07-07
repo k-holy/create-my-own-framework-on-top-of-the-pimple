@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 
-<head metal:use-macro="layout.html/head">
+<head metal:use-macro="__layout.html/head">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
@@ -10,7 +10,7 @@
 <title>エラー画面</title>
 </head>
 
-<body metal:use-macro="layout.html/body">
+<body metal:use-macro="__layout.html/body">
 
 <div class="container-fluid">
 
@@ -21,17 +21,21 @@
   <div class="content" metal:fill-slot="content">
 
     <div class="hero-unit">
-      <h2 tal:content="statusMessage|default">500 Internal Server Error</h2>
-      <h3><span class="icon-warning-sign"></span><span tal:replace="message|default">エラーが発生しました。</span></h3>
-      <div class="row-fluid debug" tal:condition="app/config/debug">
-        <h2><span tal:replace="exception_class">RuntimeException</span> [<span tal:replace="exception/getCode">0</span>]</h2>
-        <p>
-          &quot;<strong tal:content="exception/getMessage">例外メッセージ...</strong>&quot;
-          in <strong tal:content="exception/getFile">例外発生ファイル...</strong>
-          on line <strong tal:content="exception/getLine">例外発生行番号...</strong>
-        </p>
-        <pre tal:content="exception/getTraceAsString">スタックトレース...</pre>
-      </div>
+      <h2><span class="icon-warning-sign"></span><span tal:replace="message|default">エラーが発生しました</span></h2>
+    </div>
+
+    <div class="row-fluid debug" tal:condition="config/debug">
+
+      <h3><span tal:replace="exception_class">RuntimeException</span> [<span tal:replace="exception/getCode">0</span>]</h3>
+      <p>
+        &quot;<strong tal:content="exception/getMessage">例外メッセージ...</strong>&quot;
+        in <strong tal:content="exception/getFile">例外発生ファイル...</strong>
+        on line <strong tal:content="exception/getLine">例外発生行番号...</strong>
+      </p>
+
+      <h3>StackTrace</h3>
+      <pre tal:content="exception/getTraceAsString" class="stack-trace">#0 /path/to/file(999): function('argument')</pre>
+
     </div>
 
   </div>
