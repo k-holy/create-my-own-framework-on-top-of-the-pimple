@@ -34,7 +34,26 @@
       </p>
 
       <h3>StackTrace</h3>
-      <pre tal:content="exception/getTraceAsString" class="stack-trace">#0 /path/to/file(999): function('argument')</pre>
+      <table class="table table-condensed stack-trace" tal:condition="stackTrace/count">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Location: Function</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="item stackTrace">
+            <td tal:content="item/index">0</td>
+            <td>
+              <div><span tal:replace="item/location">/path/to/file(999)</span>:</div>
+              <div><span tal:replace="item/function">function</span>(<span tal:replace="item/argument">'argument'</span>)</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>StackTrace(String)</h3>
+      <pre tal:content="stackTrace" class="stack-trace">#0 /path/to/file(999): function('argument')</pre>
 
     </div>
 

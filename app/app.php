@@ -11,6 +11,7 @@ include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
 use Acme\Configuration;
+use Acme\StackTraceIterator;
 use Acme\Renderer\PhpTalRenderer;
 
 $app = new Application();
@@ -63,7 +64,13 @@ $app->errorView = $app->protect(function(\Exception $exception, $message = null)
         'message'         => $message,
         'exception'       => $exception,
         'exception_class' => get_class($exception),
+        'stackTrace'      => $app->trace($exception->getTrace()),
     ));
+});
+
+// スタックトレースイテレータを返す
+$app->trace = $app->protect(function(array $trace) {
+    return new StackTraceIterator($trace);
 });
 
 // アプリケーション初期処理
