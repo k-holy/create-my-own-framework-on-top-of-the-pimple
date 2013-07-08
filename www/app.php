@@ -151,16 +151,19 @@ $app->redirect = $app->protect(function($url, $statusCode = 303, $headers = arra
 });
 
 // エラーページ用レスポンスを生成
-$app->error = $app->protect(function(\Exception $exception, $statusCode = 500, $message = null, $headers = array()) use ($app) {
+$app->error = $app->protect(function(\Exception $exception) use ($app) {
+    $statusCode = 500;
+    $headers = array();
+    $title = null;
+    $message = null;
     if ($exception instanceof HttpException) {
         $statusCode = $exception->getCode();
         $headers = $exception->getHeaders();
-        if (is_null($message)) {
-            $message = $exception->getMessage();
-        }
+        $message = $exception->getMessage();
+        $title = $exception->getStatusMessage();
     }
     return new Response(
-        $app->errorView($exception, $message),
+        $app->errorView($exception, $title, $message),
         $statusCode,
         $headers
     );
@@ -289,7 +292,11 @@ $app->run = $app->protect(function() use ($app) {
         }
         $response = $app->{$handlerName}($app, $method);
     } catch (\Exception $e) {
-        $app->log('ERROR', (string)$e);
+        $app->log(
+            'ERROR',
+            $app->exceptionFormatter->format($e)
+            . $app->traceFormatter->toString($e->getTrace())
+        );
         $response = $app->error($e);
     }
 

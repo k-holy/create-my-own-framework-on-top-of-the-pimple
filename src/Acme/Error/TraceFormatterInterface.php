@@ -1,0 +1,62 @@
+<?php
+/**
+ * Create my own framework on top of the Pimple
+ *
+ * @copyright 2013 k-holy <k.holy74@gmail.com>
+ * @license The MIT License (MIT)
+ */
+
+namespace Acme\Error;
+
+/**
+ * トレースフォーマッタインタフェース
+ *
+ * @author k.holy74@gmail.com
+ */
+interface TraceFormatterInterface
+{
+
+	/**
+	 * スタックトレースを文字列に整形して返します。
+	 *
+	 * @param array スタックトレース
+	 * @return string
+	 */
+	public function toString(array $trace);
+
+	/**
+	 * トレースを文字列に整形して返します。
+	 *
+	 * @param array トレース
+	 * @return string
+	 */
+	public function format(array $info);
+
+	/**
+	 * トレースのファイル情報を文字列に整形して返します。
+	 *
+	 * @param string ファイルパス
+	 * @param string 行番号
+	 * @return string
+	 */
+	public function formatLocation($file, $line);
+
+	/**
+	 * トレースの関数呼び出し情報を文字列に整形して返します。
+	 *
+	 * @param string クラス名
+	 * @param string 呼び出し種別
+	 * @param string 関数名/メソッド名
+	 * @return string
+	 */
+	public function formatFunction($class, $type, $function);
+
+	/**
+	 * トレースの関数呼び出しの引数を文字列に整形して返します。
+	 *
+	 * @param array  引数の配列
+	 * @return string
+	 */
+	public function formatArguments($arguments);
+
+}

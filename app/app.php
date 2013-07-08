@@ -11,7 +11,12 @@ include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
 use Acme\Configuration;
-use Acme\StackTraceIterator;
+
+use Acme\Error\ErrorFormatter;
+use Acme\Error\ExceptionFormatter;
+use Acme\Error\TraceFormatter;
+use Acme\Error\StackTraceIterator;
+
 use Acme\Renderer\PhpTalRenderer;
 
 $app = new Application();
@@ -58,32 +63,63 @@ $app->log = $app->protect(function($level, $message) use ($app) {
 });
 
 // エラーページを返す
-$app->errorView = $app->protect(function(\Exception $exception, $message = null) use ($app) {
+$app->errorView = $app->protect(function(\Exception $exception, $title = null, $message = null) use ($app) {
     return $app->renderer->fetch($app->config->error_view, array(
-        'title'           => 'エラーが発生しました',
+        'title'           => $title,
         'message'         => $message,
         'exception'       => $exception,
         'exception_class' => get_class($exception),
-        'stackTrace'      => $app->trace($exception->getTrace()),
+        'stackTrace'      => $app->stackTrace->initialize($exception->getTrace()),
     ));
 });
 
-// スタックトレースイテレータを返す
-$app->trace = $app->protect(function(array $trace) {
-    return new StackTraceIterator($trace);
+// エラーフォーマッタ
+$app->errorFormatter = $app->share(function(Application $app) {
+    return new ErrorFormatter();
+});
+
+// 例外フォーマッタ
+$app->exceptionFormatter = $app->share(function(Application $app) {
+    return new ExceptionFormatter();
+});
+
+// トレースフォーマッタ
+$app->traceFormatter = $app->share(function(Application $app) {
+    return new TraceFormatter();
+});
+
+// スタックトレースイテレータ
+$app->stackTrace = $app->share(function(Application $app) {
+    return new StackTraceIterator($app->traceFormatter);
 });
 
 // アプリケーション初期処理
 $app->registerEvent('init');
 $app->addHandler('init', function(Application $app) {
-    error_reporting(E_ALL);
-    set_error_handler(function($errno, $errstr, $errfile, $errline) {
-        throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
+
+    // エラーハンドラを登録
+    set_error_handler(function($errno, $errstr, $errfile, $errline) use ($app) {
+        if (error_reporting() & $errno) {
+            throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
+        }
+        $app->log(
+            strtoupper($app->errorFormatter->convertErrorLevel($errno)),
+            $app->errorFormatter->format($errno, $errstr, $errfile, $errline)
+            . $app->traceFormatter->toString(debug_backtrace())
+        );
+        return true;
     });
+
+    // 例外ハンドラを登録
     set_exception_handler(function(\Exception $e) use ($app) {
-        $app->log('ERROR', (string)$e);
-        echo $app->errorView($e, $e->getMessage());
+        $app->log(
+            'ERROR',
+            $app->exceptionFormatter->format($e)
+            . $app->traceFormatter->toString($e->getTrace())
+        );
+        echo $app->errorView($e, null, $e->getMessage());
     });
+
 });
 
 return $app;
