@@ -19,12 +19,18 @@ use Acme\Error\StackTraceIterator;
 
 use Acme\Renderer\PhpTalRenderer;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 $app = new Application();
 
+//-----------------------------------------------------------------------------
 // アプリケーション設定オブジェクトを生成
+//-----------------------------------------------------------------------------
 $app->config = $app->share(function(Application $app) {
     $config = new Configuration(array(
         'debug'      => true,
+        'app_id'     => 'acme',
         'app_root'   => __DIR__,
         'web_root'   => realpath(__DIR__ . '/../www'),
         'log_dir'    => __DIR__ . DIRECTORY_SEPARATOR . 'log',
@@ -39,7 +45,9 @@ $app->config = $app->share(function(Application $app) {
     return $config;
 });
 
+//-----------------------------------------------------------------------------
 // レンダラオブジェクトを生成、グローバルなテンプレート変数をセット
+//-----------------------------------------------------------------------------
 $app->renderer = $app->share(function(Application $app) {
     $renderer = new PhpTalRenderer(array(
         'outputMode'         => \PHPTAL::XHTML,
@@ -53,16 +61,31 @@ $app->renderer = $app->share(function(Application $app) {
     return $renderer;
 });
 
-// ログ
-$app->log = $app->protect(function($level, $message) use ($app) {
-    error_log(
-        sprintf("[%s] %s: %s\n", date('Y-m-d H:i:s'), $level, $message),
-        3,
-        $app->config->error_log
-    );
+//-----------------------------------------------------------------------------
+// ロガー
+//-----------------------------------------------------------------------------
+$app->logger = $app->share(function(Application $app) {
+    $app->logHandler = function() use ($app) {
+        return new StreamHandler(
+            $app->config->log_dir . DIRECTORY_SEPARATOR . $app->config->log_file,
+            ($app->config->debug) ? Logger::DEBUG : Logger::NOTICE
+        );
+    };
+    $logger = new Logger($app->config->app_id);
+    $logger->pushHandler($app->logHandler);
+    return $logger;
 });
 
+//-----------------------------------------------------------------------------
+// ログ
+//-----------------------------------------------------------------------------
+$app->log = $app->protect(function($level, $message) use ($app) {
+    return $app->logger->addRecord($level ?: Logger::INFO, $message);
+});
+
+//-----------------------------------------------------------------------------
 // エラーページを返す
+//-----------------------------------------------------------------------------
 $app->errorView = $app->protect(function(\Exception $exception, $title = null, $message = null) use ($app) {
     return $app->renderer->fetch($app->config->error_view, array(
         'title'           => $title,
@@ -73,27 +96,37 @@ $app->errorView = $app->protect(function(\Exception $exception, $title = null, $
     ));
 });
 
+//-----------------------------------------------------------------------------
 // エラーフォーマッタ
+//-----------------------------------------------------------------------------
 $app->errorFormatter = $app->share(function(Application $app) {
     return new ErrorFormatter();
 });
 
+//-----------------------------------------------------------------------------
 // 例外フォーマッタ
+//-----------------------------------------------------------------------------
 $app->exceptionFormatter = $app->share(function(Application $app) {
     return new ExceptionFormatter();
 });
 
+//-----------------------------------------------------------------------------
 // トレースフォーマッタ
+//-----------------------------------------------------------------------------
 $app->traceFormatter = $app->share(function(Application $app) {
     return new TraceFormatter();
 });
 
+//-----------------------------------------------------------------------------
 // スタックトレースイテレータ
+//-----------------------------------------------------------------------------
 $app->stackTrace = $app->share(function(Application $app) {
     return new StackTraceIterator($app->traceFormatter);
 });
 
+//-----------------------------------------------------------------------------
 // アプリケーション初期処理
+//-----------------------------------------------------------------------------
 $app->registerEvent('init');
 $app->addHandler('init', function(Application $app) {
 
@@ -102,8 +135,28 @@ $app->addHandler('init', function(Application $app) {
         if (error_reporting() & $errno) {
             throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
         }
-        $app->log(
-            strtoupper($app->errorFormatter->convertErrorLevel($errno)),
+        switch ($errno) {
+        case E_ERROR:
+        case E_USER_ERROR:
+        case E_RECOVERABLE_ERROR:
+            $level = Logger::ERROR;
+            break;
+        case E_WARNING:
+        case E_USER_WARNING:
+            $level = Logger::WARNING;
+            break;
+        case E_NOTICE:
+        case E_USER_NOTICE:
+            $level = Logger::NOTICE;
+            break;
+        case E_STRICT:
+        case E_DEPRECATED:
+        case E_USER_DEPRECATED:
+        default:
+            $level = Logger::INFO;
+            break;
+        }
+        $app->log($level,
             $app->errorFormatter->format($errno, $errstr, $errfile, $errline)
             . $app->traceFormatter->toString(debug_backtrace())
         );
@@ -112,8 +165,7 @@ $app->addHandler('init', function(Application $app) {
 
     // 例外ハンドラを登録
     set_exception_handler(function(\Exception $e) use ($app) {
-        $app->log(
-            'ERROR',
+        $app->log(Logger::ERROR,
             $app->exceptionFormatter->format($e)
             . $app->traceFormatter->toString($e->getTrace())
         );
