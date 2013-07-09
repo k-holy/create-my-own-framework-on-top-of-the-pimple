@@ -241,8 +241,8 @@ $app->escape = $app->protect(function($value, $default = '') use ($app) {
 $app->map = $app->protect(function($filter, $value) use ($app) {
     if (is_array($value) || $value instanceof \Traversable) {
         $results = array();
-        foreach ($value as $val) {
-            $results[] = $app->map($filter, $val);
+        foreach ($value as $name => $val) {
+            $results[$name] = $app->map($filter, $val);
         }
         return $results;
     }
