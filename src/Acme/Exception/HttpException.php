@@ -91,9 +91,9 @@ class HttpException extends \RuntimeException
 	private $headers;
 
 	/**
-	 * @var string HTTPステータスメッセージ
+	 * @var string HTTPステータス説明句
 	 */
-	private $statusMessage;
+	private $reasonPhrase;
 
 	/**
 	 * コンストラクタ
@@ -112,8 +112,8 @@ class HttpException extends \RuntimeException
 		}
 		$code = $code ?: 500;
 		$this->headers = $headers ?: array();
-		$this->statusMessage = $this->buildStatusMessage($code);
-		parent::__construct($message ?: $this->statusMessage, $code, $previous);
+		$this->reasonPhrase = $this->buildReasonPhrase($code);
+		parent::__construct($message ?: $this->reasonPhrase, $code, $previous);
 	}
 
 	/**
@@ -131,12 +131,12 @@ class HttpException extends \RuntimeException
 	 *
 	 * @return string メッセージ
 	 */
-	public function getStatusMessage()
+	public function getReasonPhrase()
 	{
-		return $this->statusMessage;
+		return $this->reasonPhrase;
 	}
 
-	private function buildStatusMessage($code)
+	private function buildReasonPhrase($code)
 	{
 		return sprintf('%d %s', $code, self::$statuses[$code]);
 	}

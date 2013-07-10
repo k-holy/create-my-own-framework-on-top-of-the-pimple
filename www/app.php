@@ -180,7 +180,7 @@ $app->error = $app->protect(function(\Exception $exception) use ($app) {
         $statusCode = $exception->getCode();
         $headers = $exception->getHeaders();
         $message = $exception->getMessage();
-        $title = $exception->getStatusMessage();
+        $title = $exception->getReasonPhrase();
     }
     return new Response(
         $app->errorView($exception, $title, $message),
