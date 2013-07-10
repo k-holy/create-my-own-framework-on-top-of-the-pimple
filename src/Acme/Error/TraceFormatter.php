@@ -22,37 +22,37 @@ class TraceFormatter implements TraceFormatterInterface
 	 * @param array スタックトレース
 	 * @return string
 	 */
-	public function toString(array $trace)
+	public function arrayToString(array $stackTrace)
 	{
-		$_trace = array();
-		foreach ($trace as $info) {
-			$_trace[] = $this->format($info);
+		$results = array();
+		foreach ($stackTrace as $trace) {
+			$results[] = $this->format($trace);
 		}
-		return (count($_trace) >= 1)
-			? sprintf("\nStack trace:\n%s", implode("\n", $_trace))
+		return (count($results) >= 1)
+			? sprintf("\nStack trace:\n%s", implode("\n", $results))
 			: '';
 	}
 
 	/**
-	 * トレースを文字列に整形して返します。
+	 * 1レコード分のトレースを文字列に整形して返します。
 	 *
-	 * @param array トレース
+	 * @param array 1レコード分のトレース
 	 * @return string
 	 */
-	public function format(array $info)
+	public function format(array $trace)
 	{
 		return sprintf('%s: %s(%s)',
 			$this->formatLocation(
-				isset($info['file']) ? $info['file'] : null,
-				isset($info['line']) ? $info['line'] : null
+				isset($trace['file']) ? $trace['file'] : null,
+				isset($trace['line']) ? $trace['line'] : null
 			),
 			$this->formatFunction(
-				isset($info['class']) ? $info['class'] : null,
-				isset($info['type']) ? $info['type'] : null,
-				isset($info['function']) ? $info['function'] : null
+				isset($trace['class']) ? $trace['class'] : null,
+				isset($trace['type']) ? $trace['type'] : null,
+				isset($trace['function']) ? $trace['function'] : null
 			),
 			$this->formatArguments(
-				isset($info['args']) ? $info['args'] : null
+				isset($trace['args']) ? $trace['args'] : null
 			)
 		);
 	}

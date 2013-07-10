@@ -22,15 +22,15 @@ interface TraceFormatterInterface
 	 * @param array スタックトレース
 	 * @return string
 	 */
-	public function toString(array $trace);
+	public function arrayToString(array $stackTrace);
 
 	/**
-	 * トレースを文字列に整形して返します。
+	 * 1レコード分のトレースを文字列に整形して返します。
 	 *
-	 * @param array トレース
+	 * @param array 1レコード分のトレース
 	 * @return string
 	 */
-	public function format(array $info);
+	public function format(array $trace);
 
 	/**
 	 * トレースのファイル情報を文字列に整形して返します。

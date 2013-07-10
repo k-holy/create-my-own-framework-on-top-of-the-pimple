@@ -79,7 +79,7 @@ $app->logger = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 // ログ
 //-----------------------------------------------------------------------------
-$app->log = $app->protect(function($level, $message) use ($app) {
+$app->log = $app->protect(function($message, $level) use ($app) {
     return $app->logger->addRecord($level ?: Logger::INFO, $message);
 });
 
@@ -125,6 +125,53 @@ $app->stackTrace = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
+// エラーログ
+//-----------------------------------------------------------------------------
+$app->logError = $app->protect(function($level, $message, $file, $line, $trace) {
+    $app->log(
+        $app->errorFormatter->format($level, $message, $file, $line)
+            . $app->traceFormatter->arrayToString($trace),
+        $app->errorLevelToLogLevel($level)
+    );
+});
+
+//-----------------------------------------------------------------------------
+// 例外ログ
+//-----------------------------------------------------------------------------
+$app->logException = $app->protect(function(\Exception $e) use ($app) {
+    $app->log(
+        $app->exceptionFormatter->format($e)
+            . $app->traceFormatter->arrayToString($e->getTrace()),
+        ($e instanceof \ErrorException)
+            ? $app->errorLevelToLogLevel($e->getSeverity())
+            : Logger::CRITICAL
+    );
+});
+
+//-----------------------------------------------------------------------------
+// エラーレベルをログレベルに変換
+//-----------------------------------------------------------------------------
+$app->errorLevelToLogLevel = $app->protect(function($level) {
+    switch ($level) {
+    case E_USER_ERROR:
+    case E_RECOVERABLE_ERROR:
+        return Logger::ERROR;
+    case E_WARNING:
+    case E_USER_WARNING:
+        return Logger::WARNING;
+    case E_NOTICE:
+    case E_USER_NOTICE:
+        return Logger::NOTICE;
+    case E_STRICT:
+    case E_DEPRECATED:
+    case E_USER_DEPRECATED:
+    default:
+        break;
+    }
+    return Logger::INFO;
+});
+
+//-----------------------------------------------------------------------------
 // アプリケーション初期処理
 //-----------------------------------------------------------------------------
 $app->registerEvent('init');
@@ -133,42 +180,15 @@ $app->addHandler('init', function(Application $app) {
     // エラーハンドラを登録
     set_error_handler(function($errno, $errstr, $errfile, $errline) use ($app) {
         if (error_reporting() & $errno) {
-            throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
+            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
         }
-        switch ($errno) {
-        case E_ERROR:
-        case E_USER_ERROR:
-        case E_RECOVERABLE_ERROR:
-            $level = Logger::ERROR;
-            break;
-        case E_WARNING:
-        case E_USER_WARNING:
-            $level = Logger::WARNING;
-            break;
-        case E_NOTICE:
-        case E_USER_NOTICE:
-            $level = Logger::NOTICE;
-            break;
-        case E_STRICT:
-        case E_DEPRECATED:
-        case E_USER_DEPRECATED:
-        default:
-            $level = Logger::INFO;
-            break;
-        }
-        $app->log($level,
-            $app->errorFormatter->format($errno, $errstr, $errfile, $errline)
-            . $app->traceFormatter->toString(debug_backtrace())
-        );
+        $app->errorLog($errno, $errstr, $errfile, $errline, debug_backtrace());
         return true;
     });
 
     // 例外ハンドラを登録
     set_exception_handler(function(\Exception $e) use ($app) {
-        $app->log(Logger::ERROR,
-            $app->exceptionFormatter->format($e)
-            . $app->traceFormatter->toString($e->getTrace())
-        );
+        $app->logException($e);
         echo $app->errorView($e, null, $e->getMessage());
     });
 

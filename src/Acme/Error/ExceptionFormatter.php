@@ -24,7 +24,7 @@ class ExceptionFormatter
 	 */
 	public function format(\Exception $e)
 	{
-		return sprintf("Uncaught exception %s[%d]: '%s' in %s on line %d",
+		return sprintf("%s[%d]: '%s' in %s on line %u",
 			get_class($e),
 			$e->getCode(),
 			$e->getMessage(),

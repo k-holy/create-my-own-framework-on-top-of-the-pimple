@@ -19,7 +19,7 @@ class StackTraceIterator implements \Iterator, \Countable
 	/**
 	 * @var array スタックトレース
 	 */
-	private $trace;
+	private $stackTrace;
 
 	/**
 	 * @var TraceFormatterInterface トレースフォーマッタ
@@ -47,11 +47,11 @@ class StackTraceIterator implements \Iterator, \Countable
 	 * @param array スタックトレース
 	 * @return $this
 	 */
-	public function initialize(array $trace = array())
+	public function initialize(array $stackTrace = array())
 	{
 		$this->position = 0;
-		if (!empty($trace)) {
-			$this->trace = $trace;
+		if (!empty($stackTrace)) {
+			$this->stackTrace = $stackTrace;
 		}
 		return $this;
 	}
@@ -71,20 +71,20 @@ class StackTraceIterator implements \Iterator, \Countable
 	 */
 	public function current()
 	{
-		$info = $this->trace[$this->position];
+		$trace = $this->stackTrace[$this->position];
 		return array(
 			'index' => $this->position,
 			'location' => $this->formatter->formatLocation(
-				isset($info['file']) ? $info['file'] : null,
-				isset($info['line']) ? $info['line'] : null
+				isset($trace['file']) ? $trace['file'] : null,
+				isset($trace['line']) ? $trace['line'] : null
 			),
 			'function' => $this->formatter->formatFunction(
-				isset($info['class']) ? $info['class'] : null,
-				isset($info['type']) ? $info['type'] : null,
-				isset($info['function']) ? $info['function'] : null
+				isset($trace['class']) ? $trace['class'] : null,
+				isset($trace['type']) ? $trace['type'] : null,
+				isset($trace['function']) ? $trace['function'] : null
 			),
 			'argument' => $this->formatter->formatArguments(
-				isset($info['args']) ? $info['args'] : null
+				isset($trace['args']) ? $trace['args'] : null
 			),
 		);
 	}
@@ -112,7 +112,7 @@ class StackTraceIterator implements \Iterator, \Countable
 	 */
 	public function valid()
 	{
-		return isset($this->trace[$this->position]);
+		return isset($this->stackTrace[$this->position]);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class StackTraceIterator implements \Iterator, \Countable
 	 */
 	public function count()
 	{
-		return count($this->trace);
+		return count($this->stackTrace);
 	}
 
 	/**
@@ -132,11 +132,11 @@ class StackTraceIterator implements \Iterator, \Countable
 	 */
 	public function __toString()
 	{
-		$trace = array();
-		foreach ($this->trace as $index => $info) {
-			$trace[] = sprintf('#%d %s', $index, $this->formatter->format($info));
+		$stackTrace = array();
+		foreach ($this->stackTrace as $index => $trace) {
+			$stackTrace[] = sprintf('#%d %s', $index, $this->formatter->format($trace));
 		}
-		return implode("\n", $trace);
+		return implode("\n", $stackTrace);
 	}
 
 }

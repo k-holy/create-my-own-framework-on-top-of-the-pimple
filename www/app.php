@@ -328,10 +328,7 @@ $app->run = $app->protect(function() use ($app) {
         }
         $response = $app->{$handlerName}($app, $method);
     } catch (\Exception $e) {
-        $app->log(Logger::ERROR,
-            $app->exceptionFormatter->format($e)
-            . $app->traceFormatter->toString($e->getTrace())
-        );
+        $app->logException($e);
         $response = $app->error($e);
     }
 
