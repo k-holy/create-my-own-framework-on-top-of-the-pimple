@@ -24,10 +24,10 @@ class ErrorFormatter
 		E_STRICT            => 'Strict standards',
 		E_RECOVERABLE_ERROR => 'Catchable fatal error',
 		E_DEPRECATED        => 'Depricated',
-		E_USER_ERROR        => 'Fatal error (by user)',
-		E_USER_WARNING      => 'Warning (by user)',
-		E_USER_NOTICE       => 'Notice (by user)',
-		E_USER_DEPRECATED   => 'Depricated (by user)',
+		E_USER_ERROR        => 'User Fatal error',
+		E_USER_WARNING      => 'User Warning',
+		E_USER_NOTICE       => 'User Notice',
+		E_USER_DEPRECATED   => 'User Depricated',
 	);
 
 	/**

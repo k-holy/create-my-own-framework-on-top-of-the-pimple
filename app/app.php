@@ -127,10 +127,9 @@ $app->stackTrace = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 // エラーログ
 //-----------------------------------------------------------------------------
-$app->logError = $app->protect(function($level, $message, $file, $line, $trace) {
+$app->logError = $app->protect(function($level, $message, $file, $line) use ($app) {
     $app->log(
-        $app->errorFormatter->format($level, $message, $file, $line)
-            . $app->traceFormatter->arrayToString($trace),
+        $app->errorFormatter->format($level, $message, $file, $line),
         $app->errorLevelToLogLevel($level)
     );
 });
@@ -140,8 +139,7 @@ $app->logError = $app->protect(function($level, $message, $file, $line, $trace) 
 //-----------------------------------------------------------------------------
 $app->logException = $app->protect(function(\Exception $e) use ($app) {
     $app->log(
-        $app->exceptionFormatter->format($e)
-            . $app->traceFormatter->arrayToString($e->getTrace()),
+        $app->exceptionFormatter->format($e),
         ($e instanceof \ErrorException)
             ? $app->errorLevelToLogLevel($e->getSeverity())
             : Logger::CRITICAL
@@ -182,7 +180,7 @@ $app->addHandler('init', function(Application $app) {
         if (error_reporting() & $errno) {
             throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
         }
-        $app->errorLog($errno, $errstr, $errfile, $errline, debug_backtrace());
+        $app->logError($errno, $errstr, $errfile, $errline);
         return true;
     });
 
