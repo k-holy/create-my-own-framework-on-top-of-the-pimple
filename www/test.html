@@ -41,15 +41,41 @@
             </label>
           </dd>
         </dl>
+        <dl class="control-group">
+          <dt class="control-label">エラー設定</dt>
+          <dd class="controls">
+            <label class="radio">
+              <input type="radio" name="ignore_error" value="info" tal:attributes="checked php:form['ignore_error']=='info'" />
+              Info以下を無視
+            </label>
+            <label class="radio">
+              <input type="radio" name="ignore_error" value="notice" tal:attributes="checked php:form['ignore_error']=='notice'" />
+              Notice以下を無視
+            </label>
+            <label class="radio">
+              <input type="radio" name="ignore_error" value="warning" tal:attributes="checked php:form['ignore_error']=='warning'" />
+              Warning以下を無視
+            </label>
+            <label class="radio">
+              <input type="radio" name="ignore_error" value="error" tal:attributes="checked php:form['ignore_error']=='error'" />
+              Error以下を無視
+            </label>
+          </dd>
+        </dl>
         <div class="form-actions">
-          <input type="submit" value="PHPエラー(Notice)" class="btn btn-primary btn-danger" name="trigger-notice" />
-          <input type="submit" value="PHPエラー(Warning)" class="btn btn-primary btn-danger" name="trigger-warning" />
-          <input type="submit" value="PHPエラー(Error)" class="btn btn-primary btn-danger" name="trigger-error" />
-          <input type="submit" value="HTTP例外(400)" class="btn btn-primary btn-danger" name="throw-http-exception-400" />
-          <input type="submit" value="HTTP例外(403)" class="btn btn-primary btn-danger" name="throw-http-exception-403" />
-          <input type="submit" value="HTTP例外(404)" class="btn btn-primary btn-danger" name="throw-http-exception-404" />
-          <input type="submit" value="HTTP例外(405)" class="btn btn-primary btn-danger" name="throw-http-exception-405" />
-          <input type="submit" value="RuntimeException" class="btn btn-primary btn-danger" name="throw-runtime-exception" />
+          <p>
+            <input type="submit" value="PHPエラー(Info)" class="btn btn-primary btn-warning" name="trigger-info" />
+            <input type="submit" value="PHPエラー(Notice)" class="btn btn-primary btn-warning" name="trigger-notice" />
+            <input type="submit" value="PHPエラー(Warning)" class="btn btn-primary btn-warning" name="trigger-warning" />
+            <input type="submit" value="PHPエラー(Error)" class="btn btn-primary btn-warning" name="trigger-error" />
+          </p>
+          <p>
+            <input type="submit" value="HTTP例外(400)" class="btn btn-primary btn-danger" name="throw-http-exception-400" />
+            <input type="submit" value="HTTP例外(403)" class="btn btn-primary btn-danger" name="throw-http-exception-403" />
+            <input type="submit" value="HTTP例外(404)" class="btn btn-primary btn-danger" name="throw-http-exception-404" />
+            <input type="submit" value="HTTP例外(405)" class="btn btn-primary btn-danger" name="throw-http-exception-405" />
+            <input type="submit" value="RuntimeException" class="btn btn-primary btn-danger" name="throw-runtime-exception" />
+          </p>
         </div>
       </fieldset>
 

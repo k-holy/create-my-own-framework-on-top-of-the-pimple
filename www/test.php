@@ -16,6 +16,7 @@ $app->on('GET|POST', function($app, $method) {
     $form = array(
         'enable_debug'      => $app->findVar('P', 'enable_debug'),
         'move_log_dir'      => $app->findVar('P', 'move_log_dir'),
+        'ignore_error'      => $app->findVar('P', 'ignore_error'),
         'change_secret_key' => $app->findVar('P', 'change_secret_key'),
         'validate_token'    => $app->findVar('P', 'validate_token'),
     );
@@ -29,6 +30,52 @@ $app->on('GET|POST', function($app, $method) {
             $app->config->log_dir = $app->config->web_root;
         }
 
+        // error_reporting設定を変更
+        if (isset($form['ignore_error'])) {
+            switch ($form['ignore_error']) {
+            // Error以下を無視
+            case 'error':
+                $error_reporting = error_reporting();
+                if ($error_reporting & E_ERROR) {
+                    $error_reporting = error_reporting($error_reporting &~E_ERROR);
+                }
+                if ($error_reporting & E_USER_ERROR) {
+                    $error_reporting = error_reporting($error_reporting &~E_USER_ERROR);
+                }
+            // Warning以下を無視
+            case 'warning':
+                $error_reporting = error_reporting();
+                if ($error_reporting & E_WARNING) {
+                    $error_reporting = error_reporting($error_reporting &~E_WARNING);
+                }
+                if ($error_reporting & E_USER_WARNING) {
+                    $error_reporting = error_reporting($error_reporting &~E_USER_WARNING);
+                }
+            // Notice以下を無視
+            case 'notice':
+                $error_reporting = error_reporting();
+                if ($error_reporting & E_NOTICE) {
+                    $error_reporting = error_reporting($error_reporting &~E_NOTICE);
+                }
+                if ($error_reporting & E_USER_NOTICE) {
+                    $error_reporting = error_reporting($error_reporting &~E_USER_NOTICE);
+                }
+            // Info以下を無視
+            case 'info':
+                $error_reporting = error_reporting();
+                if ($error_reporting & E_STRICT) {
+                    $error_reporting = error_reporting($error_reporting &~E_STRICT);
+                }
+                if ($error_reporting & E_DEPRECATED) {
+                    $error_reporting = error_reporting($error_reporting &~E_DEPRECATED);
+                }
+                if ($error_reporting & E_USER_DEPRECATED) {
+                    $error_reporting = error_reporting($error_reporting &~E_USER_DEPRECATED);
+                }
+                break;
+            }
+        }
+
         // 秘密のキーを変更
         if (isset($form['change_secret_key'])) {
             $app->config->secret_key = bin2hex(openssl_random_pseudo_bytes(32));
@@ -40,6 +87,10 @@ $app->on('GET|POST', function($app, $method) {
         }
 
         // PHPエラーのテスト
+        if (!is_null($app->findVar('P', 'trigger-info'))) {
+            trigger_error('[E_USER_DEPRECATED]PHPエラーのテストです', E_USER_DEPRECATED);
+        }
+
         if (!is_null($app->findVar('P', 'trigger-notice'))) {
             trigger_error('[E_USER_NOTICE]PHPエラーのテストです', E_USER_NOTICE);
         }

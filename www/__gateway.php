@@ -35,6 +35,6 @@ try {
         $statusCode = 400;
         $message = 'リクエストが不正です';
     }
-    $response = new Response($app->errorView($exception, $message), $statusCode);
+    $response = new Response($app->errorView($exception, null, $message), $statusCode);
     $response->send();
 }

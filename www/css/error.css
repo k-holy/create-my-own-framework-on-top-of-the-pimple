@@ -1,0 +1,37 @@
+@charset "UTF-8";
+/* =============================================== *
+ * エラー画面
+ * =============================================== */
+.debug
+{
+	border-top: solid 3px #ccc;
+	border-bottom: solid 3px #ccc;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.debug pre
+{
+	margin: 0;
+	padding: 0;
+	border: none;
+	background-color: transparent;
+}
+
+.debug caption
+{
+	text-align: left;
+}
+
+.debug td
+{
+	padding: 2px;
+}
+
+.debug code
+{
+	border: none;
+	background-color: transparent;
+}

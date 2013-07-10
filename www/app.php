@@ -13,6 +13,8 @@ use Acme\Application;
 use Acme\DataObject;
 use Acme\Exception\HttpException;
 
+use Monolog\Logger;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,7 +23,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 
+//-----------------------------------------------------------------------------
 // セッションオブジェクトを生成
+//-----------------------------------------------------------------------------
 $app->session = $app->share(function(Application $app) {
     return new Session(
         new NativeSessionStorage(
@@ -38,7 +42,9 @@ $app->session = $app->share(function(Application $app) {
     );
 });
 
+//-----------------------------------------------------------------------------
 // フラッシュメッセージ
+//-----------------------------------------------------------------------------
 $app->flash = $app->share(function(Application $app) {
     return new DataObject(array(
         'add' => function($name, $message) use ($app) {
@@ -97,7 +103,9 @@ $app->flash = $app->share(function(Application $app) {
     ));
 });
 
+//-----------------------------------------------------------------------------
 // トークンオブジェクトを生成
+//-----------------------------------------------------------------------------
 $app->token = $app->share(function(Application $app) {
     return new DataObject(array(
         'name'  => function() use ($app) {
@@ -115,22 +123,30 @@ $app->token = $app->share(function(Application $app) {
     ));
 });
 
+//-----------------------------------------------------------------------------
 // CSRFトークンの検証
+//-----------------------------------------------------------------------------
 $app->csrfVerify = $app->protect(function($method) use ($app) {
     return $app->token->validate($app->findVar($method, $app->token->name()));
 });
 
+//-----------------------------------------------------------------------------
 // リクエストオブジェクトを生成
+//-----------------------------------------------------------------------------
 $app->request = $app->share(function(Application $app) {
     return Request::createFromGlobals();
 });
 
+//-----------------------------------------------------------------------------
 // リクエストURIを返す
+//-----------------------------------------------------------------------------
 $app->requestUri = $app->protect(function() use ($app) {
     return $app->request->getRequestUri();
 });
 
+//-----------------------------------------------------------------------------
 // レンダラオブジェクトからのテンプレート出力でレスポンスを生成
+//-----------------------------------------------------------------------------
 $app->render = $app->protect(function($view, array $data = array(), $statusCode = 200, $headers = array()) use ($app) {
     return new Response(
         $app->renderer->fetch($view, $data),
@@ -139,7 +155,9 @@ $app->render = $app->protect(function($view, array $data = array(), $statusCode 
     );
 });
 
+//-----------------------------------------------------------------------------
 // リダイレクトレスポンスを生成
+//-----------------------------------------------------------------------------
 $app->redirect = $app->protect(function($url, $statusCode = 303, $headers = array()) use ($app) {
     return new RedirectResponse(
         (false === strpos($url, '://'))
@@ -150,28 +168,37 @@ $app->redirect = $app->protect(function($url, $statusCode = 303, $headers = arra
     );
 });
 
+//-----------------------------------------------------------------------------
 // エラーページ用レスポンスを生成
-$app->error = $app->protect(function(\Exception $exception, $statusCode = 500, $message = null, $headers = array()) use ($app) {
+//-----------------------------------------------------------------------------
+$app->error = $app->protect(function(\Exception $exception) use ($app) {
+    $statusCode = 500;
+    $headers = array();
+    $title = null;
+    $message = null;
     if ($exception instanceof HttpException) {
         $statusCode = $exception->getCode();
         $headers = $exception->getHeaders();
-        if (is_null($message)) {
-            $message = $exception->getMessage();
-        }
+        $message = $exception->getMessage();
+        $title = $exception->getReasonPhrase();
     }
     return new Response(
-        $app->errorView($exception, $message),
+        $app->errorView($exception, $title, $message),
         $statusCode,
         $headers
     );
 });
 
+//-----------------------------------------------------------------------------
 // HTTPエラーを返す
+//-----------------------------------------------------------------------------
 $app->abort = $app->protect(function($statusCode = 500, $message = null, $headers = array()) use ($app) {
     throw new HttpException($statusCode, $headers, $message);
 });
 
+//-----------------------------------------------------------------------------
 // リクエスト変数を取得する
+//-----------------------------------------------------------------------------
 $app->findVar = $app->protect(function($key, $name, $default = null) use ($app) {
     $value = null;
     switch ($key) {
@@ -204,7 +231,9 @@ $app->findVar = $app->protect(function($key, $name, $default = null) use ($app) 
     return $value;
 });
 
+//-----------------------------------------------------------------------------
 // リクエスト変数の正規化
+//-----------------------------------------------------------------------------
 $app->normalize = $app->protect(function($value) use ($app) {
     $filters = array(
         // HT,LF,CR,SP以外の制御コード(00-08,11,12,14-31,127,128-159)を除去
@@ -223,7 +252,9 @@ $app->normalize = $app->protect(function($value) use ($app) {
     return $value;
 });
 
+//-----------------------------------------------------------------------------
 // HTMLエスケープ
+//-----------------------------------------------------------------------------
 $app->escape = $app->protect(function($value, $default = '') use ($app) {
     return $app->map(function($value) use ($default) {
         $value = (string)$value;
@@ -234,19 +265,23 @@ $app->escape = $app->protect(function($value, $default = '') use ($app) {
     }, $value);
 });
 
+//-----------------------------------------------------------------------------
 // 全ての要素に再帰処理
+//-----------------------------------------------------------------------------
 $app->map = $app->protect(function($filter, $value) use ($app) {
     if (is_array($value) || $value instanceof \Traversable) {
         $results = array();
-        foreach ($value as $val) {
-            $results[] = $app->map($filter, $val);
+        foreach ($value as $name => $val) {
+            $results[$name] = $app->map($filter, $val);
         }
         return $results;
     }
     return $filter($value);
 });
 
+//-----------------------------------------------------------------------------
 // アプリケーションへのリクエストハンドラ登録
+//-----------------------------------------------------------------------------
 $app->on = $app->protect(function($allowableMethod, $function) use ($app) {
     $allowableMethods = explode('|', $allowableMethod);
     $handler = $app->protect(function(Application $app, $method) use ($function) {
@@ -266,7 +301,9 @@ $app->on = $app->protect(function($allowableMethod, $function) use ($app) {
     }
 });
 
+//-----------------------------------------------------------------------------
 // アプリケーション初期処理
+//-----------------------------------------------------------------------------
 $app->addHandler('init', function(Application $app) {
     // $_SERVER
     $app->renderer->assign('server', $app->request->server->all());
@@ -276,7 +313,9 @@ $app->addHandler('init', function(Application $app) {
     $app->renderer->assign('flash', $app->flash);
 });
 
+//-----------------------------------------------------------------------------
 // アプリケーション実行
+//-----------------------------------------------------------------------------
 $app->run = $app->protect(function() use ($app) {
 
     $app->init();
@@ -289,7 +328,7 @@ $app->run = $app->protect(function() use ($app) {
         }
         $response = $app->{$handlerName}($app, $method);
     } catch (\Exception $e) {
-        $app->log('ERROR', (string)$e);
+        $app->logException($e);
         $response = $app->error($e);
     }
 
