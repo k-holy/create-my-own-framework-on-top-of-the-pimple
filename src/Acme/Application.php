@@ -30,6 +30,13 @@ class Application extends \Pimple
 	 */
 	public function __construct(array $values = array())
 	{
+		foreach ($values as $name => $value) {
+			if (method_exists($this, $name)) {
+				throw new \InvalidArgumentException(
+					sprintf('The attribute "%s" is already defined as a method.', $name)
+				);
+			}
+		}
 		parent::__construct($values);
 		$this->handlers = array();
 	}
@@ -53,6 +60,11 @@ class Application extends \Pimple
 	 */
 	public function __set($name, $value)
 	{
+		if (method_exists($this, $name)) {
+			throw new \InvalidArgumentException(
+				sprintf('The property "%s" is already defined as a method.', $name)
+			);
+		}
 		parent::offsetSet($name, $value);
 	}
 

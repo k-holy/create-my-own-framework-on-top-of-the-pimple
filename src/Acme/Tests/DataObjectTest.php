@@ -91,4 +91,25 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('Foo', $data->callable('Foo'));
 	}
 
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	public function testRaiseExceptionWhenAttributeIsAlreadyDefinedAsAMethod()
+	{
+		$data = new DataObject(array(
+			'offsetExists' => true,
+		));
+	}
+
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	public function testRaiseExceptionWhenPropertyIsAlreadyDefinedAsAMethod()
+	{
+		$data = new DataObject();
+		$data->getIterator = function() {
+			return 'Foo';
+		};
+	}
+
 }

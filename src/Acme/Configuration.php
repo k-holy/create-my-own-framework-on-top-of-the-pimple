@@ -155,6 +155,11 @@ class Configuration implements \ArrayAccess, \IteratorAggregate
 	private function import($attributes)
 	{
 		foreach ($attributes as $name => $value) {
+			if (method_exists($this, $name)) {
+				throw new \InvalidArgumentException(
+					sprintf('The attribute "%s" is already defined as a method.', $name)
+				);
+			}
 			$attributes[$name] = (is_array($value) || $value instanceof \Traversable)
 				? new static($value)
 				: $value
