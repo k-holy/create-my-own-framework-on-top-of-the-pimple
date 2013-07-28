@@ -19,6 +19,21 @@
   </header>
 
   <div class="content" metal:fill-slot="content">
+    <dl>
+      <dt>現在の日時</dt>
+      <dd>
+        <span tal:replace="clock/year">2013</span>年
+        <span tal:replace="clock/month">7</span>月
+        <span tal:replace="clock/day">24</span>日
+        <span tal:replace="clock/hour">7</span>時
+        <span tal:replace="clock/minute">50</span>分
+        <span tal:replace="clock/second">10</span>秒
+      </dd>
+      <dt>今月の日数</dt>
+      <dd tal:content="clock/lastDay">31</dd>
+      <dt>現在の日時 __toString()</dt>
+      <dd tal:content="clock"></dd>
+    </dl>
   </div>
 
   <footer class="footer">

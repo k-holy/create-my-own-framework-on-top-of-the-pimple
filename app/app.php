@@ -11,6 +11,7 @@ include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
 use Acme\Configuration;
+use Acme\DateTime;
 
 use Acme\Error\ErrorFormatter;
 use Acme\Error\ExceptionFormatter;
@@ -34,7 +35,7 @@ $app->config = $app->share(function(Application $app) {
         'app_root'   => __DIR__,
         'web_root'   => realpath(__DIR__ . '/../www'),
         'log_dir'    => __DIR__ . DIRECTORY_SEPARATOR . 'log',
-        'log_file'   => date('Y-m') . '.log',
+        'log_file'   => sprintf('%d-%02d.log', $app->clock->year(), $app->clock->month()),
         'error_log'  => null,
         'error_view' => 'error.html',
         'secret_key' => 'CCi:wYD-4:iV:@X%1zun[Y@:',
@@ -43,6 +44,13 @@ $app->config = $app->share(function(Application $app) {
         return $config['log_dir'] . DIRECTORY_SEPARATOR . $config['log_file'];
     };
     return $config;
+});
+
+//-----------------------------------------------------------------------------
+// システム時計
+//-----------------------------------------------------------------------------
+$app->clock = $app->share(function(Application $app) {
+    return new DateTime(new \DateTime());
 });
 
 //-----------------------------------------------------------------------------
