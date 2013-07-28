@@ -20,6 +20,9 @@ use Acme\Error\StackTraceIterator;
 
 use Acme\Renderer\PhpTalRenderer;
 
+use Acme\Database\Driver\PdoDriver;
+use Acme\Database\Transaction\PdoTransaction;
+
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -39,6 +42,9 @@ $app->config = $app->share(function(Application $app) {
         'error_log'  => null,
         'error_view' => 'error.html',
         'secret_key' => 'CCi:wYD-4:iV:@X%1zun[Y@:',
+        'database'   => array(
+            'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
+        ),
     ));
     $config['error_log'] = function($config) {
         return $config['log_dir'] . DIRECTORY_SEPARATOR . $config['log_file'];
@@ -175,6 +181,35 @@ $app->errorLevelToLogLevel = $app->protect(function($level) {
         break;
     }
     return Logger::INFO;
+});
+
+//-----------------------------------------------------------------------------
+// PDO
+//-----------------------------------------------------------------------------
+$app->pdo = $app->share(function(Application $app) {
+    try {
+        $pdo = new \PDO($app->config->database->dsn);
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    } catch (\PDOException $e) {
+        throw new \RuntimeException(
+            sprintf('Invalid DSN: "%s"', $app->config->database->dsn)
+        );
+    }
+    return $pdo;
+});
+
+//-----------------------------------------------------------------------------
+// データベースドライバ
+//-----------------------------------------------------------------------------
+$app->db = $app->share(function(Application $app) {
+    return new PdoDriver($app->pdo);
+});
+
+//-----------------------------------------------------------------------------
+// データベーストランザクション
+//-----------------------------------------------------------------------------
+$app->transaction = $app->share(function(Application $app) {
+    return new PdoTransaction($app->pdo);
 });
 
 //-----------------------------------------------------------------------------

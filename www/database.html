@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head metal:use-macro="__layout.html/head">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" />
+<title>データベース</title>
+</head>
+
+<body metal:use-macro="__layout.html/body">
+
+<div class="container-fluid">
+
+  <header class="header">
+    <h1>データベース@example.com</h1>
+  </header>
+
+  <div class="content" metal:fill-slot="content">
+    <form class="form-horizontal" method="post" tal:attributes="action server/REQUEST_URI">
+      <fieldset>
+        <legend><span class="icon-hdd"></span>データベース</legend>
+        <table class="table table-condensed" tal:repeat="table tables" tal:condition="exists:tables">
+          <caption><h3 tal:content="repeat/table/key">テーブル名</h3></caption>
+          <thead>
+            <tr>
+              <th>カラム名</th>
+              <th>データ型</th>
+              <th>最大長</th>
+              <th>デフォルト値</th>
+              <th>NOT NULL</th>
+              <th>PRIMARY KEY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr tal:repeat="column table">
+              <td tal:content="column/name">name</td>
+              <td tal:content="column/type">type</td>
+              <td tal:content="column/maxLength">maxLength</td>
+              <td tal:content="column/default">default</td>
+              <td tal:content="column/notNull">notNull</td>
+              <td tal:content="column/primaryKey">primaryKey</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="form-actions">
+          <input type="submit" value="初期化する" class="btn btn-danger btn-large" />
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <footer class="footer">
+    <p>Copyright &copy; 2013 k-holy &lt;k.holy74@gmail.com&gt; Code licensed under <a href="http://opensource.org/licenses/MIT">MIT</a></p>
+  </footer>
+
+</div>
+
+</body>
+</html>
