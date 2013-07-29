@@ -29,19 +29,17 @@ class DateTime implements \ArrayAccess
 	/**
 	 * コンストラクタ
 	 *
-	 * @param string | \DateTime 日時
+	 * @param string|int|\DateTime 日時
 	 * @param string 日時の書式
 	 */
 	public function __construct($datetime, $format = null)
 	{
-		if ($datetime instanceof \DateTime) {
-			$this->datetime = $datetime;
+		if (is_string($datetime)) {
+			$datetime = new \DateTime($datetime);
 		} elseif (is_int($datetime)) {
-			$this->datetime = new \DateTime();
-			$this->datetime->setTimestamp($datetime);
-		} elseif (is_string($datetime)) {
-			$this->datetime = new \DateTime($datetime);
-		} else {
+			$datetime = new \DateTime(sprintf('@%d', $datetime));
+		}
+		if (false === ($datetime instanceof \DateTime)) {
 			throw new \InvalidArgumentException(
 				sprintf('Invalid type:%s', (is_object($datetime))
 					? get_class($datetime)
@@ -49,18 +47,8 @@ class DateTime implements \ArrayAccess
 				)
 			);
 		}
+		$this->datetime = $datetime;
 		$this->format = (isset($format)) ? $format : 'Y-m-d H:i:s';
-	}
-
-	/**
-	 * 日時をタイムスタンプでセットします。
-	 *
-	 * @param int タイムスタンプ
-	 */
-	public function setTimestamp($time)
-	{
-		$this->datetime->setTimestamp($time);
-		return $this;
 	}
 
 	/**
@@ -86,13 +74,43 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
+	 * UTCからのタイムゾーンオフセット秒数を返します。
+	 *
+	 * @return int UTCからのタイムゾーンオフセット秒数
+	 */
+	public function getOffset()
+	{
+		return $this->datetime->getOffset();
+	}
+
+	/**
+	 * Unixタイムスタンプを返します。
+	 *
+	 * @return int Unixタイムスタンプ
+	 */
+	public function getTimestamp()
+	{
+		return $this->datetime->getTimestamp();
+	}
+
+	/**
+	 * タイムゾーンを返します。
+	 *
+	 * @return \DateTimeZone タイムゾーン
+	 */
+	public function getTimezone()
+	{
+		return $this->datetime->getTimezone();
+	}
+
+	/**
 	 * 現在の年を数値で返します。
 	 *
 	 * @return int 年 (4桁)
 	 */
 	public function year()
 	{
-		return (int)$this->datetime->format('Y');
+		return (int)$this->format('Y');
 	}
 
 	/**
@@ -102,7 +120,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function month()
 	{
-		return (int)$this->datetime->format('m');
+		return (int)$this->format('m');
 	}
 
 	/**
@@ -112,7 +130,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function day()
 	{
-		return (int)$this->datetime->format('d');
+		return (int)$this->format('d');
 	}
 
 	/**
@@ -122,7 +140,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function hour()
 	{
-		return (int)$this->datetime->format('H');
+		return (int)$this->format('H');
 	}
 
 	/**
@@ -132,7 +150,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function minute()
 	{
-		return (int)$this->datetime->format('i');
+		return (int)$this->format('i');
 	}
 
 	/**
@@ -142,7 +160,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function second()
 	{
-		return (int)$this->datetime->format('s');
+		return (int)$this->format('s');
 	}
 
 	/**
@@ -152,7 +170,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function timestamp()
 	{
-		return (int)$this->datetime->format('U');
+		return (int)$this->format('U');
 	}
 
 	/**
@@ -162,7 +180,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function lastDay()
 	{
-		return (int)$this->datetime->format('t');
+		return (int)$this->format('t');
 	}
 
 	/**
@@ -196,7 +214,7 @@ class DateTime implements \ArrayAccess
 	 */
 	public function __toString()
 	{
-		return $this->datetime->format($this->format);
+		return $this->format($this->format);
 	}
 
 	/**
@@ -215,6 +233,8 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
+	 * __set
+	 *
 	 * @param string
 	 * @param mixed
 	 */
@@ -223,6 +243,17 @@ class DateTime implements \ArrayAccess
 		throw new \BadMethodCallException(
 			sprintf('The property "%s" is read only.', $name)
 		);
+	}
+
+	/**
+	 * __wakeup
+	 *
+	 * @param void
+	 * @return void
+	 */
+	public function __wakeup()
+	{
+		$this->initialize(time());
 	}
 
 	/**

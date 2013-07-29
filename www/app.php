@@ -306,7 +306,6 @@ $app->on = $app->protect(function($allowableMethod, $function) use ($app) {
 //-----------------------------------------------------------------------------
 $app->addHandler('init', function(Application $app) {
     // 現在時刻
-    $app->clock->setTimestamp($app->request->server->get('REQUEST_TIME'));
     $app->clock->setFormat('Y/n/j G:i');
     $app->renderer->assign('clock', $app->clock);
     // $_SERVER
