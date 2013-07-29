@@ -37,6 +37,11 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 		}
 		$this->attributes = array();
 		foreach ($attributes as $name => $value) {
+			if (method_exists($this, $name)) {
+				throw new \InvalidArgumentException(
+					sprintf('The property "%s" is already defined as a method.', $name)
+				);
+			}
 			$this->attributes[$name] = $value;
 		}
 	}
@@ -97,6 +102,11 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function __set($name, $value)
 	{
+		if (method_exists($this, $name)) {
+			throw new \InvalidArgumentException(
+				sprintf('The property "%s" is already defined as a method.', $name)
+			);
+		}
 		$this->offsetSet($name, $value);
 	}
 

@@ -152,4 +152,17 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('B', $config->object->a->a->c->b);
 		$this->assertEquals('C', $config->object->a->a->c->c);
 	}
+
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	public function testRaiseExceptionWhenAttributeIsAlreadyDefinedAsAMethod()
+	{
+		$config = new Configuration(array(
+			'import' => function() {
+				return 'Foo';
+			},
+		));
+	}
+
 }
