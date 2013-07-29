@@ -21,8 +21,35 @@
   <div class="content" metal:fill-slot="content">
 
     <form class="form-horizontal" method="post" tal:attributes="action server/REQUEST_URI">
+
       <fieldset>
-        <legend><span class="icon-wrench"></span>設定値/エラーのテスト</legend>
+        <legend><span class="icon-time"></span>日時のテスト</legend>
+        <dl>
+          <dt>タイムゾーン</dt>
+          <dd tal:content="clock/getTimezone/getName">Asia/Tokyo</dd>
+          <dt>現在の日時 __toString()</dt>
+          <dd tal:content="clock"></dd>
+        </dl>
+        <dl class="control-group">
+          <dt class="control-label">日時設定</dt>
+          <dd class="controls">
+            <select name="timezone" class="input-large">
+              <option value=""></option>
+              <option
+ tal:repeat="timezone form/timezones"
+ tal:content="timezone"
+ tal:attributes="value timezone; selected php:timezone==form['timezone']"
+>タイムゾーン名</option>
+            </select>
+          </dd>
+        </dl>
+        <div class="form-actions">
+          <input type="submit" value="送信" class="btn btn-primary btn-large" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="icon-wrench"></span>ログ/エラーのテスト</legend>
         <dl class="control-group">
           <dt class="control-label">デバッグ設定</dt>
           <dd class="controls">

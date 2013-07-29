@@ -38,14 +38,18 @@ $app->config = $app->share(function(Application $app) {
         'app_root'   => __DIR__,
         'web_root'   => realpath(__DIR__ . '/../www'),
         'log_dir'    => __DIR__ . DIRECTORY_SEPARATOR . 'log',
-        'log_file'   => sprintf('%d-%02d.log', $app->clock->year(), $app->clock->month()),
+        'log_file'   => null,
         'error_log'  => null,
         'error_view' => 'error.html',
         'secret_key' => 'CCi:wYD-4:iV:@X%1zun[Y@:',
+        'timezone'   => 'Asia/Tokyo',
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
         ),
     ));
+    $config['log_file'] = function($config) use ($app) {
+        return sprintf('%d-%02d.log', $app->clock->year(), $app->clock->month());
+    };
     $config['error_log'] = function($config) {
         return $config['log_dir'] . DIRECTORY_SEPARATOR . $config['log_file'];
     };
@@ -56,7 +60,9 @@ $app->config = $app->share(function(Application $app) {
 // システム時計
 //-----------------------------------------------------------------------------
 $app->clock = $app->share(function(Application $app) {
-    return new DateTime(new \DateTime());
+    $datetime = new DateTime(new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME'])));
+    $datetime->setTimeZone($app->config->timezone);
+    return $datetime;
 });
 
 //-----------------------------------------------------------------------------
@@ -81,7 +87,7 @@ $app->renderer = $app->share(function(Application $app) {
 $app->logger = $app->share(function(Application $app) {
     $app->logHandler = function() use ($app) {
         return new StreamHandler(
-            $app->config->log_dir . DIRECTORY_SEPARATOR . $app->config->log_file,
+            $app->config->error_log,
             ($app->config->debug) ? Logger::DEBUG : Logger::NOTICE
         );
     };

@@ -64,6 +64,29 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
+	 * タイムゾーンをセットします。
+	 *
+	 * @param string|\DateTimeZone タイムゾーン
+	 * @return $this
+	 */
+	public function setTimeZone($timeZone)
+	{
+		if (is_string($timeZone)) {
+			$timeZone = new \DateTimeZone($timeZone);
+		}
+		if (false === ($timeZone instanceof \DateTimeZone)) {
+			throw new \InvalidArgumentException(
+				sprintf('Invalid type:%s', (is_object($timeZone))
+					? get_class($timeZone)
+					: gettype($timeZone)
+				)
+			);
+		}
+		$this->datetime->setTimeZone($timeZone);
+		return $this;
+	}
+
+	/**
 	 * 書式化した日付文字列を返します。
 	 *
 	 * @return string 書式化した日付文字列
