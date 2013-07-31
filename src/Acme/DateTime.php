@@ -34,10 +34,10 @@ class DateTime implements \ArrayAccess
 	 */
 	public function __construct($datetime, $format = null)
 	{
-		if (is_string($datetime)) {
-			$datetime = new \DateTime($datetime);
-		} elseif (is_int($datetime)) {
+		if (is_int($datetime) || ctype_digit($datetime)) {
 			$datetime = new \DateTime(sprintf('@%d', $datetime));
+		} elseif (is_string($datetime)) {
+			$datetime = new \DateTime($datetime);
 		}
 		if (false === ($datetime instanceof \DateTime)) {
 			throw new \InvalidArgumentException(
