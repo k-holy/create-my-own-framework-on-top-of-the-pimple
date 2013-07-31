@@ -38,16 +38,27 @@ class PdoStatement implements StatementInterface, \IteratorAggregate
 	/**
 	 * プリペアドステートメントを実行します。
 	 *
-	 * @param array パラメータ
+	 * @param array | \Traversable パラメータ
 	 * @return bool
 	 */
-	public function execute(array $parameters = array())
+	public function execute($parameters = null)
 	{
-		foreach ($parameters as $name => $value) {
-			$this->statement->bindValue(
-				(strncmp(':', $name, 1) !== 0) ? sprintf(':%s', $name) : $name,
-				$value
-			);
+		if (isset($parameters)) {
+			if (!is_array($parameters) && !($parameters instanceof \Traversable)) {
+				throw new \InvalidArgumentException(
+					sprintf('Parameters accepts an Array or Traversable, invalid type:%s',
+						(is_object($parameters))
+							? get_class($parameters)
+							: gettype($parameters)
+					)
+				);
+			}
+			foreach ($parameters as $name => $value) {
+				$this->statement->bindValue(
+					(strncmp(':', $name, 1) !== 0) ? sprintf(':%s', $name) : $name,
+					$value
+				);
+			}
 		}
 		try {
 			return $this->statement->execute();

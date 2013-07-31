@@ -19,9 +19,9 @@ interface StatementInterface
 	/**
 	 * プリペアドステートメントを実行します。
 	 *
-	 * @param array パラメータ
+	 * @param array | \Traversable パラメータ
 	 */
-	public function execute(array $parameters = array());
+	public function execute($parameters = null);
 
 	/**
 	 * このステートメントのデフォルトのフェッチモードを設定します。
