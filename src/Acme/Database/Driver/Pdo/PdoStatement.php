@@ -6,9 +6,10 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Database\Statement;
+namespace Acme\Database\Driver\Pdo;
 
 use Acme\Database\Database;
+use Acme\Database\StatementInterface;
 
 /**
  * PDOステートメント

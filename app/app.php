@@ -20,8 +20,8 @@ use Acme\Error\StackTraceIterator;
 
 use Acme\Renderer\PhpTalRenderer;
 
-use Acme\Database\Driver\PdoDriver;
-use Acme\Database\Transaction\PdoTransaction;
+use Acme\Database\Driver\Pdo\PdoDriver;
+use Acme\Database\Driver\Pdo\PdoTransaction;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;

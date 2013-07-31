@@ -6,7 +6,7 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Database\Driver;
+namespace Acme\Database;
 
 /**
  * ドライバインタフェース
