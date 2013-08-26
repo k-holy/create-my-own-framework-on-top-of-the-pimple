@@ -14,7 +14,7 @@ $app->on('GET|POST', function($app, $method) {
     $errors = array();
 
     $form = array(
-        'author'    => $app->findVar('P', 'author'),
+        'author'  => $app->findVar('P', 'author'),
         'comment' => $app->findVar('P', 'comment'),
     );
 
