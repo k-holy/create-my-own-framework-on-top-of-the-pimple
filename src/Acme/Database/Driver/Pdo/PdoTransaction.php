@@ -8,7 +8,7 @@
 
 namespace Acme\Database\Driver\Pdo;
 
-use Acme\Database\TransactionInterface;
+use Acme\Database\Driver\TransactionInterface;
 
 /**
  * PDOトランザクション

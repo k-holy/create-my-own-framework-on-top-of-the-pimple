@@ -6,7 +6,7 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Database;
+namespace Acme\Database\Driver;
 
 /**
  * ドライバインタフェース
@@ -67,6 +67,13 @@ interface DriverInterface
 	 * @return mixed 実行結果
 	 */
 	public function lastInsertId();
+
+	/**
+	 * テーブルオブジェクトを配列で返します。
+	 *
+	 * @return array of Table
+	 */
+	public function getMetaTables();
 
 	/**
 	 * 指定テーブルのカラムオブジェクトを配列で返します。

@@ -9,7 +9,7 @@
 namespace Acme\Database\Driver\Pdo;
 
 use Acme\Database\Database;
-use Acme\Database\StatementInterface;
+use Acme\Database\Driver\StatementInterface;
 
 /**
  * PDOステートメント
@@ -21,7 +21,6 @@ class PdoStatement implements StatementInterface, \IteratorAggregate
 
 	private $statement;
 	private $fetchMode;
-	private $fetchClass;
 
 	/**
 	 * コンストラクタ
@@ -31,7 +30,6 @@ class PdoStatement implements StatementInterface, \IteratorAggregate
 	public function __construct(\PDOStatement $statement)
 	{
 		$this->fetchMode  = Database::FETCH_ASSOC;
-		$this->fetchClass = null;
 		$this->statement = $statement;
 	}
 
@@ -84,18 +82,11 @@ class PdoStatement implements StatementInterface, \IteratorAggregate
 		switch ($mode) {
 		case Database::FETCH_ASSOC:
 			$this->fetchMode = $mode;
-			$this->fetchClass = null;
 			$this->statement->setFetchMode(\PDO::FETCH_ASSOC);
 			break;
 		case Database::FETCH_NUM:
 			$this->fetchMode = $mode;
-			$this->fetchClass = null;
 			$this->statement->setFetchMode(\PDO::FETCH_NUM);
-			break;
-		case Database::FETCH_OBJECT:
-			$this->fetchMode = $mode;
-			$this->fetchClass = $value;
-			$this->statement->setFetchMode(\PDO::FETCH_CLASS, $value);
 			break;
 		}
 		return $this;
@@ -112,17 +103,38 @@ class PdoStatement implements StatementInterface, \IteratorAggregate
 	}
 
 	/**
+	 * 結果セットから次の行をオブジェクトで取得して返します。
+	 *
+	 * @param string クラス名
+	 * @param array コンストラクタ引数
+	 * @return mixed
+	 */
+	public function fetchObject($class, $arguments = array())
+	{
+		return $this->statement->fetchObject($class, $arguments);
+	}
+
+	/**
 	 * 結果セットから全ての行を取得して配列で返します。
 	 *
+	 * @param callable コールバック関数
 	 * @return array
 	 */
-	public function fetchAll()
+	public function fetchAll($function = null)
 	{
-		$rows = array();
-		while ($row = $this->fetch()) {
-			$rows[] = $row;
+		if (isset($function)) {
+			if (!is_callable($function)) {
+				throw new \InvalidArgumentException(
+					sprintf('function accepts only callable, invalid type:%s',
+						(is_object($function))
+							? get_class($function)
+							: gettype($function)
+					)
+				);
+			}
+			return $this->statement->fetchAll(\PDO::FETCH_FUNC, $function);
 		}
-		return $rows;
+		return $this->statement->fetchAll();
 	}
 
 	/**

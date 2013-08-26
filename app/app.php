@@ -22,6 +22,7 @@ use Acme\Renderer\PhpTalRenderer;
 
 use Acme\Database\Driver\Pdo\PdoDriver;
 use Acme\Database\Driver\Pdo\PdoTransaction;
+use Acme\Database\MetaDataProcessor\SqliteMetaDataProcessor;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -208,7 +209,7 @@ $app->pdo = $app->share(function(Application $app) {
 // データベースドライバ
 //-----------------------------------------------------------------------------
 $app->db = $app->share(function(Application $app) {
-    return new PdoDriver($app->pdo);
+    return new PdoDriver($app->pdo, new SqliteMetaDataProcessor());
 });
 
 //-----------------------------------------------------------------------------
