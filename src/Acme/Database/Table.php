@@ -9,57 +9,27 @@
 namespace Acme\Database;
 
 /**
- * カラムクラス
+ * テーブルクラス
  *
  * @author k.holy74@gmail.com
  */
-class Column implements \ArrayAccess, \IteratorAggregate
+class Table implements \ArrayAccess, \IteratorAggregate
 {
 
 	/**
-	 * @var string カラム名
+	 * @var string テーブル名
 	 */
 	private $name;
-
-	/**
-	 * @var string データ型
-	 */
-	private $type;
-
-	/**
-	 * @var int 最大文字数
-	 */
-	private $maxLength;
-
-	/**
-	 * @var int 桁数
-	 */
-	private $scale;
-
-	/**
-	 * @var bool バイナリデータかどうか
-	 */
-	private $binary;
-
-	/**
-	 * @var mixed デフォルト値
-	 */
-	private $default;
-
-	/**
-	 * @var bool NOT NULL制約が付与されているかどうか
-	 */
-	private $notNull;
-
-	/**
-	 * @var bool PRIMARY KEYかどうか
-	 */
-	private $primaryKey;
 
 	/**
 	 * @var string コメント
 	 */
 	private $comment;
+
+	/**
+	 * @var array カラム配列
+	 */
+	private $columns;
 
 	/**
 	 * magic setter

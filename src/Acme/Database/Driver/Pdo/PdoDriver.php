@@ -6,12 +6,12 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Database\Driver;
+namespace Acme\Database\Driver\Pdo;
 
 use Acme\Database\Database;
 use Acme\Database\Column;
-use Acme\Database\Statement\PdoStatement;
-use Acme\Database\Transaction\PdoTransaction;
+use Acme\Database\Driver\DriverInterface;
+use Acme\Database\MetaDataProcessor\MetaDataProcessorInterface;
 
 /**
  * PDOコネクション
@@ -27,15 +27,25 @@ class PdoDriver implements DriverInterface
 	private $pdo;
 
 	/**
+	 * @var \Acme\Database\MetaDataProcessorInterface
+	 */
+	private $metaDataProcessor;
+
+	/**
 	 * コンストラクタ
 	 *
 	 * @param \PDO
+	 * @param \Acme\Database\MetaDataProcessorInterface
 	 */
-	public function __construct($pdo = null)
+	public function __construct(\PDO $pdo = null, MetaDataProcessorInterface $metaDataProcessor = null)
 	{
 		$this->pdo = null;
+		$this->queryBuilder = null;
 		if (isset($pdo)) {
 			$this->connect($pdo);
+		}
+		if (isset($metaDataProcessor)) {
+			$this->metaDataProcessor = $metaDataProcessor;
 		}
 	}
 
@@ -43,7 +53,7 @@ class PdoDriver implements DriverInterface
 	 * DBに接続します。
 	 *
 	 * @param \PDO
-	 * @return $this
+	 * @return self
 	 */
 	public function connect($pdo)
 	{
@@ -70,7 +80,7 @@ class PdoDriver implements DriverInterface
 	/**
 	 * SQL実行準備を行い、ステートメントオブジェクトを返します。
 	 *
-	 * @string SQL
+	 * @param string SQL
 	 * @return PdoStatement
 	 */
 	public function prepare($query)
@@ -81,7 +91,7 @@ class PdoDriver implements DriverInterface
 	/**
 	 * SQLを実行し、ステートメントオブジェクトを返します。
 	 *
-	 * @string SQL
+	 * @param string SQL
 	 * @return PdoStatement
 	 */
 	public function query($query)
@@ -92,7 +102,8 @@ class PdoDriver implements DriverInterface
 	/**
 	 * SQLを実行します。
 	 *
-	 * @string SQL
+	 * @param string SQL
+	 * @retrun boolean
 	 */
 	public function execute($query)
 	{
@@ -121,6 +132,20 @@ class PdoDriver implements DriverInterface
 	}
 
 	/**
+	 * テーブルオブジェクトを配列で返します。
+	 *
+	 * @return array of Table
+	 */
+	public function getMetaTables()
+	{
+		return $this->metaDataProcessor->getMetaTables(
+			new PdoStatement($this->pdo->query(
+				$this->metaDataProcessor->metaTablesQuery()
+			))
+		);
+	}
+
+	/**
 	 * 指定テーブルのカラムオブジェクトを配列で返します。
 	 *
 	 * @param string テーブル名
@@ -128,31 +153,11 @@ class PdoDriver implements DriverInterface
 	 */
 	public function getMetaColumns($table)
 	{
-		$statement = $this->query(sprintf('PRAGMA TABLE_INFO(%s);', $table));
-		$statement->setFetchMode(Database::FETCH_NUM);
-		$columns = array();
-		foreach ($statement as $cols) {
-			$column = new Column();
-			$column->name = $cols[1];
-			if (preg_match("/^(.+)\((\d+),(\d+)/", $cols[2], $matches)) {
-				$column->type = $matches[1];
-				$column->maxLength = is_numeric($matches[2]) ? $matches[2] : -1;
-				$scale = is_numeric($matches[3]) ? $matches[3] : -1;
-			} elseif (preg_match("/^(.+)\((\d+)/", $cols[2], $matches)) {
-				$column->type = $matches[1];
-				$column->maxLength = is_numeric($matches[2]) ? $matches[2] : -1;
-			} else {
-				$column->type = $cols[2];
-			}
-			$column->notNull = (bool)$cols[3];
-			$column->primaryKey = (bool)$cols[5];
-			$column->binary = (strcasecmp($column->type, 'BLOB') === 0);
-			if (!$column->binary && strcmp($cols[4], '') !== 0 && strcasecmp($cols[4], 'NULL') !== 0) {
-				$column->default = $cols[4];
-			}
-			$columns[$cols[1]] = $column;
-		}
-		return $columns;
+		return $this->metaDataProcessor->getMetaColumns(
+			new PdoStatement($this->pdo->query(
+				$this->metaDataProcessor->metaColumnsQuery($table)
+			))
+		);
 	}
 
 }

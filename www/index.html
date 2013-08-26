@@ -34,6 +34,23 @@
       <dt>現在の日時 __toString()</dt>
       <dd tal:content="clock"></dd>
     </dl>
+    <h2>コメント一覧</h2>
+    <table class="table table-condensed" tal:condition="exists:comments">
+      <thead>
+        <tr>
+          <th>名前</th>
+          <th>コメント</th>
+          <th>投稿日</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr tal:repeat="item comments">
+          <td tal:content="item/author"></td>
+          <td tal:content="item/comment"></td>
+          <td tal:content="item/posted_at"></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <footer class="footer">

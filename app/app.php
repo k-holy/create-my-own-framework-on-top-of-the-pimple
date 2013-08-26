@@ -18,13 +18,15 @@ use Acme\Error\ExceptionFormatter;
 use Acme\Error\TraceFormatter;
 use Acme\Error\StackTraceIterator;
 
-use Acme\Renderer\PhpTalRenderer;
-
-use Acme\Database\Driver\PdoDriver;
-use Acme\Database\Transaction\PdoTransaction;
+use Acme\Database\Driver\Pdo\PdoDriver;
+use Acme\Database\Driver\Pdo\PdoTransaction;
+use Acme\Database\MetaDataProcessor\SqliteMetaDataProcessor;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+
+use Volcanus\TemplateRenderer\Renderer;
+use Volcanus\TemplateRenderer\Adapter\PhpTalAdapter;
 
 $app = new Application();
 
@@ -60,22 +62,26 @@ $app->config = $app->share(function(Application $app) {
 // システム時計
 //-----------------------------------------------------------------------------
 $app->clock = $app->share(function(Application $app) {
-    $datetime = new DateTime(new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME'])));
+    $datetime = new DateTime(
+        new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME']))
+    );
     $datetime->setTimeZone($app->config->timezone);
     return $datetime;
 });
 
 //-----------------------------------------------------------------------------
-// レンダラオブジェクトを生成、グローバルなテンプレート変数をセット
+// レンダラオブジェクト
 //-----------------------------------------------------------------------------
 $app->renderer = $app->share(function(Application $app) {
-    $renderer = new PhpTalRenderer(array(
+    $phptal = new \PHPTAL();
+    $adapter = new PhpTalAdapter($phptal, array(
         'outputMode'         => \PHPTAL::XHTML,
         'encoding'           => 'UTF-8',
         'templateRepository' => $app->config->web_root,
         'phpCodeDestination' => sys_get_temp_dir(),
         'forceReparse'       => true,
     ));
+    $renderer = new Renderer($adapter);
     // アプリケーション設定
     $renderer->assign('config', $app->config);
     return $renderer;
@@ -208,7 +214,7 @@ $app->pdo = $app->share(function(Application $app) {
 // データベースドライバ
 //-----------------------------------------------------------------------------
 $app->db = $app->share(function(Application $app) {
-    return new PdoDriver($app->pdo);
+    return new PdoDriver($app->pdo, new SqliteMetaDataProcessor());
 });
 
 //-----------------------------------------------------------------------------
@@ -216,6 +222,19 @@ $app->db = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 $app->transaction = $app->share(function(Application $app) {
     return new PdoTransaction($app->pdo);
+});
+
+//-----------------------------------------------------------------------------
+// ドメインデータファクトリ
+//-----------------------------------------------------------------------------
+$app->createData = $app->protect(function($name, $options = null) {
+    $class = '\\Acme\\Domain\\Data\\' . $name;
+    if (!class_exists($class, true)) {
+        throw new \InvalidArgumentException(
+            sprintf('The Domain Data "%s" is not found.', $name)
+        );
+    }
+    return new $class($options);
 });
 
 //-----------------------------------------------------------------------------

@@ -30,11 +30,11 @@
 
     <form class="form-horizontal" method="post" tal:attributes="action server/REQUEST_URI">
       <fieldset>
-        <legend><span class="icon-envelope"></span>投稿フォーム</legend>
-        <dl class="control-group" tal:attributes="class php:isset(errors['name']) ? 'control-group error' : 'control-group'">
+        <legend><span class="icon-comment"></span>投稿フォーム</legend>
+        <dl class="control-group" tal:attributes="class php:isset(errors['author']) ? 'control-group error' : 'control-group'">
           <dt class="control-label">名前</dt>
           <dd class="controls">
-            <input type="text" name="name" class="input-xlarge" tal:attributes="value form/name" />
+            <input type="text" name="author" class="input-xlarge" tal:attributes="value form/author" />
           </dd>
         </dl>
         <dl class="control-group" tal:attributes="class php:isset(errors['comment']) ? 'control-group error' : 'control-group'">

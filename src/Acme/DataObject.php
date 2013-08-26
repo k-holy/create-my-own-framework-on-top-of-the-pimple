@@ -19,7 +19,7 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	/**
 	 * @var array 属性の配列
 	 */
-	private $attributes;
+	protected $attributes;
 
 	/**
 	 * コンストラクタ
@@ -27,6 +27,17 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 * @param array 属性の配列
 	 */
 	public function __construct($attributes = array())
+	{
+		$this->initialize($attributes);
+	}
+
+	/**
+	 * 属性を初期化します。
+	 *
+	 * @param array 属性の配列
+	 * @return $this
+	 */
+	public function initialize($attributes = array())
 	{
 		if (!is_array($attributes) && !($attributes instanceof \Traversable)) {
 			throw new \InvalidArgumentException(
@@ -44,6 +55,7 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 			}
 			$this->attributes[$name] = $value;
 		}
+		return $this;
 	}
 
 	/**
@@ -54,7 +66,7 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function offsetExists($offset)
 	{
-		return array_key_exists($offset, $this->attributes);
+		return (array_key_exists($offset, $this->attributes) && isset($this->attributes[$offset]));
 	}
 
 	/**

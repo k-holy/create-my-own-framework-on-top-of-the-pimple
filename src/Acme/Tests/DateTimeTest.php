@@ -31,6 +31,13 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($time, $datetime->timestamp());
 	}
 
+	public function testConstructorAcceptDigit()
+	{
+		$time = time();
+		$datetime = new DateTime(sprintf('%d', $time));
+		$this->assertEquals($time, $datetime->timestamp());
+	}
+
 	public function testConstructorAcceptDateTimeObject()
 	{
 		$time = time();

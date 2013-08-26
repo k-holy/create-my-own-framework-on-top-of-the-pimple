@@ -6,7 +6,9 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Database\Transaction;
+namespace Acme\Database\Driver\Pdo;
+
+use Acme\Database\Driver\TransactionInterface;
 
 /**
  * PDOトランザクション

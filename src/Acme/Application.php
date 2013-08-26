@@ -21,7 +21,7 @@ class Application extends \Pimple
 	/**
 	 * @var array of callable イベントハンドラ関数の配列
 	 */
-	private $handlers;
+	protected $handlers;
 
 	/**
 	 * コンストラクタ

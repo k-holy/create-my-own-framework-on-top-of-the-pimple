@@ -6,7 +6,7 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Database\Statement;
+namespace Acme\Database\Driver;
 
 /**
  * ステートメントインタフェース
@@ -19,9 +19,9 @@ interface StatementInterface
 	/**
 	 * プリペアドステートメントを実行します。
 	 *
-	 * @param array パラメータ
+	 * @param array | \Traversable パラメータ
 	 */
-	public function execute(array $parameters = array());
+	public function execute($parameters = null);
 
 	/**
 	 * このステートメントのデフォルトのフェッチモードを設定します。
@@ -39,10 +39,20 @@ interface StatementInterface
 	public function fetch();
 
 	/**
+	 * 結果セットから次の行をオブジェクトで取得して返します。
+	 *
+	 * @param string クラス名
+	 * @param array コンストラクタ引数
+	 * @return mixed
+	 */
+	public function fetchObject($class, $arguments = array());
+
+	/**
 	 * 結果セットから全ての行を取得して配列で返します。
 	 *
+	 * @param callable コールバック関数
 	 * @return array
 	 */
-	public function fetchAll();
+	public function fetchAll($function = null);
 
 }

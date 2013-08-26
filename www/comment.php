@@ -14,7 +14,7 @@ $app->on('GET|POST', function($app, $method) {
     $errors = array();
 
     $form = array(
-        'name'    => $app->findVar('P', 'name'),
+        'author'    => $app->findVar('P', 'author'),
         'comment' => $app->findVar('P', 'comment'),
     );
 
@@ -26,10 +26,10 @@ $app->on('GET|POST', function($app, $method) {
         }
 
         // 投稿フォーム処理
-        if (strlen($form['name']) === 0) {
-            $errors['name'] = '名前を入力してください。';
-        } elseif (mb_strlen($form['name']) > 20) {
-            $errors['name'] = '名前は20文字以内で入力してください。';
+        if (strlen($form['author']) === 0) {
+            $errors['author'] = '名前を入力してください。';
+        } elseif (mb_strlen($form['author']) > 20) {
+            $errors['author'] = '名前は20文字以内で入力してください。';
         }
 
         if (strlen($form['comment']) === 0) {
@@ -39,6 +39,37 @@ $app->on('GET|POST', function($app, $method) {
         }
 
         if (empty($errors)) {
+
+            $comment = $app->createData('Comment', array(
+                'timezone' => $app->config->timezone,
+            ));
+            $comment->author    = $form['author'];
+            $comment->comment   = $form['comment'];
+            $comment->posted_at = $app->clock->format('Y-m-d H:i:s');
+
+            $statement = $app->db->prepare(<<<'SQL'
+INSERT INTO comments (
+    author
+   ,comment
+   ,posted_at
+) VALUES (
+    :author
+   ,:comment
+   ,:posted_at
+)
+SQL
+            );
+
+            $app->transaction->begin();
+
+            try {
+                $statement->execute($comment);
+                $app->transaction->commit();
+            } catch (\Exception $e) {
+                $app->transaction->rollback();
+                throw $e;
+            }
+
             $app->flash->addSuccess('投稿を受け付けました');
             return $app->redirect('/');
         }
