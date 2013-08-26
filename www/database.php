@@ -12,11 +12,9 @@ $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 $app->on('GET', function($app) {
 
     $tables = array();
-    $statement = $app->db->query("SELECT name FROM sqlite_master WHERE type='table';");
-    foreach ($statement as $table) {
+    foreach ($app->db->getMetaTables() as $table) {
         $tables[$table['name']] = $app->db->getMetaColumns($table['name']);
     }
-    unset($statement);
 
     return $app->render('database.html', array(
         'title'  => 'データベース',

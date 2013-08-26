@@ -220,6 +220,19 @@ $app->transaction = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
+// ドメインデータファクトリ
+//-----------------------------------------------------------------------------
+$app->createData = $app->protect(function($name, $options = null) {
+    $class = '\\Acme\\Domain\\Data\\' . $name;
+    if (!class_exists($class, true)) {
+        throw new \InvalidArgumentException(
+            sprintf('The Domain Data "%s" is not found.', $name)
+        );
+    }
+    return new $class($options);
+});
+
+//-----------------------------------------------------------------------------
 // アプリケーション初期処理
 //-----------------------------------------------------------------------------
 $app->registerEvent('init');

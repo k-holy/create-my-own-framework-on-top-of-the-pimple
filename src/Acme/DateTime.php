@@ -19,12 +19,12 @@ class DateTime implements \ArrayAccess
 	/**
 	 * @var \DateTime
 	 */
-	private $datetime;
+	protected $datetime;
 
 	/**
 	 * @var string 日時の書式
 	 */
-	private $format;
+	protected $format;
 
 	/**
 	 * コンストラクタ
@@ -49,6 +49,16 @@ class DateTime implements \ArrayAccess
 		}
 		$this->datetime = $datetime;
 		$this->format = (isset($format)) ? $format : 'Y-m-d H:i:s';
+	}
+
+	/**
+	 * DateTimeオブジェクトを返します
+	 *
+	 * @return \DateTime
+	 */
+	public function getDateTime()
+	{
+		return $this->datetime;
 	}
 
 	/**

@@ -13,7 +13,7 @@ namespace Acme;
  *
  * @author k.holy74@gmail.com
  */
-class Configuration implements \ArrayAccess, \IteratorAggregate
+class Configuration implements \ArrayAccess, \IteratorAggregate, \Countable
 {
 
 	/**
@@ -46,7 +46,7 @@ class Configuration implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function offsetExists($offset)
 	{
-		return array_key_exists($offset, $this->attributes);
+		return isset($this->attributes[$offset]);
 	}
 
 	/**
@@ -142,6 +142,16 @@ class Configuration implements \ArrayAccess, \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->attributes);
+	}
+
+	/**
+	 * Countable::count()
+	 *
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->attributes);
 	}
 
 	/**
