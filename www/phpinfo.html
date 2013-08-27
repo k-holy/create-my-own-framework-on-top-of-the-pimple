@@ -12,14 +12,14 @@
 
 <body metal:use-macro="__layout.html/body">
 
-<div class="container-fluid">
+<div class="container">
 
   <header class="header">
     <h1>phpinfo@example.com</h1>
   </header>
 
   <div class="content" metal:fill-slot="content">
-    <div class="row-fluid" tal:content="structure phpinfo">
+    <div class="row" tal:content="structure phpinfo">
       phpinfo()結果…
     </div>
   </div>
