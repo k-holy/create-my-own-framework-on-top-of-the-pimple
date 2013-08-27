@@ -4,35 +4,33 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/latest/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/latest/css/bootstrap-combined.no-icons.min.css" />
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+<script src="/js/jquery-1.9.1.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="/css/error.css" tal:condition="config/debug" />
 <title tal:content="title|default">エラー</title>
 </head>
 
 <body>
 
-<div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">Menu<span class="caret"></span></a>
-      <div class="nav-collapse collapse">
-        <ul class="nav pull-left">
-          <li><a class="brand" href="/">俺のフレームワーク</a></li>
-        </ul>
-      </div>
-      <div class="nav-collapse collapse">
-        <ul class="nav pull-left">
-          <li><a href="/"><span class="icon-home"></span>トップページ</a></li>
-        </ul>
-      </div>
-    </div>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Menu</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">俺のフレームワーク</a>
   </div>
-</div>
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="/"><span class="glyphicon glyphicon-home"></span>トップページ</a></li>
+    </ul>
+  </div>
+</nav>
 
-<div class="container-fluid">
+<div class="container">
 
   <header class="header">
     <h1 tal:content="title|default">エラー</h1>
@@ -41,12 +39,12 @@
   <div class="content">
 
     <div class="hero-unit">
-      <h2><span class="icon-warning-sign"></span><span tal:replace="message|default">システムエラーが発生しました</span></h2>
+      <h2><span class="glyphicon glyphicon-warning-sign"></span><span tal:replace="message|default">システムエラーが発生しました</span></h2>
     </div>
 
     <div class="debug" tal:condition="config/debug">
 
-      <div class="row-fluid">
+      <div class="row">
         <h3>
           <span tal:replace="exception_class">RuntimeException</span> [<span tal:replace="exception/getCode">0</span>]
           &quot;<strong tal:content="exception/getMessage">例外メッセージ...</strong>&quot;
@@ -54,7 +52,7 @@
         <p><strong tal:content="exception/getFile">例外発生ファイル...</strong>(<strong tal:content="exception/getLine">例外発生行番号...</strong>)</p>
       </div>
 
-      <div class="row-fluid" tal:condition="stackTrace/count">
+      <div class="row" tal:condition="stackTrace/count">
         <table class="table table-condensed table-bordered">
           <caption><h3>StackTrace</h3></caption>
           <thead>

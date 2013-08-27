@@ -12,7 +12,7 @@
 
 <body metal:use-macro="__layout.html/body">
 
-<div class="container-fluid">
+<div class="container">
 
   <header class="header">
     <h1>エラー/例外・セッションテスト@example.com</h1>
@@ -20,19 +20,21 @@
 
   <div class="content" metal:fill-slot="content">
 
-    <form class="form-horizontal" method="post" tal:attributes="action server/REQUEST_URI">
+    <form class="form-horizontal" role="form" method="post" tal:attributes="action server/REQUEST_URI">
 
       <fieldset>
-        <legend><span class="icon-time"></span>日時のテスト</legend>
-        <dl>
-          <dt>タイムゾーン</dt>
-          <dd tal:content="clock/getTimezone/getName">Asia/Tokyo</dd>
-          <dt>現在の日時 __toString()</dt>
-          <dd tal:content="clock"></dd>
+        <legend><span class="glyphicon glyphicon-time"></span>日時のテスト</legend>
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">タイムゾーン</dt>
+          <dd class="col-lg-8" tal:content="clock/getTimezone/getName">Asia/Tokyo</dd>
         </dl>
-        <dl class="control-group">
-          <dt class="control-label">日時設定</dt>
-          <dd class="controls">
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">現在の日時 __toString()</dt>
+          <dd class="col-lg-8" tal:content="clock"></dd>
+        </dl>
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">日時設定</dt>
+          <dd class="col-lg-8">
             <select name="timezone" class="input-large">
               <option value=""></option>
               <option
@@ -43,34 +45,36 @@
             </select>
           </dd>
         </dl>
-        <div class="form-actions">
-          <input type="submit" value="送信" class="btn btn-primary btn-large" />
+        <div class="form-group">
+          <div class="col-lg-offset-2 col-lg-8">
+            <input type="submit" value="送信" class="btn btn-primary btn-lg" />
+          </div>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend><span class="icon-wrench"></span>ログ/エラーのテスト</legend>
-        <dl class="control-group">
-          <dt class="control-label">デバッグ設定</dt>
-          <dd class="controls">
+        <legend><span class="glyphicon glyphicon-wrench"></span>ログ/エラーのテスト</legend>
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">デバッグ設定</dt>
+          <dd class="col-lg-8">
             <label class="checkbox">
               <input type="checkbox" name="enable_debug" value="1" tal:attributes="checked exists:form/enable_debug" />
               有効にする
             </label>
           </dd>
         </dl>
-        <dl class="control-group">
-          <dt class="control-label">ログディレクトリ設定</dt>
-          <dd class="controls">
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">ログディレクトリ設定</dt>
+          <dd class="col-lg-8">
             <label class="checkbox">
               <input type="checkbox" name="move_log_dir" value="1" tal:attributes="checked exists:form/move_log_dir" />
               ドキュメントルートに変更する
             </label>
           </dd>
         </dl>
-        <dl class="control-group">
-          <dt class="control-label">エラー設定</dt>
-          <dd class="controls">
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">エラー設定</dt>
+          <dd class="col-lg-8">
             <label class="radio">
               <input type="radio" name="ignore_error" value="info" tal:attributes="checked php:form['ignore_error']=='info'" />
               Info以下を無視
@@ -89,28 +93,30 @@
             </label>
           </dd>
         </dl>
-        <div class="form-actions">
-          <p>
+        <div class="form-group">
+          <div class="col-lg-offset-2 col-lg-8">
             <input type="submit" value="PHPエラー(Info)" class="btn btn-primary btn-warning" name="trigger-info" />
             <input type="submit" value="PHPエラー(Notice)" class="btn btn-primary btn-warning" name="trigger-notice" />
             <input type="submit" value="PHPエラー(Warning)" class="btn btn-primary btn-warning" name="trigger-warning" />
             <input type="submit" value="PHPエラー(Error)" class="btn btn-primary btn-warning" name="trigger-error" />
-          </p>
-          <p>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-lg-offset-2 col-lg-8">
             <input type="submit" value="HTTP例外(400)" class="btn btn-primary btn-danger" name="throw-http-exception-400" />
             <input type="submit" value="HTTP例外(403)" class="btn btn-primary btn-danger" name="throw-http-exception-403" />
             <input type="submit" value="HTTP例外(404)" class="btn btn-primary btn-danger" name="throw-http-exception-404" />
             <input type="submit" value="HTTP例外(405)" class="btn btn-primary btn-danger" name="throw-http-exception-405" />
             <input type="submit" value="RuntimeException" class="btn btn-primary btn-danger" name="throw-runtime-exception" />
-          </p>
+          </div>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend><span class="icon-repeat"></span>セッション関連のテスト</legend>
-        <dl class="control-group">
-          <dt class="control-label">CSRFトークン</dt>
-          <dd class="controls">
+        <legend><span class="glyphicon glyphicon-repeat"></span>セッション関連のテスト</legend>
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">CSRFトークン</dt>
+          <dd class="col-lg-8">
             <label class="checkbox">
               <input type="checkbox" name="validate_token" value="1" tal:attributes="checked exists:form/validate_token" />
               検証を有効にする
@@ -121,17 +127,19 @@
             </label>
           </dd>
         </dl>
-        <dl class="control-group">
-          <dt class="control-label">フラッシュメッセージ</dt>
-          <dd class="controls">
+        <dl class="form-group">
+          <dt class="col-lg-2 control-label">フラッシュメッセージ</dt>
+          <dd class="col-lg-8">
           <input type="submit" value="Error" class="btn btn-primary btn-danger" name="flash-error" />
           <input type="submit" value="Alert" class="btn btn-primary btn-warning" name="flash-alert" />
           <input type="submit" value="Success" class="btn btn-primary btn-success" name="flash-success" />
           <input type="submit" value="Info" class="btn btn-primary btn-info" name="flash-info" />
           </dd>
         </dl>
-        <div class="form-actions">
-          <input type="submit" value="送信" class="btn btn-primary btn-large" />
+        <div class="form-group">
+          <div class="col-lg-offset-2 col-lg-8">
+            <input type="submit" value="送信" class="btn btn-primary btn-lg" />
+          </div>
         </div>
       </fieldset>
 
