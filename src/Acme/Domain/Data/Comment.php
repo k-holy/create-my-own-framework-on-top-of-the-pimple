@@ -27,10 +27,13 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 		'posted_at' => null,
 	];
 
-	public function __construct($options = null)
+	public function __construct($attributes = array(), $options = array())
 	{
-		if (isset($options['timezone'])) {
-			$this->timezone = $options['timezone'];
+		$this->initialize($attributes);
+		if (!empty($options)) {
+			if (isset($options['timezone'])) {
+				$this->timezone = $options['timezone'];
+			}
 		}
 	}
 
