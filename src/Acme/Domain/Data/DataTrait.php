@@ -17,6 +17,20 @@ trait DataTrait
 {
 
 	/**
+	 * プロパティを初期化します。
+	 *
+	 * @param array プロパティ
+	 * @return self
+	 */
+	public function initialize($attributes = array())
+	{
+		foreach ($attributes as $name => $value) {
+			$this->offsetSet($name, $value);
+		}
+		return $this;
+	}
+
+	/**
 	 * magic setter
 	 *
 	 * @param string プロパティ名

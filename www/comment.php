@@ -40,12 +40,13 @@ $app->on('GET|POST', function($app, $method) {
 
         if (empty($errors)) {
 
-            $comment = $app->createData('Comment', array(
+            $comment = $app->createData('comment', [
+                'author'    => $form['author'],
+                'comment'   => $form['comment'],
+                'posted_at' => $app->clock->format('Y-m-d H:i:s'),
+            ], [
                 'timezone' => $app->config->timezone,
-            ));
-            $comment->author    = $form['author'];
-            $comment->comment   = $form['comment'];
-            $comment->posted_at = $app->clock->format('Y-m-d H:i:s');
+            ]);
 
             $statement = $app->db->prepare(<<<'SQL'
 INSERT INTO comments (

@@ -14,12 +14,13 @@ $app->on('GET', function($app) {
     $statement = $app->db->prepare("SELECT author, comment, posted_at FROM comments LIMIT :limit OFFSET :offset");
     $statement->execute(['limit' => 20, 'offset' => 0]);
     $comments = $statement->fetchAll(function($author, $comment, $posted_at) use ($app) {
-        $object = $app->createData('Comment', [
+        $object = $app->createData('comment', [
+            'author'    => $author,
+            'comment'   => $comment,
+            'posted_at' => $posted_at,
+        ], [
             'timezone' => $app->config->timezone,
         ]);
-        $object->author = $author;
-        $object->comment = $comment;
-        $object->posted_at = $posted_at;
         return $object;
     });
 

@@ -52,9 +52,18 @@ class PdoStatement implements StatementInterface, \IteratorAggregate
 				);
 			}
 			foreach ($parameters as $name => $value) {
+				$type = \PDO::PARAM_STR;
+				if (is_int($value)) {
+					$type = \PDO::PARAM_INT;
+				} elseif (is_bool($value)) {
+					$type = \PDO::PARAM_BOOL;
+				} elseif (is_null($value)) {
+					$type = \PDO::PARAM_NULL;
+				}
 				$this->statement->bindValue(
 					(strncmp(':', $name, 1) !== 0) ? sprintf(':%s', $name) : $name,
-					$value
+					$value,
+					$type
 				);
 			}
 		}

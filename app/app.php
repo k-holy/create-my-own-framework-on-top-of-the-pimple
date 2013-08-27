@@ -227,14 +227,14 @@ $app->transaction = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 // ドメインデータファクトリ
 //-----------------------------------------------------------------------------
-$app->createData = $app->protect(function($name, $options = null) {
-    $class = '\\Acme\\Domain\\Data\\' . $name;
+$app->createData = $app->protect(function($name, $attributes = array(), $options = array()) {
+    $class = '\\Acme\\Domain\\Data\\' . ucfirst($name);
     if (!class_exists($class, true)) {
         throw new \InvalidArgumentException(
             sprintf('The Domain Data "%s" is not found.', $name)
         );
     }
-    return new $class($options);
+    return new $class($attributes, $options);
 });
 
 //-----------------------------------------------------------------------------
