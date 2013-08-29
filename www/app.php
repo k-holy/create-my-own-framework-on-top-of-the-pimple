@@ -324,14 +324,22 @@ $app->run = $app->protect(function() use ($app) {
     $app->init();
 
     try {
+        $uri = $app->request->getRequestUri();
         $method = $app->request->getMethod();
         $handlerName = 'on' . ucfirst(strtolower($method));
         if (!$app->offsetExists($handlerName)) {
             throw new HttpException(405);
         }
         $response = $app->{$handlerName}($app, $method);
+        if (false === $response instanceof Response) {
+            throw new \RuntimeException(
+                sprintf("Response is not returned. Request:'%s %s'", $method, $uri)
+            );
+        }
     } catch (\Exception $e) {
-        $app->logException($e);
+        if (false === $e instanceof HttpException) {
+            $app->logException($e);
+        }
         $response = $app->error($e);
     }
 
