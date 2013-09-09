@@ -10,11 +10,12 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
-use Acme\Configuration;
 use Acme\DateTime;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+
+use Volcanus\Configuration\Configuration;
 
 use Volcanus\Error\ErrorFormatter;
 use Volcanus\Error\ExceptionFormatter;
@@ -48,7 +49,7 @@ $app->config = $app->share(function(Application $app) {
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
         ),
-    ));
+    ), Configuration::EXECUTE_CALLABLE);
     $config['log_file'] = function($config) use ($app) {
         return sprintf('%d-%02d.log', $app->clock->year(), $app->clock->month());
     };

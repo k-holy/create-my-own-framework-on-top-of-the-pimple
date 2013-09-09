@@ -29,6 +29,7 @@
         "monolog/monolog": ">=1.5,<1.5.x-dev",
         "symfony/http-foundation": ">=2.3,<2.4-dev",
         "phptal/phptal": "dev-master",
+        "volcanus/configuration": "dev-master",
         "volcanus/routing": "dev-master",
         "volcanus/error": "dev-master",
         "volcanus/database": "dev-master",
