@@ -382,12 +382,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-database.git",
-                "reference": "cedc6bfe35cad915dc2062d59ca5534af4f1aa89"
+                "reference": "5edfe995762b437d73a86a0bbd435ecfd9309162"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/cedc6bfe35cad915dc2062d59ca5534af4f1aa89",
-                "reference": "cedc6bfe35cad915dc2062d59ca5534af4f1aa89",
+                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/5edfe995762b437d73a86a0bbd435ecfd9309162",
+                "reference": "5edfe995762b437d73a86a0bbd435ecfd9309162",
                 "shasum": ""
             },
             "require": {
@@ -410,7 +410,7 @@
             ],
             "description": "database abstraction layer",
             "homepage": "https://github.com/k-holy/volcanus-database",
-            "time": "2013-08-27 07:52:29"
+            "time": "2013-09-26 06:52:32"
         },
         {
             "name": "volcanus/error",
@@ -456,12 +456,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-routing.git",
-                "reference": "d39483fb053534bf86055a777f9c83ea83bcc3f3"
+                "reference": "74d8a395b7cb9d6cd72eecd3f3e2dbdc1fb9b155"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-routing/zipball/d39483fb053534bf86055a777f9c83ea83bcc3f3",
-                "reference": "d39483fb053534bf86055a777f9c83ea83bcc3f3",
+                "url": "https://api.github.com/repos/k-holy/volcanus-routing/zipball/74d8a395b7cb9d6cd72eecd3f3e2dbdc1fb9b155",
+                "reference": "74d8a395b7cb9d6cd72eecd3f3e2dbdc1fb9b155",
                 "shasum": ""
             },
             "require": {
@@ -484,7 +484,7 @@
             ],
             "description": "request-URI routing for page-controller scripts.",
             "homepage": "https://github.com/k-holy/Volcanus_Routing",
-            "time": "2013-09-19 05:39:54"
+            "time": "2013-09-25 08:33:00"
         },
         {
             "name": "volcanus/template-renderer",
