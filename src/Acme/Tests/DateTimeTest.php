@@ -112,24 +112,6 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(29, $datetime->lastDay());
 	}
 
-	public function testDiffTime()
-	{
-		$datetime = new DateTime('2013-05-01 12:34:56');
-		$this->assertEquals(1, $datetime->diffTime('2013-05-01 12:34:57'));
-
-		$datetime = new DateTime('2013-05-01 12:34:56');
-		$this->assertEquals(1, $datetime->diffTime('2013-05-01 12:34:55'));
-	}
-
-	public function testDiffTimeInvert()
-	{
-		$datetime = new DateTime('2013-05-01 12:34:56');
-		$this->assertEquals(1, $datetime->diffTime('2013-05-01 12:34:57', true));
-
-		$datetime = new DateTime('2013-05-01 12:34:56');
-		$this->assertEquals(-1, $datetime->diffTime('2013-05-01 12:34:55', true));
-	}
-
 	public function testPropertyAccessGet()
 	{
 		$datetime = new DateTime('2013-05-01 12:34:56');

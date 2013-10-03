@@ -59,14 +59,14 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * ArrayAccess::offsetExists()
+	 * ArrayAccess::offsetSet()
 	 *
 	 * @param mixed
-	 * @return bool
+	 * @param mixed
 	 */
-	public function offsetExists($offset)
+	public function offsetSet($name, $value)
 	{
-		return (array_key_exists($offset, $this->attributes) && isset($this->attributes[$offset]));
+		$this->attributes[$name] = $value;
 	}
 
 	/**
@@ -75,23 +75,23 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 * @param mixed
 	 * @return mixed
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($name)
 	{
-		if (!array_key_exists($offset, $this->attributes)) {
-			return null;
+		if (array_key_exists($name, $this->attributes)) {
+			return $this->attributes[$name];
 		}
-		return $this->attributes[$offset];
+		return null;
 	}
 
 	/**
-	 * ArrayAccess::offsetSet()
+	 * ArrayAccess::offsetExists()
 	 *
 	 * @param mixed
-	 * @param mixed
+	 * @return bool
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetExists($name)
 	{
-		$this->attributes[$offset] = $value;
+		return (array_key_exists($name, $this->attributes) && null !== $this->offsetGet($name));
 	}
 
 	/**
@@ -99,10 +99,10 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @param mixed
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset($name)
 	{
-		if (array_key_exists($offset, $this->attributes)) {
-			$this->attributes[$offset] = null;
+		if ($this->offsetExists($name)) {
+			$this->offsetSet($name, null);
 		}
 	}
 
@@ -133,6 +133,27 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
+	 * magic isset
+	 *
+	 * @param string 属性名
+	 * @return bool
+	 */
+	public function __isset($name)
+	{
+		return $this->offsetExists($name);
+	}
+
+	/**
+	 * magic unset
+	 *
+	 * @param string 属性名
+	 */
+	public function __unset($name)
+	{
+		$this->offsetUnset($name);
+	}
+
+	/**
 	 * magic call method
 	 *
 	 * @param string
@@ -150,6 +171,14 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 		throw new \BadMethodCallException(
 			sprintf('Undefined Method "%s" called.', $name)
 		);
+	}
+
+	/**
+	 * __toString
+	 */
+	public function __toString()
+	{
+		return var_export($this->attributes, true);
 	}
 
 	/**
