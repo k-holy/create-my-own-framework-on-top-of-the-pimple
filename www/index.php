@@ -21,7 +21,7 @@ $app->on('GET', function($app) {
             'comment'   => $comment,
             'posted_at' => $posted_at,
         ], [
-            'timezone' => $app->config->timezone,
+            'timezone' => $app->timezone,
         ]);
         return $object;
     });

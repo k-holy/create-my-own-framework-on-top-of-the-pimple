@@ -60,13 +60,20 @@ $app->config = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
+// Timezone
+//-----------------------------------------------------------------------------
+$app->timezone = $app->share(function(Application $app) {
+	return new \DateTimeZone($app->config->timezone);
+});
+
+//-----------------------------------------------------------------------------
 // システム時計
 //-----------------------------------------------------------------------------
 $app->clock = $app->share(function(Application $app) {
     $datetime = new DateTime(
         new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME']))
     );
-    $datetime->setTimeZone($app->config->timezone);
+    $datetime->setTimeZone($app->timezone);
     return $datetime;
 });
 

@@ -52,7 +52,7 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
-	 * DateTimeオブジェクトを返します
+	 * DateTimeオブジェクトを返します。
 	 *
 	 * @return \DateTime
 	 */
@@ -79,20 +79,20 @@ class DateTime implements \ArrayAccess
 	 * @param string|\DateTimeZone タイムゾーン
 	 * @return $this
 	 */
-	public function setTimeZone($timeZone)
+	public function setTimezone($timezone)
 	{
-		if (is_string($timeZone)) {
-			$timeZone = new \DateTimeZone($timeZone);
+		if (is_string($timezone)) {
+			$timezone = new \DateTimeZone($timezone);
 		}
-		if (false === ($timeZone instanceof \DateTimeZone)) {
+		if (false === ($timezone instanceof \DateTimeZone)) {
 			throw new \InvalidArgumentException(
-				sprintf('Invalid type:%s', (is_object($timeZone))
-					? get_class($timeZone)
-					: gettype($timeZone)
+				sprintf('Invalid type:%s', (is_object($timezone))
+					? get_class($timezone)
+					: gettype($timezone)
 				)
 			);
 		}
-		$this->datetime->setTimeZone($timeZone);
+		$this->datetime->setTimezone($timezone);
 		return $this;
 	}
 

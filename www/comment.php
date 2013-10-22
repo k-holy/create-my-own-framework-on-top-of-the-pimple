@@ -45,7 +45,7 @@ $app->on('GET|POST', function($app, $method) {
                 'comment'   => $form['comment'],
                 'posted_at' => $app->clock->format('Y-m-d H:i:s'),
             ], [
-                'timezone' => $app->config->timezone,
+                'timezone' => $app->timezone,
             ]);
 
             $statement = $app->db->prepare(<<<'SQL'

@@ -244,17 +244,17 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.3.5",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "ed17ea8ee67ae25371bdb63f691c22b453ea4bc0"
+                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/ed17ea8ee67ae25371bdb63f691c22b453ea4bc0",
-                "reference": "ed17ea8ee67ae25371bdb63f691c22b453ea4bc0",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/59e712338cd05463ebcb8da6422a01b1291871e3",
+                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3",
                 "shasum": ""
             },
             "require": {
@@ -289,20 +289,20 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2013-09-19 09:45:20"
+            "time": "2013-09-29 19:41:41"
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.0",
+            "version": "v1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59"
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/224fc55635d544a2ec8edb3592be18db5a093f59",
-                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
                 "shasum": ""
             },
             "require": {
@@ -337,7 +337,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-03 06:41:20"
+            "time": "2013-10-15 19:17:38"
         },
         {
             "name": "volcanus/configuration",
@@ -346,12 +346,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-configuration.git",
-                "reference": "b08be727a71fbee3b6aee433701c1fa59552f057"
+                "reference": "6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-configuration/zipball/b08be727a71fbee3b6aee433701c1fa59552f057",
-                "reference": "b08be727a71fbee3b6aee433701c1fa59552f057",
+                "url": "https://api.github.com/repos/k-holy/volcanus-configuration/zipball/6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f",
+                "reference": "6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f",
                 "shasum": ""
             },
             "require": {
@@ -374,7 +374,7 @@
             ],
             "description": "Array class for configurations",
             "homepage": "https://github.com/k-holy/volcanus-configuration",
-            "time": "2013-09-12 07:53:29"
+            "time": "2013-10-21 04:23:14"
         },
         {
             "name": "volcanus/database",
@@ -383,12 +383,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-database.git",
-                "reference": "a501912d38810b560ffa94cd858b0d2f6d462b0c"
+                "reference": "d23bbdb8d95a5fa86ffe6cb508a555acca9bd599"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/a501912d38810b560ffa94cd858b0d2f6d462b0c",
-                "reference": "a501912d38810b560ffa94cd858b0d2f6d462b0c",
+                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/d23bbdb8d95a5fa86ffe6cb508a555acca9bd599",
+                "reference": "d23bbdb8d95a5fa86ffe6cb508a555acca9bd599",
                 "shasum": ""
             },
             "require": {
@@ -411,7 +411,7 @@
             ],
             "description": "database abstraction layer",
             "homepage": "https://github.com/k-holy/volcanus-database",
-            "time": "2013-10-03 01:24:40"
+            "time": "2013-10-21 02:39:05"
         },
         {
             "name": "volcanus/error",
@@ -419,13 +419,13 @@
             "target-dir": "Volcanus/Error",
             "source": {
                 "type": "git",
-                "url": "https://github.com/k-holy/Volcanus_Error.git",
-                "reference": "4878416c84c2ffdc3cf7749512bf13be7fe0ce86"
+                "url": "https://github.com/k-holy/volcanus-error.git",
+                "reference": "7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/Volcanus_Error/zipball/4878416c84c2ffdc3cf7749512bf13be7fe0ce86",
-                "reference": "4878416c84c2ffdc3cf7749512bf13be7fe0ce86",
+                "url": "https://api.github.com/repos/k-holy/volcanus-error/zipball/7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5",
+                "reference": "7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5",
                 "shasum": ""
             },
             "require": {
@@ -447,8 +447,8 @@
                 }
             ],
             "description": "simple error and exception handler",
-            "homepage": "https://github.com/k-holy/Volcanus_Error",
-            "time": "2013-08-27 06:44:10"
+            "homepage": "https://github.com/k-holy/volcanus-error",
+            "time": "2013-10-21 04:43:14"
         },
         {
             "name": "volcanus/routing",
@@ -457,12 +457,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-routing.git",
-                "reference": "74d8a395b7cb9d6cd72eecd3f3e2dbdc1fb9b155"
+                "reference": "a1a8b045508b3290dbd436866dd6dbdfb59756f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-routing/zipball/74d8a395b7cb9d6cd72eecd3f3e2dbdc1fb9b155",
-                "reference": "74d8a395b7cb9d6cd72eecd3f3e2dbdc1fb9b155",
+                "url": "https://api.github.com/repos/k-holy/volcanus-routing/zipball/a1a8b045508b3290dbd436866dd6dbdfb59756f8",
+                "reference": "a1a8b045508b3290dbd436866dd6dbdfb59756f8",
                 "shasum": ""
             },
             "require": {
@@ -485,7 +485,7 @@
             ],
             "description": "request-URI routing for page-controller scripts.",
             "homepage": "https://github.com/k-holy/Volcanus_Routing",
-            "time": "2013-09-25 08:33:00"
+            "time": "2013-10-21 03:01:02"
         },
         {
             "name": "volcanus/template-renderer",
@@ -494,12 +494,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-template-renderer.git",
-                "reference": "7b79149e318be68013e2e439652a77b4c471b984"
+                "reference": "4f5b93d3565856b306fe4dc12f7c2e023c67fc2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-template-renderer/zipball/7b79149e318be68013e2e439652a77b4c471b984",
-                "reference": "7b79149e318be68013e2e439652a77b4c471b984",
+                "url": "https://api.github.com/repos/k-holy/volcanus-template-renderer/zipball/4f5b93d3565856b306fe4dc12f7c2e023c67fc2b",
+                "reference": "4f5b93d3565856b306fe4dc12f7c2e023c67fc2b",
                 "shasum": ""
             },
             "require": {
@@ -526,7 +526,7 @@
                 }
             ],
             "homepage": "https://github.com/k-holy/volcanus-template-renderer",
-            "time": "2013-08-23 09:08:49"
+            "time": "2013-10-21 02:35:36"
         }
     ],
     "packages-dev": [

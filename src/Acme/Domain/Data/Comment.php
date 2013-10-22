@@ -11,7 +11,7 @@ namespace Acme\Domain\Data;
 use Acme\DateTime;
 
 /**
- * Commentクラス
+ * コメント
  *
  * @author k.holy74@gmail.com
  */
@@ -19,9 +19,9 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 {
 	use DataTrait;
 
-	private $timezone;
-
-	private $attributes = [
+	protected $datetimeFormat;
+	protected $timezone;
+	protected $attributes = [
 		'author'    => null,
 		'comment'   => null,
 		'posted_at' => null,
@@ -29,12 +29,34 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 
 	public function __construct($attributes = array(), $options = array())
 	{
-		$this->initialize($attributes);
-		if (!empty($options)) {
-			if (isset($options['timezone'])) {
-				$this->timezone = $options['timezone'];
-			}
+		$this->initialize($attributes, $options);
+	}
+
+	/**
+	 * プロパティを初期化します。
+	 *
+	 * @param array プロパティ
+	 * @return self
+	 */
+	public function initialize($attributes = array(), $options = array())
+	{
+		if (!isset($options['timezone'])) {
+			throw new \InvalidArgumentException('Required option "timezone" is not appointed.');
 		}
+		$this->setTimezone($options['timezone']);
+		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
+		$this->setAttributes($attributes);
+		return $this;
+	}
+
+	/**
+	 * DateTimeZoneオブジェクトをセットします。
+	 *
+	 * @param \DateTimeZone タイムゾーン
+	 */
+	public function setTimezone(\DateTimeZone $timezone)
+	{
+		$this->timezone = $timezone;
 	}
 
 	/**
@@ -42,15 +64,13 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @param mixed
 	 */
-	public function set_posted_at($value)
+	public function set_posted_at($datetime)
 	{
-		if (false === ($value instanceof DateTime)) {
-			$datetime = new DateTime($value, 'Y-m-d H:i:s');
+		if (false === ($datetime instanceof DateTime)) {
+			$datetime = new DateTime($datetime, $this->datetimeFormat);
 		}
-		if (isset($this->timezone)) {
-			$datetime->setTimeZone($this->timezone);
-		}
-		$this->attributes['posted_at'] = $datetime->timestamp();
+		$datetime->setTimezone($this->timezone);
+		$this->attributes['posted_at'] = $datetime->getTimestamp(); // 実体はUnixTimestampで保持
 	}
 
 	/**
@@ -61,10 +81,8 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 	public function get_posted_at()
 	{
 		if (isset($this->attributes['posted_at'])) {
-			$datetime = new DateTime($this->attributes['posted_at'], 'Y-m-d H:i:s');
-			if (isset($this->timezone)) {
-				$datetime->setTimeZone($this->timezone);
-			}
+			$datetime = new DateTime($this->attributes['posted_at'], $this->datetimeFormat); // UnixTimestampで保持している値をDateTimeクラスで変換して出力
+			$datetime->setTimezone($this->timezone);
 			return $datetime;
 		}
 		return null;

@@ -45,6 +45,12 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($time, $datetime->timestamp());
 	}
 
+	public function testGetDateTime()
+	{
+		$datetime = new DateTime('2013-05-01 12:34:56');
+		$this->assertInstanceOf('\DateTime', $datetime->getDateTime());
+	}
+
 	public function testGetYear()
 	{
 		$datetime = new DateTime('2013-05-01 12:34:56');
@@ -197,22 +203,22 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('2013/5/1 12:34', $datetime->__toString());
 	}
 
-	public function testSetTimeZone()
+	public function testSetTimezone()
 	{
 		$utc = new \DateTime(sprintf('@%d', time()));
 		$datetime = new DateTime($utc);
 		$this->assertEquals(0, $datetime->getOffset());
-		$datetime->setTimeZone(new \DateTimeZone('Asia/Tokyo'));
+		$datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
 		$this->assertEquals(32400, $datetime->getOffset());
 	}
 
-	public function testSetTimeZoneAcceptString()
+	public function testSetTimezoneAcceptString()
 	{
 		$utc = new \DateTime(sprintf('@%d', time()));
 		$datetime1 = new DateTime($utc);
-		$datetime1->setTimeZone(new \DateTimeZone('Asia/Tokyo'));
+		$datetime1->setTimezone(new \DateTimeZone('Asia/Tokyo'));
 		$datetime2 = new DateTime($utc);
-		$datetime2->setTimeZone('Asia/Tokyo');
+		$datetime2->setTimezone('Asia/Tokyo');
 		$this->assertEquals($datetime1->getOffset(), $datetime2->getOffset());
 	}
 
