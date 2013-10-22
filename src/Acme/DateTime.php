@@ -52,7 +52,7 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
-	 * DateTimeオブジェクトを返します
+	 * DateTimeオブジェクトを返します。
 	 *
 	 * @return \DateTime
 	 */
@@ -79,20 +79,20 @@ class DateTime implements \ArrayAccess
 	 * @param string|\DateTimeZone タイムゾーン
 	 * @return $this
 	 */
-	public function setTimeZone($timeZone)
+	public function setTimezone($timezone)
 	{
-		if (is_string($timeZone)) {
-			$timeZone = new \DateTimeZone($timeZone);
+		if (is_string($timezone)) {
+			$timezone = new \DateTimeZone($timezone);
 		}
-		if (false === ($timeZone instanceof \DateTimeZone)) {
+		if (false === ($timezone instanceof \DateTimeZone)) {
 			throw new \InvalidArgumentException(
-				sprintf('Invalid type:%s', (is_object($timeZone))
-					? get_class($timeZone)
-					: gettype($timeZone)
+				sprintf('Invalid type:%s', (is_object($timezone))
+					? get_class($timezone)
+					: gettype($timezone)
 				)
 			);
 		}
-		$this->datetime->setTimeZone($timeZone);
+		$this->datetime->setTimezone($timezone);
 		return $this;
 	}
 
@@ -217,30 +217,6 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
-	 * 指定日時との差を秒数で返します
-	 *
-	 * @param string | \DateTime 日時
-	 * @param bool 負の値を返すかどうか
-	 */
-	public function diffTime($datetime, $invert = false)
-	{
-		if (!$datetime instanceof \DateTime) {
-			$datetime = new \DateTime($datetime);
-		}
-		$interval = $this->datetime->diff($datetime);
-		$time = ($interval->y * 31536000) +
-				($interval->m * 2592000) +
-				($interval->d * 86400) +
-				($interval->h * 3600) +
-				($interval->i * 60) +
-				$interval->s;
-		if ($invert && $interval->invert) {
-			return $time * -1;
-		}
-		return $time;
-	}
-
-	/**
 	 * 現在の日時をデフォルトの書式文字列で返します。
 	 *
 	 * @return string
@@ -295,9 +271,9 @@ class DateTime implements \ArrayAccess
 	 * @param mixed
 	 * @return bool
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($name)
 	{
-		return method_exists($this, $offset);
+		return method_exists($this, $name);
 	}
 
 	/**
@@ -306,13 +282,13 @@ class DateTime implements \ArrayAccess
 	 * @param mixed
 	 * @return mixed
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($name)
 	{
-		if (method_exists($this, $offset)) {
-			return $this->{$offset}();
+		if (method_exists($this, $name)) {
+			return $this->{$name}();
 		}
 		throw new \BadMethodCallException(
-			sprintf('The offset "%s" could not defined.', $offset)
+			sprintf('The offset "%s" could not defined.', $name)
 		);
 	}
 
@@ -322,10 +298,10 @@ class DateTime implements \ArrayAccess
 	 * @param mixed
 	 * @param mixed
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetSet($name, $value)
 	{
 		throw new \BadMethodCallException(
-			sprintf('The offset "%s" is read only.', $offset)
+			sprintf('The offset "%s" is read only.', $name)
 		);
 	}
 
@@ -334,10 +310,10 @@ class DateTime implements \ArrayAccess
 	 *
 	 * @param mixed
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset($name)
 	{
 		throw new \BadMethodCallException(
-			sprintf('The offset "%s" is read only.', $offset)
+			sprintf('The offset "%s" is read only.', $name)
 		);
 	}
 

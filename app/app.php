@@ -10,11 +10,12 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
-use Acme\Configuration;
 use Acme\DateTime;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+
+use Volcanus\Configuration\Configuration;
 
 use Volcanus\Error\ErrorFormatter;
 use Volcanus\Error\ExceptionFormatter;
@@ -48,7 +49,7 @@ $app->config = $app->share(function(Application $app) {
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
         ),
-    ));
+    ), Configuration::EXECUTE_CALLABLE);
     $config['log_file'] = function($config) use ($app) {
         return sprintf('%d-%02d.log', $app->clock->year(), $app->clock->month());
     };
@@ -59,13 +60,20 @@ $app->config = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
+// Timezone
+//-----------------------------------------------------------------------------
+$app->timezone = $app->share(function(Application $app) {
+	return new \DateTimeZone($app->config->timezone);
+});
+
+//-----------------------------------------------------------------------------
 // システム時計
 //-----------------------------------------------------------------------------
 $app->clock = $app->share(function(Application $app) {
     $datetime = new DateTime(
         new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME']))
     );
-    $datetime->setTimeZone($app->config->timezone);
+    $datetime->setTimeZone($app->timezone);
     return $datetime;
 });
 

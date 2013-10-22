@@ -1,0 +1,553 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "5c9e559867fcd27d471e3718fbbb7767",
+    "packages": [
+        {
+            "name": "monolog/monolog",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "1.5.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1.5.0",
+                "reference": "1.5.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "psr/log": ">=1.0,<2.0"
+            },
+            "require-dev": {
+                "doctrine/couchdb": "dev-master",
+                "mlehner/gelf-php": "1.0.*",
+                "raven/raven": "0.3.*"
+            },
+            "suggest": {
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-mongo": "Allow sending log messages to a MongoDB server",
+                "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "raven/raven": "Allow sending log messages to a Sentry server"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Monolog": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "http://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "time": "2013-04-23 10:09:48"
+        },
+        {
+            "name": "phptal/phptal",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pornel/PHPTAL.git",
+                "reference": "82cc7ce740e2cbdc7cd54564f450e2cf904e3529"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pornel/PHPTAL/zipball/82cc7ce740e2cbdc7cd54564f450e2cf904e3529",
+                "reference": "82cc7ce740e2cbdc7cd54564f450e2cf904e3529",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPTAL": "classes/"
+                }
+            },
+            "license": [
+                "LGPLv2"
+            ],
+            "authors": [
+                {
+                    "name": "Laurent Bédubourg",
+                    "email": "lbedubourg@motion-twin.com",
+                    "homepage": "http://labe.me"
+                },
+                {
+                    "name": "Kornel Lesiński",
+                    "email": "kornel@geekhood.net",
+                    "homepage": "http://pornel.net/"
+                }
+            ],
+            "description": "PHPTAL is a templating engine for PHP5 that implements Zope Page Templates syntax",
+            "homepage": "http://phptal.org/",
+            "keywords": [
+                "phptal",
+                "template engine",
+                "zope"
+            ],
+            "time": "2013-09-07 09:11:37"
+        },
+        {
+            "name": "pimple/pimple",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Pimple.git",
+                "reference": "v1.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Pimple/zipball/v1.0.2",
+                "reference": "v1.0.2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pimple": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
+            "homepage": "http://pimple.sensiolabs.org",
+            "keywords": [
+                "container",
+                "dependency injection"
+            ],
+            "time": "2013-03-08 08:21:40"
+        },
+        {
+            "name": "psr/log",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/php-fig/log/archive/1.0.0.zip",
+                "reference": "1.0.0",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Psr\\Log\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "smarty/smarty",
+            "version": "v3.1.15",
+            "source": {
+                "type": "svn",
+                "url": "http://smarty-php.googlecode.com/svn",
+                "reference": "/tags/v3.1.15/@4782"
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "distribution/libs/Smarty.class.php",
+                    "distribution/libs/SmartyBC.class.php",
+                    "distribution/libs/sysplugins/smarty_security.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Monte Ohrt",
+                    "email": "monte@ohrt.com"
+                },
+                {
+                    "name": "Uwe Tews",
+                    "email": "uwe.tews@googlemail.com"
+                },
+                {
+                    "name": "Rodney Rehm",
+                    "email": "rodney.rehm@medialize.de"
+                }
+            ],
+            "description": "Smarty - the compiling PHP template engine",
+            "homepage": "http://www.smarty.net",
+            "keywords": [
+                "templating"
+            ],
+            "time": "2013-10-01 21:08:54"
+        },
+        {
+            "name": "symfony/http-foundation",
+            "version": "v2.3.6",
+            "target-dir": "Symfony/Component/HttpFoundation",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/HttpFoundation.git",
+                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/59e712338cd05463ebcb8da6422a01b1291871e3",
+                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\HttpFoundation\\": ""
+                },
+                "classmap": [
+                    "Symfony/Component/HttpFoundation/Resources/stubs"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony HttpFoundation Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-09-29 19:41:41"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v1.14.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Twig.git",
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.14-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_": "lib/"
+                }
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Armin Ronacher",
+                    "email": "armin.ronacher@active-4.com"
+                }
+            ],
+            "description": "Twig, the flexible, fast, and secure template language for PHP",
+            "homepage": "http://twig.sensiolabs.org",
+            "keywords": [
+                "templating"
+            ],
+            "time": "2013-10-15 19:17:38"
+        },
+        {
+            "name": "volcanus/configuration",
+            "version": "dev-master",
+            "target-dir": "Volcanus/Configuration",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/k-holy/volcanus-configuration.git",
+                "reference": "6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/k-holy/volcanus-configuration/zipball/6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f",
+                "reference": "6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Volcanus\\Configuration": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "k-holy",
+                    "email": "k.holy74@gmail.com"
+                }
+            ],
+            "description": "Array class for configurations",
+            "homepage": "https://github.com/k-holy/volcanus-configuration",
+            "time": "2013-10-21 04:23:14"
+        },
+        {
+            "name": "volcanus/database",
+            "version": "dev-master",
+            "target-dir": "Volcanus/Database",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/k-holy/volcanus-database.git",
+                "reference": "d23bbdb8d95a5fa86ffe6cb508a555acca9bd599"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/d23bbdb8d95a5fa86ffe6cb508a555acca9bd599",
+                "reference": "d23bbdb8d95a5fa86ffe6cb508a555acca9bd599",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Volcanus\\Database": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "k-holy",
+                    "email": "k.holy74@gmail.com"
+                }
+            ],
+            "description": "database abstraction layer",
+            "homepage": "https://github.com/k-holy/volcanus-database",
+            "time": "2013-10-21 02:39:05"
+        },
+        {
+            "name": "volcanus/error",
+            "version": "dev-master",
+            "target-dir": "Volcanus/Error",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/k-holy/volcanus-error.git",
+                "reference": "7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/k-holy/volcanus-error/zipball/7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5",
+                "reference": "7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Volcanus\\Error": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "k-holy",
+                    "email": "k.holy74@gmail.com"
+                }
+            ],
+            "description": "simple error and exception handler",
+            "homepage": "https://github.com/k-holy/volcanus-error",
+            "time": "2013-10-21 04:43:14"
+        },
+        {
+            "name": "volcanus/routing",
+            "version": "dev-master",
+            "target-dir": "Volcanus/Routing",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/k-holy/volcanus-routing.git",
+                "reference": "a1a8b045508b3290dbd436866dd6dbdfb59756f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/k-holy/volcanus-routing/zipball/a1a8b045508b3290dbd436866dd6dbdfb59756f8",
+                "reference": "a1a8b045508b3290dbd436866dd6dbdfb59756f8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Volcanus\\Routing": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "k-holy",
+                    "email": "k.holy74@gmail.com"
+                }
+            ],
+            "description": "request-URI routing for page-controller scripts.",
+            "homepage": "https://github.com/k-holy/Volcanus_Routing",
+            "time": "2013-10-21 03:01:02"
+        },
+        {
+            "name": "volcanus/template-renderer",
+            "version": "dev-master",
+            "target-dir": "Volcanus/TemplateRenderer",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/k-holy/volcanus-template-renderer.git",
+                "reference": "4f5b93d3565856b306fe4dc12f7c2e023c67fc2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/k-holy/volcanus-template-renderer/zipball/4f5b93d3565856b306fe4dc12f7c2e023c67fc2b",
+                "reference": "4f5b93d3565856b306fe4dc12f7c2e023c67fc2b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phptal/phptal": "dev-master",
+                "smarty/smarty": "3.1.*",
+                "twig/twig": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Volcanus\\TemplateRenderer": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "k-holy",
+                    "email": "k.holy74@gmail.com"
+                }
+            ],
+            "homepage": "https://github.com/k-holy/volcanus-template-renderer",
+            "time": "2013-10-21 02:35:36"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "phptal/phptal": 20,
+        "volcanus/configuration": 20,
+        "volcanus/routing": 20,
+        "volcanus/error": 20,
+        "volcanus/database": 20,
+        "volcanus/template-renderer": 20
+    },
+    "platform": {
+        "php": ">=5.4"
+    },
+    "platform-dev": [
+
+    ]
+}

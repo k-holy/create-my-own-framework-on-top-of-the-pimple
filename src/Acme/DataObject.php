@@ -17,7 +17,7 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 {
 
 	/**
-	 * @var array 属性の配列
+	 * @var array 属性値の配列
 	 */
 	protected $attributes;
 
@@ -28,17 +28,6 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function __construct($attributes = array())
 	{
-		$this->initialize($attributes);
-	}
-
-	/**
-	 * 属性を初期化します。
-	 *
-	 * @param array 属性の配列
-	 * @return $this
-	 */
-	public function initialize($attributes = array())
-	{
 		if (!is_array($attributes) && !($attributes instanceof \Traversable)) {
 			throw new \InvalidArgumentException(
 				sprintf('The attributes is not Array and not Traversable. type:"%s"',
@@ -48,25 +37,8 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 		}
 		$this->attributes = array();
 		foreach ($attributes as $name => $value) {
-			if (method_exists($this, $name)) {
-				throw new \InvalidArgumentException(
-					sprintf('The property "%s" is already defined as a method.', $name)
-				);
-			}
 			$this->attributes[$name] = $value;
 		}
-		return $this;
-	}
-
-	/**
-	 * ArrayAccess::offsetExists()
-	 *
-	 * @param mixed
-	 * @return bool
-	 */
-	public function offsetExists($offset)
-	{
-		return (array_key_exists($offset, $this->attributes) && isset($this->attributes[$offset]));
 	}
 
 	/**
@@ -75,12 +47,12 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 * @param mixed
 	 * @return mixed
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($name)
 	{
-		if (!array_key_exists($offset, $this->attributes)) {
-			return null;
+		if (array_key_exists($name, $this->attributes)) {
+			return $this->attributes[$name];
 		}
-		return $this->attributes[$offset];
+		return null;
 	}
 
 	/**
@@ -89,9 +61,20 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 * @param mixed
 	 * @param mixed
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetSet($name, $value)
 	{
-		$this->attributes[$offset] = $value;
+		$this->attributes[$name] = $value;
+	}
+
+	/**
+	 * ArrayAccess::offsetExists()
+	 *
+	 * @param mixed
+	 * @return bool
+	 */
+	public function offsetExists($name)
+	{
+		return array_key_exists($name, $this->attributes);
 	}
 
 	/**
@@ -99,27 +82,11 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @param mixed
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset($name)
 	{
-		if (array_key_exists($offset, $this->attributes)) {
-			$this->attributes[$offset] = null;
+		if (array_key_exists($name, $this->attributes)) {
+			$this->attributes[$name] = null;
 		}
-	}
-
-	/**
-	 * magic setter
-	 *
-	 * @param string 属性名
-	 * @param mixed 属性値
-	 */
-	public function __set($name, $value)
-	{
-		if (method_exists($this, $name)) {
-			throw new \InvalidArgumentException(
-				sprintf('The property "%s" is already defined as a method.', $name)
-			);
-		}
-		$this->offsetSet($name, $value);
 	}
 
 	/**
@@ -133,6 +100,38 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
+	 * magic setter
+	 *
+	 * @param string 属性名
+	 * @param mixed 属性値
+	 */
+	public function __set($name, $value)
+	{
+		$this->offsetSet($name, $value);
+	}
+
+	/**
+	 * magic isset
+	 *
+	 * @param string 属性名
+	 * @return bool
+	 */
+	public function __isset($name)
+	{
+		return $this->offsetExists($name);
+	}
+
+	/**
+	 * magic unset
+	 *
+	 * @param string 属性名
+	 */
+	public function __unset($name)
+	{
+		$this->offsetUnset($name);
+	}
+
+	/**
 	 * magic call method
 	 *
 	 * @param string
@@ -140,16 +139,20 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function __call($name, $args)
 	{
-		if (array_key_exists($name, $this->attributes)) {
-			$value = $this->attributes[$name];
-			if (is_callable($value)) {
-				return call_user_func_array($value, $args);
-			}
-			return $value;
+		if (array_key_exists($name, $this->attributes) && $this->attributes[$name] instanceof \Closure) {
+			return call_user_func_array($this->attributes[$name], $args);
 		}
 		throw new \BadMethodCallException(
 			sprintf('Undefined Method "%s" called.', $name)
 		);
+	}
+
+	/**
+	 * __toString
+	 */
+	public function __toString()
+	{
+		return var_export($this->toArray(), true);
 	}
 
 	/**
@@ -160,6 +163,21 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->attributes);
+	}
+
+	/**
+	 * 配列に変換して返します。
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		$values = array();
+		foreach (array_keys($this->attributes) as $name) {
+			$values[$name] = $this->offsetGet($name);
+		}
+		ksort($values);
+		return $values;
 	}
 
 }
