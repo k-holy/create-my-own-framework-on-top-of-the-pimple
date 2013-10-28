@@ -21,20 +21,21 @@
   <div class="content" metal:fill-slot="content">
 
     <form class="form-horizontal" role="form" method="post" tal:attributes="action server/REQUEST_URI">
+      <input type="hidden" name="${token/name}" value="${token/value}" tal:condition="exists:token" />
 
       <fieldset>
         <legend><span class="glyphicon glyphicon-time"></span>日時のテスト</legend>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">タイムゾーン</dt>
-          <dd class="col-lg-8" tal:content="clock/getTimezone/getName">Asia/Tokyo</dd>
+          <dt class="col-md-2 control-label">タイムゾーン</dt>
+          <dd class="col-md-5" tal:content="clock/getTimezone/getName">Asia/Tokyo</dd>
         </dl>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">現在の日時 __toString()</dt>
-          <dd class="col-lg-8" tal:content="clock"></dd>
+          <dt class="col-md-2 control-label">現在の日時 __toString()</dt>
+          <dd class="col-md-5" tal:content="clock"></dd>
         </dl>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">日時設定</dt>
-          <dd class="col-lg-8">
+          <dt class="col-md-2 control-label">日時設定</dt>
+          <dd class="col-md-5">
             <select name="timezone" class="input-large">
               <option value=""></option>
               <option
@@ -46,7 +47,7 @@
           </dd>
         </dl>
         <div class="form-group">
-          <div class="col-lg-offset-2 col-lg-8">
+          <div class="col-md-offset-2 col-md-5">
             <input type="submit" value="送信" class="btn btn-primary btn-lg" />
           </div>
         </div>
@@ -55,8 +56,8 @@
       <fieldset>
         <legend><span class="glyphicon glyphicon-wrench"></span>ログ/エラーのテスト</legend>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">デバッグ設定</dt>
-          <dd class="col-lg-8">
+          <dt class="col-md-2 control-label">デバッグ設定</dt>
+          <dd class="col-md-5">
             <label class="checkbox">
               <input type="checkbox" name="enable_debug" value="1" tal:attributes="checked exists:form/enable_debug" />
               有効にする
@@ -64,8 +65,8 @@
           </dd>
         </dl>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">ログディレクトリ設定</dt>
-          <dd class="col-lg-8">
+          <dt class="col-md-2 control-label">ログディレクトリ設定</dt>
+          <dd class="col-md-5">
             <label class="checkbox">
               <input type="checkbox" name="move_log_dir" value="1" tal:attributes="checked exists:form/move_log_dir" />
               ドキュメントルートに変更する
@@ -73,8 +74,8 @@
           </dd>
         </dl>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">エラー設定</dt>
-          <dd class="col-lg-8">
+          <dt class="col-md-2 control-label">エラー設定</dt>
+          <dd class="col-md-10">
             <label class="radio">
               <input type="radio" name="ignore_error" value="info" tal:attributes="checked php:form['ignore_error']=='info'" />
               Info以下を無視
@@ -94,7 +95,7 @@
           </dd>
         </dl>
         <div class="form-group">
-          <div class="col-lg-offset-2 col-lg-8">
+          <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="PHPエラー(Info)" class="btn btn-primary btn-warning" name="trigger-info" />
             <input type="submit" value="PHPエラー(Notice)" class="btn btn-primary btn-warning" name="trigger-notice" />
             <input type="submit" value="PHPエラー(Warning)" class="btn btn-primary btn-warning" name="trigger-warning" />
@@ -102,7 +103,7 @@
           </div>
         </div>
         <div class="form-group">
-          <div class="col-lg-offset-2 col-lg-8">
+          <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="HTTP例外(400)" class="btn btn-primary btn-danger" name="throw-http-exception-400" />
             <input type="submit" value="HTTP例外(403)" class="btn btn-primary btn-danger" name="throw-http-exception-403" />
             <input type="submit" value="HTTP例外(404)" class="btn btn-primary btn-danger" name="throw-http-exception-404" />
@@ -115,8 +116,8 @@
       <fieldset>
         <legend><span class="glyphicon glyphicon-repeat"></span>セッション関連のテスト</legend>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">CSRFトークン</dt>
-          <dd class="col-lg-8">
+          <dt class="col-md-2 control-label">CSRFトークン</dt>
+          <dd class="col-md-5">
             <label class="checkbox">
               <input type="checkbox" name="validate_token" value="1" tal:attributes="checked exists:form/validate_token" />
               検証を有効にする
@@ -128,8 +129,8 @@
           </dd>
         </dl>
         <dl class="form-group">
-          <dt class="col-lg-2 control-label">フラッシュメッセージ</dt>
-          <dd class="col-lg-8">
+          <dt class="col-md-2 control-label">フラッシュメッセージ</dt>
+          <dd class="col-md-10">
           <input type="submit" value="Error" class="btn btn-primary btn-danger" name="flash-error" />
           <input type="submit" value="Alert" class="btn btn-primary btn-warning" name="flash-alert" />
           <input type="submit" value="Success" class="btn btn-primary btn-success" name="flash-success" />
@@ -137,7 +138,7 @@
           </dd>
         </dl>
         <div class="form-group">
-          <div class="col-lg-offset-2 col-lg-8">
+          <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="送信" class="btn btn-primary btn-lg" />
           </div>
         </div>

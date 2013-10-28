@@ -31,14 +31,6 @@ trait DataTrait
 	}
 
 	/**
-	 * __toString
-	 */
-	public function __toString()
-	{
-		return var_export($this->attributes, true);
-	}
-
-	/**
 	 * ArrayAccess::offsetGet()
 	 *
 	 * @param mixed
@@ -87,7 +79,7 @@ trait DataTrait
 	 */
 	public function offsetExists($name)
 	{
-		return (array_key_exists($name, $this->attributes) && isset($this->attributes[$name]));
+		return array_key_exists($name, $this->attributes);
 	}
 
 	/**
@@ -142,6 +134,14 @@ trait DataTrait
 	public function __unset($name)
 	{
 		$this->offsetUnset($name);
+	}
+
+	/**
+	 * __toString
+	 */
+	public function __toString()
+	{
+		return var_export($this->toArray(), true);
 	}
 
 	/**

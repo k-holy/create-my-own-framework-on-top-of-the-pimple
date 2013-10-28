@@ -280,6 +280,53 @@ $app->map = $app->protect(function($filter, $value) use ($app) {
 });
 
 //-----------------------------------------------------------------------------
+// フォームを生成する
+//-----------------------------------------------------------------------------
+$app->createForm = $app->protect(function($attributes) use ($app) {
+
+    $elements = [];
+
+    foreach ($attributes as $id => $value) {
+        $element = new DataObject();
+        $element->value = $value;
+        $element->error = null;
+        $element->isError = function() use ($element) {
+            return !is_null($element->error);
+        };
+        $elements[$id] = $element;
+    }
+
+    $form = new DataObject($elements);
+
+    $form->hasError = function() use ($form) {
+        foreach ($form as $element) {
+            if (false === ($element instanceof DataObject)) {
+                continue;
+            }
+            if ($element->isError()) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    $form->getErrors = function() use ($form) {
+        $errors = [];
+        foreach ($form as $element) {
+            if (false === ($element instanceof DataObject)) {
+                continue;
+            }
+            if ($element->isError()) {
+                $errors[] = $element->error;
+            }
+        }
+        return $errors;
+    };
+
+    return $form;
+});
+
+//-----------------------------------------------------------------------------
 // アプリケーションへのリクエストハンドラ登録
 //-----------------------------------------------------------------------------
 $app->on = $app->protect(function($allowableMethod, $function) use ($app) {
@@ -314,6 +361,8 @@ $app->addHandler('init', function(Application $app) {
     $app->session->start();
     // フラッシュメッセージ
     $app->renderer->assign('flash', $app->flash);
+    // CSRFトークン
+    $app->renderer->assign('token', $app->token);
 });
 
 //-----------------------------------------------------------------------------
@@ -342,13 +391,6 @@ $app->run = $app->protect(function() use ($app) {
         }
         $response = $app->error($e);
     }
-
-    // CSRFトークン自動出力
-    ini_set('url_rewriter.tags', 'form=');
-    output_add_rewrite_var(
-        $app->escape($app->token->name()),
-        $app->escape($app->token->value())
-    );
 
     $response->send();
 });

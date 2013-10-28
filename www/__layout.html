@@ -56,14 +56,14 @@
 
   <tal:block tal:condition="exists:flash">
 
-    <div class="alert alert-error" tal:condition="flash/hasError">
+    <div class="alert alert-danger" tal:condition="flash/hasError">
       <button class="close" data-dismiss="alert">×</button>
       <ul>
         <li tal:repeat="message flash/getError" tal:content="message">Error Flashメッセージ</li>
       </ul>
     </div>
 
-    <div class="alert" tal:condition="flash/hasAlert">
+    <div class="alert alert-warning" tal:condition="flash/hasAlert">
       <button class="close" data-dismiss="alert">×</button>
       <ul>
         <li tal:repeat="message flash/getAlert" tal:content="message">Alert Flashメッセージ</li>

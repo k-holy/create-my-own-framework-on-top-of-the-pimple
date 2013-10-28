@@ -21,29 +21,54 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	public function testPropertyAccess()
 	{
 		$test = new Test();
+		$test->id   = '1';
 		$test->name = 'foo';
 		$this->assertEquals('foo', $test->name);
+		$this->assertEquals('1', $test->id);
 	}
 
 	public function testArrayAccess()
 	{
 		$test = new Test();
+		$test['id'] = '1';
 		$test['name'] = 'foo';
+		$this->assertEquals('1', $test['id']);
 		$this->assertEquals('foo', $test['name']);
 	}
 
 	public function testIsset()
 	{
 		$test = new Test();
-		$test['name'] = 'foo';
-		$this->assertTrue(isset($test['name']));
+		$test['id'] = '1';
+		$test['name'] = null;
+		$this->assertTrue(isset($test['id']));
+		$this->assertTrue(isset($test['name'])); // Attention!!
 	}
 
 	public function testNotIsset()
 	{
 		$test = new Test();
 		$test['name'] = null;
-		$this->assertFalse(isset($test['name']));
+		$this->assertTrue(isset($test['name'])); // Attention!!
+		$this->assertFalse(isset($test['undefined_property']));
+	}
+
+	public function testEmpty()
+	{
+		$test = new Test();
+		$test['id'] = '0';
+		$test['name'] = null;
+		$this->assertTrue(empty($test['id'])); // Attention!!
+		$this->assertTrue(empty($test['name']));
+	}
+
+	public function testNotEmpty()
+	{
+		$test = new Test();
+		$test['id'] = '1';
+		$test['name'] = 'foo';
+		$this->assertFalse(empty($test['id']));
+		$this->assertFalse(empty($test['name']));
 	}
 
 	public function testMagicPropertyUnderscore()
@@ -86,11 +111,15 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 		$timezone = new \DateTimeZone('Asia/Tokyo');
 		$createdAt = new \DateTime('2013-09-25 15:00', $timezone);
 		$test = new Test(array(), $timezone);
+		$test->id = '1';
 		$test->name = 'foo';
 		$test->parent_name = 'bar';
 		$test->created_at = $createdAt;
 		foreach ($test as $name => $value) {
 			switch ($name) {
+			case 'id':
+				$this->assertEquals('1', $value);
+				break;
 			case 'name':
 				$this->assertEquals('foo', $value);
 				break;
@@ -110,11 +139,15 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 		$timezone = new \DateTimeZone('Asia/Tokyo');
 		$createdAt = new \DateTime('2013-09-25 15:00', $timezone);
 		$test = new Test(array(), $timezone);
+		$test->id = '1';
 		$test->name = 'foo';
 		$test->parent_name = 'bar';
 		$test->created_at = $createdAt;
 		foreach ($test->toArray() as $name => $value) {
 			switch ($name) {
+			case 'id':
+				$this->assertEquals('1', $value);
+				break;
 			case 'name':
 				$this->assertEquals('foo', $value);
 				break;
@@ -129,6 +162,23 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 		}
 	}
 
+	public function testToStringExportArray()
+	{
+		$timezone = new \DateTimeZone('Asia/Tokyo');
+		$createdAt = new \DateTime('2013-09-25 15:00', $timezone);
+		$test = new Test(array(), $timezone);
+		$test->id = '1';
+		$test->name = 'foo';
+		$test->parent_name = 'bar';
+		$test->created_at = $createdAt;
+		$export = (string)$test;
+		eval('$test2 = ' . $export . ';');
+		$this->assertEquals($test2['id'         ], $test->id);
+		$this->assertEquals($test2['name'       ], $test->name);
+		$this->assertEquals($test2['parent_name'], $test->parent_name);
+		$this->assertEquals($test2['created_at' ], $test->created_at);
+	}
+
 }
 
 class Test implements \ArrayAccess, \IteratorAggregate
@@ -137,6 +187,7 @@ class Test implements \ArrayAccess, \IteratorAggregate
 
 	private $timezone;
 	private $attributes = [
+		'id'          => null,
 		'name'        => null,
 		'parent_name' => null,
 		'created_at'  => null,
