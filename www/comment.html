@@ -20,31 +20,38 @@
 
   <div class="content" metal:fill-slot="content">
 
-    <div class="alert alert-error" tal:condition="php:count(errors) > 0">
+    <div class="alert alert-danger" tal:condition="form/hasError">
       <button class="close" data-dismiss="alert">×</button>
       <span class="glyphicon glyphicon-warning-sign"></span><strong>入力値にエラーがあります</strong>
       <ul>
-        <li tal:repeat="error errors" tal:content="error">名前を入力してください。</li>
+        <li tal:repeat="error form/getErrors" tal:content="error">名前を入力してください。</li>
       </ul>
     </div>
 
     <form class="form-horizontal" role="form" method="post" tal:attributes="action server/REQUEST_URI">
+      <input type="hidden" name="${token/name}" value="${token/value}" tal:condition="exists:token" />
       <fieldset>
         <legend><span class="glyphicon glyphicon -comment"></span>投稿フォーム</legend>
-        <dl class="form-group" tal:attributes="class php:isset(errors['author']) ? 'form-group has-error' : 'form-group'">
-          <dt class="col-lg-2 control-label">名前</dt>
-          <dd class="col-lg-8">
-            <input type="text" name="author" class="form-control" tal:attributes="value form/author" />
-          </dd>
-        </dl>
-        <dl class="form-group" tal:attributes="class php:isset(errors['comment']) ? 'form-group has-error' : 'form-group'">
-          <dt class="col-lg-2 control-label">コメント</dt>
-          <dd class="col-lg-8">
-            <textarea name="comment" rows="5" class="form-control" tal:content="form/comment">コメント内容....</textarea>
-          </dd>
-        </dl>
+        <div class="form-group" tal:attributes="class php:form.author.isError() ? 'form-group has-error' : 'form-group'">
+          <label class="col-md-2 control-label">名前</label>
+          <div class="col-md-5">
+            <input type="text" name="author" class="form-control" tal:attributes="value form/author/value" />
+          </div>
+          <div class="col-md-5" tal:condition="form/author/isError">
+            <p class="help-block" tal:content="form/author/error">名前を入力してください。</p>
+          </div>
+        </div>
+        <div class="form-group" tal:attributes="class php:form.comment.isError() ? 'form-group has-error' : 'form-group'">
+          <label class="col-md-2 control-label">コメント</label>
+          <div class="col-md-5">
+            <textarea name="comment" rows="5" class="form-control" tal:content="form/comment/value">コメント内容....</textarea>
+          </div>
+          <div class="col-md-5" tal:condition="form/comment/isError">
+            <p class="help-block" tal:content="form/comment/error">コメントを入力してください。</p>
+          </div>
+        </div>
         <div class="form-group">
-          <div class="col-lg-offset-2 col-lg-8">
+          <div class="col-md-offset-2 col-md-5">
             <input type="submit" value="送信" class="btn btn-primary btn-lg" />
           </div>
         </div>

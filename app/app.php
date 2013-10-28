@@ -63,7 +63,7 @@ $app->config = $app->share(function(Application $app) {
 // Timezone
 //-----------------------------------------------------------------------------
 $app->timezone = $app->share(function(Application $app) {
-	return new \DateTimeZone($app->config->timezone);
+    return new \DateTimeZone($app->config->timezone);
 });
 
 //-----------------------------------------------------------------------------
@@ -235,12 +235,22 @@ $app->transaction = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 // ドメインデータファクトリ
 //-----------------------------------------------------------------------------
-$app->createData = $app->protect(function($name, $attributes = array(), $options = array()) {
+$app->createData = $app->protect(function($name, $attributes = array(), $options = array()) use ($app) {
     $class = '\\Acme\\Domain\\Data\\' . ucfirst($name);
     if (!class_exists($class, true)) {
         throw new \InvalidArgumentException(
             sprintf('The Domain Data "%s" is not found.', $name)
         );
+    }
+    switch ($name) {
+    case 'comment':
+        if (!isset($attributes['posted_at'])) {
+            $attributes['posted_at'] = $app->clock;
+        }
+        if (!isset($options['timezone'])) {
+            $options['timezone'] = $app->timezone;
+        }
+        break;
     }
     return new $class($attributes, $options);
 });

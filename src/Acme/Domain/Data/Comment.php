@@ -19,13 +19,9 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 {
 	use DataTrait;
 
-	protected $datetimeFormat;
-	protected $timezone;
-	protected $attributes = [
-		'author'    => null,
-		'comment'   => null,
-		'posted_at' => null,
-	];
+	private $datetimeFormat;
+	private $timezone;
+	private $attributes = [];
 
 	public function __construct($attributes = array(), $options = array())
 	{
@@ -45,6 +41,11 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 		}
 		$this->setTimezone($options['timezone']);
 		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
+		$this->attributes = [
+			'author'    => null,
+			'comment'   => null,
+			'posted_at' => null,
+		];
 		$this->setAttributes($attributes);
 		return $this;
 	}

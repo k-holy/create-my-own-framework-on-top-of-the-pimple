@@ -15,20 +15,16 @@ $app->on('GET', function($app) {
 
     $statement = $app->db->prepare("SELECT author, comment, posted_at FROM comments LIMIT :limit OFFSET :offset");
     $statement->execute(['limit' => 20, 'offset' => 0]);
-    $comments = $statement->fetchAll(Statement::FETCH_FUNC, function($author, $comment, $posted_at) use ($app) {
-        $object = $app->createData('comment', [
+    $statement->setFetchMode(Statement::FETCH_FUNC, function($author, $comment, $posted_at) use ($app) {
+        return $app->createData('comment', [
             'author'    => $author,
             'comment'   => $comment,
             'posted_at' => $posted_at,
-        ], [
-            'timezone' => $app->timezone,
         ]);
-        return $object;
     });
-
     return $app->render('index.html', [
         'title'    => 'トップページ',
-        'comments' => $comments,
+        'comments' => $statement,
     ]);
 
 });
