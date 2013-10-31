@@ -32,21 +32,21 @@
       <input type="hidden" name="${token/name}" value="${token/value}" tal:condition="exists:token" />
       <fieldset>
         <legend><span class="glyphicon glyphicon -comment"></span>投稿フォーム</legend>
-        <div class="form-group" tal:attributes="class php:form.author.isError() ? 'form-group has-error' : 'form-group'">
+        <div class="form-group" tal:attributes="class php:form.author.hasError() ? 'form-group has-error' : 'form-group'">
           <label class="col-md-2 control-label">名前</label>
           <div class="col-md-5">
             <input type="text" name="author" class="form-control" tal:attributes="value form/author/value" />
           </div>
-          <div class="col-md-5" tal:condition="form/author/isError">
+          <div class="col-md-5" tal:condition="form/author/hasError">
             <p class="help-block" tal:content="form/author/error">名前を入力してください。</p>
           </div>
         </div>
-        <div class="form-group" tal:attributes="class php:form.comment.isError() ? 'form-group has-error' : 'form-group'">
+        <div class="form-group" tal:attributes="class php:form.comment.hasError() ? 'form-group has-error' : 'form-group'">
           <label class="col-md-2 control-label">コメント</label>
           <div class="col-md-5">
             <textarea name="comment" rows="5" class="form-control" tal:content="form/comment/value">コメント内容....</textarea>
           </div>
-          <div class="col-md-5" tal:condition="form/comment/isError">
+          <div class="col-md-5" tal:condition="form/comment/hasError">
             <p class="help-block" tal:content="form/comment/error">コメントを入力してください。</p>
           </div>
         </div>

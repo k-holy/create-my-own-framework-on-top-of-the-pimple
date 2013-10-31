@@ -11,7 +11,7 @@ $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
 $app->on('GET|POST', function($app, $method) {
 
-    $form = $app->createForm([
+    $form = $app->createForm('commentForm', [
         'author'  => $app->findVar('P', 'author'),
         'comment' => $app->findVar('P', 'comment'),
     ]);
@@ -24,23 +24,23 @@ $app->on('GET|POST', function($app, $method) {
         }
 
         // 投稿フォーム処理
-        if (strlen($form->author->value) === 0) {
-            $form->author->error = '名前を入力してください。';
-        } elseif (mb_strlen($form->author->value) > 20) {
-            $form->author->error = '名前は20文字以内で入力してください。';
+        if (strlen($form->author->value()) === 0) {
+            $form->author->error('名前を入力してください。');
+        } elseif (mb_strlen($form->author->value()) > 20) {
+            $form->author->error('名前は20文字以内で入力してください。');
         }
 
-        if (strlen($form->comment->value) === 0) {
-            $form->comment->error = 'コメントを入力してください。';
-        } elseif (mb_strlen($form->comment->value) > 50) {
-            $form->comment->error = 'コメントは50文字以内で入力してください。';
+        if (strlen($form->comment->value()) === 0) {
+            $form->comment->error('コメントを入力してください。');
+        } elseif (mb_strlen($form->comment->value()) > 50) {
+            $form->comment->error('コメントは50文字以内で入力してください。');
         }
 
         if (!$form->hasError()) {
 
             $comment = $app->createData('comment', [
-                'author'  => $form->author->value,
-                'comment' => $form->comment->value,
+                'author'  => $form->author->value(),
+                'comment' => $form->comment->value(),
             ]);
 
             $statement = $app->db->prepare(<<<'SQL'
