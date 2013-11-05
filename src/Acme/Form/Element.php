@@ -13,7 +13,7 @@ namespace Acme\Form;
  *
  * @author k.holy74@gmail.com
  */
-class Element implements \ArrayAccess
+class Element implements ElementInterface, \ArrayAccess
 {
 
 	/**

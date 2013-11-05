@@ -15,7 +15,7 @@ use Acme\Form\Element;
  *
  * @author k.holy74@gmail.com
  */
-class Form implements \ArrayAccess, \IteratorAggregate, \Countable
+class Form implements FormInterface, \ArrayAccess, \IteratorAggregate, \Countable
 {
 
 	/**
