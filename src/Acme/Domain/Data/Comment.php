@@ -68,7 +68,7 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 	public function set_posted_at($datetime)
 	{
 		if (false === ($datetime instanceof DateTime)) {
-			$datetime = new DateTime($datetime, $this->datetimeFormat);
+			$datetime = new DateTime($datetime);
 		}
 		$datetime->setTimezone($this->timezone);
 		$this->attributes['posted_at'] = $datetime->getTimestamp(); // 実体はUnixTimestampで保持

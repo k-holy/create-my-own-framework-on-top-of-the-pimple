@@ -12,6 +12,7 @@ $app = include realpath(__DIR__ . '/../app/app.php');
 use Acme\Application;
 use Acme\DataObject;
 use Acme\Exception\HttpException;
+use Acme\Form\Form;
 
 use Monolog\Logger;
 
@@ -282,48 +283,8 @@ $app->map = $app->protect(function($filter, $value) use ($app) {
 //-----------------------------------------------------------------------------
 // フォームを生成する
 //-----------------------------------------------------------------------------
-$app->createForm = $app->protect(function($attributes) use ($app) {
-
-    $elements = [];
-
-    foreach ($attributes as $id => $value) {
-        $element = new DataObject();
-        $element->value = $value;
-        $element->error = null;
-        $element->isError = function() use ($element) {
-            return !is_null($element->error);
-        };
-        $elements[$id] = $element;
-    }
-
-    $form = new DataObject($elements);
-
-    $form->hasError = function() use ($form) {
-        foreach ($form as $element) {
-            if (false === ($element instanceof DataObject)) {
-                continue;
-            }
-            if ($element->isError()) {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    $form->getErrors = function() use ($form) {
-        $errors = [];
-        foreach ($form as $element) {
-            if (false === ($element instanceof DataObject)) {
-                continue;
-            }
-            if ($element->isError()) {
-                $errors[] = $element->error;
-            }
-        }
-        return $errors;
-    };
-
-    return $form;
+$app->createForm = $app->protect(function($name, $attributes) use ($app) {
+    return new Form($name, $attributes);
 });
 
 //-----------------------------------------------------------------------------
