@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5c9e559867fcd27d471e3718fbbb7767",
+    "hash": "9a9738eeb09b81702b0598873329f80b",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -73,12 +73,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pornel/PHPTAL.git",
-                "reference": "82cc7ce740e2cbdc7cd54564f450e2cf904e3529"
+                "reference": "d39537b9e922a7ca586986f74e445ca852c7f59f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pornel/PHPTAL/zipball/82cc7ce740e2cbdc7cd54564f450e2cf904e3529",
-                "reference": "82cc7ce740e2cbdc7cd54564f450e2cf904e3529",
+                "url": "https://api.github.com/repos/pornel/PHPTAL/zipball/d39537b9e922a7ca586986f74e445ca852c7f59f",
+                "reference": "d39537b9e922a7ca586986f74e445ca852c7f59f",
                 "shasum": ""
             },
             "require": {
@@ -112,7 +112,7 @@
                 "template engine",
                 "zope"
             ],
-            "time": "2013-09-07 09:11:37"
+            "time": "2013-10-25 14:32:15"
         },
         {
             "name": "pimple/pimple",
@@ -293,16 +293,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.1",
+            "version": "v1.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
+                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
-                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/ca445842fcea4f844d68203ffa2d00f5e3cdea64",
+                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64",
                 "shasum": ""
             },
             "require": {
@@ -337,7 +337,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-15 19:17:38"
+            "time": "2013-10-30 08:20:53"
         },
         {
             "name": "volcanus/configuration",
@@ -451,6 +451,47 @@
             "time": "2013-10-21 04:43:14"
         },
         {
+            "name": "volcanus/file-uploader",
+            "version": "dev-master",
+            "target-dir": "Volcanus/FileUploader",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/k-holy/volcanus-file-uploader.git",
+                "reference": "e0eefe2780fe46d74651d9397646821b1375d4ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/k-holy/volcanus-file-uploader/zipball/e0eefe2780fe46d74651d9397646821b1375d4ec",
+                "reference": "e0eefe2780fe46d74651d9397646821b1375d4ec",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/http-foundation": "2.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Volcanus\\FileUploader": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "k-holy",
+                    "email": "k.holy74@gmail.com"
+                }
+            ],
+            "description": "file uploader",
+            "homepage": "https://github.com/k-holy/volcanus-file-uploader",
+            "time": "2013-11-07 10:13:57"
+        },
+        {
             "name": "volcanus/routing",
             "version": "dev-master",
             "target-dir": "Volcanus/Routing",
@@ -542,7 +583,8 @@
         "volcanus/routing": 20,
         "volcanus/error": 20,
         "volcanus/database": 20,
-        "volcanus/template-renderer": 20
+        "volcanus/template-renderer": 20,
+        "volcanus/file-uploader": 20
     },
     "platform": {
         "php": ">=5.4"

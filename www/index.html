@@ -23,14 +23,16 @@
         <tr>
           <th>名前</th>
           <th>コメント</th>
+          <th>画像</th>
           <th>投稿日</th>
         </tr>
       </thead>
       <tbody>
-        <tr tal:repeat="item comments">
-          <td tal:content="item/author"></td>
-          <td tal:content="item/comment"></td>
-          <td tal:content="item/posted_at"></td>
+        <tr tal:repeat="comment comments">
+          <td><span tal:replace="comment/author"></span></td>
+          <td><span tal:replace="comment/comment"></span></td>
+          <td><img tal:condition="exists:comment/image" tal:attributes="width comment/image/width; height comment/image/height; src comment/image/get_data_uri" /></td>
+          <td><span tal:replace="comment/posted_at"></span></td>
         </tr>
       </tbody>
     </table>

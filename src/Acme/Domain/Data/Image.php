@@ -11,11 +11,11 @@ namespace Acme\Domain\Data;
 use Acme\DateTime;
 
 /**
- * コメント
+ * 画像
  *
  * @author k.holy74@gmail.com
  */
-class Comment implements \ArrayAccess, \IteratorAggregate
+class Image implements \ArrayAccess, \IteratorAggregate
 {
 
 	use DataTrait;
@@ -43,13 +43,15 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 		$this->setTimezone($options['timezone']);
 		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
 		$this->attributes = [
-			'id'        => null,
-			'author'    => null,
-			'comment'   => null,
-			'image_id'  => null,
-			'posted_at' => null,
-			// 画像
-			'image'     => null,
+			'id'           => null,
+			'file_name'    => null,
+			'file_size'    => null,
+			'file_path'    => null,
+			'encoded_data' => null,
+			'mime_type'    => null,
+			'width'        => null,
+			'height'       => null,
+			'created_at'   => null,
 		];
 		$this->attributes($attributes);
 		return $this;
@@ -66,30 +68,43 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * setter for posted_at
+	 * setter for created_at
 	 *
 	 * @param mixed
 	 */
-	public function set_posted_at($datetime)
+	public function set_created_at($datetime)
 	{
 		if (false === ($datetime instanceof DateTime)) {
 			$datetime = new DateTime($datetime);
 		}
 		$datetime->setTimezone($this->timezone);
-		$this->attributes['posted_at'] = $datetime->getTimestamp(); // 実体はUnixTimestampで保持
+		$this->attributes['created_at'] = $datetime->getTimestamp(); // 実体はUnixTimestampで保持
 	}
 
 	/**
-	 * getter for posted_at
+	 * getter for created_at
 	 *
 	 * @return \Acme\DateTime
 	 */
-	public function get_posted_at()
+	public function get_created_at()
 	{
-		if (isset($this->attributes['posted_at'])) {
-			$datetime = new DateTime($this->attributes['posted_at'], $this->datetimeFormat); // UnixTimestampで保持している値をDateTimeクラスで変換して出力
+		if (isset($this->attributes['created_at'])) {
+			$datetime = new DateTime($this->attributes['created_at'], $this->datetimeFormat); // UnixTimestampで保持している値をDateTimeクラスで変換して出力
 			$datetime->setTimezone($this->timezone);
 			return $datetime;
+		}
+		return null;
+	}
+
+	/**
+	 * getter for Data URI
+	 *
+	 * @return string Data URI
+	 */
+	public function get_data_uri()
+	{
+		if (isset($this->attributes['mime_type']) && isset($this->attributes['encoded_data'])) {
+			return sprintf('data:%s;base64,%s', $this->attributes['mime_type'], $this->attributes['encoded_data']);
 		}
 		return null;
 	}

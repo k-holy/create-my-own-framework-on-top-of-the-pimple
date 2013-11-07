@@ -9,11 +9,27 @@
  */
 $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
+use Volcanus\FileUploader\Exception\UploaderException;
+use Volcanus\FileUploader\Exception\FilenameException;
+use Volcanus\FileUploader\Exception\FilesizeException;
+use Volcanus\FileUploader\Exception\ExtensionException;
+use Volcanus\FileUploader\Exception\ImageWidthException ;
+use Volcanus\FileUploader\Exception\ImageHeightException;
+
 $app->on('GET|POST', function($app, $method) {
 
     $form = $app->createForm('commentForm', [
-        'author'  => $app->findVar('P', 'author'),
-        'comment' => $app->findVar('P', 'comment'),
+        'author'             => $app->findVar('P', 'author'),
+        'comment'            => $app->findVar('P', 'comment'),
+        'image_file_json'    => $app->findVar('P', 'image_file_json'),
+        'image_file_name'    => $app->findVar('P', 'image_file_name'),
+        'image_file_size'    => null,
+        'image_file_path'    => null,
+        'image_encoded_data' => null,
+        'image_data_uri'     => null,
+        'image_mime_type'    => null,
+        'image_width'        => null,
+        'image_height'       => null,
     ]);
 
     if ($method === 'POST') {
@@ -23,14 +39,61 @@ $app->on('GET|POST', function($app, $method) {
             $app->abort(403, 'リクエストは無効です。');
         }
 
+        $fileInfo = null;
+
         // 投稿フォーム処理
-        if (strlen($form->author->value()) === 0) {
+        if (!$form->image_file_json->isEmpty()) {
+            $upload_file = json_decode($form->image_file_json->value());
+            if (!is_null($upload_file)) {
+                $form->image_file_name = $upload_file->name;
+                $form->image_file_path = $upload_file->path;
+                // mimeType および Base64エンコードデータがあればdataURIをフォームにセットする
+                if (file_exists($upload_file->path)) {
+                    $fileInfo = new \SplFileinfo($upload_file->path);
+                    $getMimeTypeFrom = new \finfo(FILEINFO_MIME_TYPE);
+                    $content = file_get_contents($upload_file->path);
+                    $form->image_file_size = $fileInfo->getSize();
+                    $form->image_encoded_data = base64_encode($content);
+                    $form->image_data_uri = sprintf('data:%s;base64,%s', $upload_file->mimeType, $form->image_encoded_data->value());
+                    $form->image_mime_type = $getMimeTypeFrom->file($fileInfo->getRealPath());
+                    if (false !== (list($width, $height, $type, $attr) = getimagesize($upload_file->path))) {
+                        $form->image_width  = $width;
+                        $form->image_height = $height;
+                    }
+                }
+                $fileValidator = $app->createFileValidator([
+                    'maxFilesize'      => '2M',
+                    'allowableType'    => 'gif,jpg,png',
+                    'filenameEncoding' => 'UTF-8',
+                    'maxWidth'         => 400,
+                    'maxHeight'        => 400,
+                ]);
+                try {
+                    $fileValidator->validateFilesize($fileInfo->getSize());
+                    $fileValidator->validateExtension($fileInfo->getExtension());
+                    $fileValidator->validateImageType($fileInfo->getRealPath(), $fileInfo->getExtension());
+                    $fileValidator->validateImageSize($fileInfo->getRealPath());
+                } catch (FilesizeException $e) {
+                    $form->image_file_path->error(sprintf('画像のファイルサイズが %s バイトを超えています。', $fileValidator->config('maxFilesize')));
+                } catch (ExtensionException $e) {
+                    $form->image_file_path->error(sprintf('画像のファイルフォーマットが %s 以外です。', $fileValidator->config('allowableType')));
+                } catch (ImageTypeException $e) {
+                    $form->image_file_path->error(sprintf('画像のファイルフォーマットが拡張子 %s と一致しません。', $fileInfo->getExtension()));
+                } catch (ImageWidthException $e) {
+                    $form->image_file_path->error(sprintf('画像の横幅が %spx を超えています。', $fileValidator->config('maxWidth')));
+                } catch (ImageHeightException $e) {
+                    $form->image_file_path->error(sprintf('画像の高さが %spx を超えています。', $fileValidator->config('maxHeight')));
+                }
+            }
+        }
+
+        if ($form->author->isEmpty()) {
             $form->author->error('名前を入力してください。');
         } elseif (mb_strlen($form->author->value()) > 20) {
             $form->author->error('名前は20文字以内で入力してください。');
         }
 
-        if (strlen($form->comment->value()) === 0) {
+        if ($form->comment->isEmpty()) {
             $form->comment->error('コメントを入力してください。');
         } elseif (mb_strlen($form->comment->value()) > 50) {
             $form->comment->error('コメントは50文字以内で入力してください。');
@@ -38,40 +101,97 @@ $app->on('GET|POST', function($app, $method) {
 
         if (!$form->hasError()) {
 
-            $comment = $app->createData('comment', [
-                'author'  => $form->author->value(),
-                'comment' => $form->comment->value(),
-            ]);
+            $app->transaction->begin();
 
-            $statement = $app->db->prepare(<<<'SQL'
+            try {
+
+                // 画像を登録
+                if (isset($fileInfo)) {
+
+                    $row = [
+                        'file_name'    => $form->image_file_name->value(),
+                        'file_size'    => $form->image_file_size->value(),
+                        'file_path'    => $form->image_file_path->value(),
+                        'encoded_data' => $form->image_encoded_data->value(),
+                        'mime_type'    => $form->image_mime_type->value(),
+                        'width'        => $form->image_width->value(),
+                        'height'       => $form->image_height->value(),
+                        'created_at'   => $app->clock,
+                    ];
+
+                    $statement = $app->db->prepare(<<<'SQL'
+INSERT INTO images (
+    file_name
+   ,file_size
+   ,file_path
+   ,encoded_data
+   ,mime_type
+   ,width
+   ,height
+   ,created_at
+) VALUES (
+    :file_name
+   ,:file_size
+   ,:file_path
+   ,:encoded_data
+   ,:mime_type
+   ,:width
+   ,:height
+   ,:created_at
+)
+SQL
+                    );
+
+                    $statement->execute($row);
+
+                    $image = $app->createData('image', $row);
+
+                    $image->id = $app->db->lastInsertId();
+
+                }
+
+                // コメントを登録
+                $row = [
+                    'author'    => $form->author->value(),
+                    'comment'   => $form->comment->value(),
+                    'image_id'  => (isset($image)) ? $image->id : null,
+                    'posted_at' => $app->clock,
+                ];
+
+                $statement = $app->db->prepare(<<<'SQL'
 INSERT INTO comments (
     author
    ,comment
+   ,image_id
    ,posted_at
 ) VALUES (
     :author
    ,:comment
+   ,:image_id
    ,:posted_at
 )
 SQL
-            );
+                );
 
-            $app->transaction->begin();
+                $statement->execute($row);
 
-            try {
-                $statement->execute($comment);
+                $comment = $app->createData('comment', $row);
+
+                $comment->id = $app->db->lastInsertId();
+
+                if (isset($image)) {
+                    $comment->image = $image;
+                }
+
                 $app->transaction->commit();
+
             } catch (\Exception $e) {
                 $app->transaction->rollback();
                 throw $e;
             }
 
-            $cols = [];
-            foreach ($comment as $name => $value) {
-                $cols[] = sprintf('%s = %s', $name, $value);
-            }
+            $app->flash->addSuccess('投稿を受け付けました');
 
-            $app->flash->addSuccess(sprintf('投稿を受け付けました (%s)', implode(', ', $cols)));
             return $app->redirect('/');
         }
 
