@@ -32,7 +32,6 @@ CREATE TABLE images
      id           INTEGER      NOT NULL PRIMARY KEY
     ,file_name    VARCHAR(255) NOT NULL
     ,file_size    INTEGER      NOT NULL
-    ,file_path    VARCHAR(255)
     ,encoded_data TEXT
     ,mime_type    VARCHAR(64)  NOT NULL
     ,width        INTEGER      NOT NULL

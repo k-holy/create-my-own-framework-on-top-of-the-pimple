@@ -22,7 +22,6 @@ SELECT
 , com.posted_at
 , img.file_name AS "image_file_name"
 , img.file_size AS "image_file_size"
-, img.file_path AS "image_file_path"
 , img.encoded_data AS "image_encoded_data"
 , img.mime_type AS "image_mime_type"
 , img.width AS "image_width"
@@ -47,7 +46,6 @@ SQL
         $posted_at,
         $image_file_name,
         $image_file_size,
-        $image_file_path,
         $image_encoded_data,
         $image_mime_type,
         $image_width,
@@ -66,7 +64,6 @@ SQL
                 'id'           => $image_id,
                 'file_name'    => $image_file_name,
                 'file_size'    => $image_file_size,
-                'file_path'    => $image_file_path,
                 'encoded_data' => $image_encoded_data,
                 'mime_type'    => $image_mime_type,
                 'width'        => $image_width,

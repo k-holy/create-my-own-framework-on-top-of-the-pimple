@@ -46,7 +46,6 @@ class Image implements \ArrayAccess, \IteratorAggregate
 			'id'           => null,
 			'file_name'    => null,
 			'file_size'    => null,
-			'file_path'    => null,
 			'encoded_data' => null,
 			'mime_type'    => null,
 			'width'        => null,

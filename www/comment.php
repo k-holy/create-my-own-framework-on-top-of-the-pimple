@@ -111,7 +111,6 @@ $app->on('GET|POST', function($app, $method) {
                     $row = [
                         'file_name'    => $form->image_file_name->value(),
                         'file_size'    => $form->image_file_size->value(),
-                        'file_path'    => $form->image_file_path->value(),
                         'encoded_data' => $form->image_encoded_data->value(),
                         'mime_type'    => $form->image_mime_type->value(),
                         'width'        => $form->image_width->value(),
@@ -123,7 +122,6 @@ $app->on('GET|POST', function($app, $method) {
 INSERT INTO images (
     file_name
    ,file_size
-   ,file_path
    ,encoded_data
    ,mime_type
    ,width
@@ -132,7 +130,6 @@ INSERT INTO images (
 ) VALUES (
     :file_name
    ,:file_size
-   ,:file_path
    ,:encoded_data
    ,:mime_type
    ,:width
