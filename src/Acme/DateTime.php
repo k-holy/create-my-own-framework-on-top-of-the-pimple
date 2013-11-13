@@ -34,6 +34,20 @@ class DateTime implements \ArrayAccess
 	 */
 	public function __construct($datetime, $format = null)
 	{
+		$this->datetime = null;
+		$this->format = null;
+		$this->initialize($datetime, $format);
+	}
+
+	/**
+	 * オブジェクトを初期化します。
+	 *
+	 * @param string|int|\DateTime 日時
+	 * @param string 日時の書式
+	 * @return self
+	 */
+	public function initialize($datetime, $format = null)
+	{
 		if (is_int($datetime) || ctype_digit($datetime)) {
 			$datetime = new \DateTime(sprintf('@%d', $datetime));
 		} elseif (is_string($datetime)) {
@@ -49,6 +63,7 @@ class DateTime implements \ArrayAccess
 		}
 		$this->datetime = $datetime;
 		$this->format = (isset($format)) ? $format : 'Y-m-d H:i:s';
+		return $this;
 	}
 
 	/**
