@@ -35,6 +35,7 @@
         "volcanus/routing": "dev-master",
         "volcanus/error": "dev-master",
         "volcanus/database": "dev-master",
-        "volcanus/template-renderer": "dev-master"
+        "volcanus/template-renderer": "dev-master",
+        "volcanus/file-uploader": "dev-master"
     }
 }

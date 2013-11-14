@@ -23,17 +23,34 @@
         <tr>
           <th>名前</th>
           <th>コメント</th>
+          <th>画像</th>
           <th>投稿日</th>
         </tr>
       </thead>
       <tbody>
-        <tr tal:repeat="item comments">
-          <td tal:content="item/author"></td>
-          <td tal:content="item/comment"></td>
-          <td tal:content="item/posted_at"></td>
+        <tr tal:repeat="comment comments">
+          <td><span tal:replace="comment/author">田中一郎</span></td>
+          <td><span tal:replace="comment/comment">コメントです</span></td>
+          <td>
+            <div tal:condition="exists:comment/image">
+              <button class="btn btn-info btn-xs comment-image-popover"
+                data-trigger="click"
+                data-html="true"
+                data-placement="right"
+                tal:attributes="data-content php: '<img src=&quot;' . comment.image.get_data_uri() . '&quot; />'">表示</button>
+              <span tal:replace="comment/image/file_name">/path/to/file.jpg</span>
+              (<span tal:replace="comment/image/formatted_file_size">10KB</span>)
+            </div>
+          </td>
+          <td><span tal:replace="comment/posted_at">2013-11-13 00:00:00</span></td>
         </tr>
       </tbody>
     </table>
+  <script type="text/javascript">
+  $(function() {
+    $('.comment-image-popover').popover();
+  });
+  </script>
   </div>
 
   <footer class="footer">

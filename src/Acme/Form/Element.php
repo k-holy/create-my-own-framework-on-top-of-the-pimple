@@ -121,9 +121,15 @@ class Element implements ElementInterface, \ArrayAccess
 	 */
 	public function contains($value)
 	{
-		foreach ($this->toArray() as $name => $_value) {
-			if ($value === $_value) {
-				return true;
+		if (is_scalar($this->value)) {
+			return ($this->value === $value);
+		} elseif (is_array($this->value)) {
+			return (in_array($value, $this->value, true));
+		} else {
+			foreach ($this->toArray() as $name => $_value) {
+				if ($value === $_value) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -138,6 +144,25 @@ class Element implements ElementInterface, \ArrayAccess
 	public function equals($value)
 	{
 		return ($this->value === $value);
+	}
+
+	/**
+	 * 要素の値が空かどうかを返します。
+	 *
+	 * @return bool
+	 */
+	public function isEmpty()
+	{
+		if (is_null($this->value)) {
+			return true;
+		} elseif (is_string($this->value)) {
+			return (strlen($this->value) === 0);
+		} elseif (is_array($this->value) || $this->value instanceof \Countable) {
+			return (count($this->value) === 0);
+		} elseif (is_object($this->value)) {
+			return (count($this->toArray()) === 0);
+		}
+		return false;
 	}
 
 	/**

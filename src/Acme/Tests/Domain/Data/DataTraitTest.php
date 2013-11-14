@@ -198,7 +198,7 @@ class Test implements \ArrayAccess, \IteratorAggregate
 		if (isset($timezone)) {
 			$this->timezone = $timezone;
 		}
-		$this->setAttributes($attributes);
+		$this->attributes($attributes);
 	}
 
 	public function set_parent_name($value)

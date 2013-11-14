@@ -17,6 +17,7 @@ use Acme\DateTime;
  */
 class Comment implements \ArrayAccess, \IteratorAggregate
 {
+
 	use DataTrait;
 
 	private $datetimeFormat;
@@ -42,11 +43,15 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 		$this->setTimezone($options['timezone']);
 		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
 		$this->attributes = [
+			'id'        => null,
 			'author'    => null,
 			'comment'   => null,
+			'image_id'  => null,
 			'posted_at' => null,
+			// 画像
+			'image'     => null,
 		];
-		$this->setAttributes($attributes);
+		$this->attributes($attributes);
 		return $this;
 	}
 

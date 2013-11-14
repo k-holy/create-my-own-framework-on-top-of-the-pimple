@@ -82,6 +82,64 @@ class ElementTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($element->equals(1));
 	}
 
+	public function testIsEmptyNull()
+	{
+		$element = new Element('myElement');
+		$element->value(null);
+		$this->assertTrue($element->isEmpty());
+	}
+
+	public function testIsEmptyString()
+	{
+		$element = new Element('myElement');
+		$element->value('');
+		$this->assertTrue($element->isEmpty());
+	}
+
+	public function testIsEmptyArray()
+	{
+		$element = new Element('myElement');
+		$element->value(array());
+		$this->assertTrue($element->isEmpty());
+	}
+
+	public function testIsEmptyCountable()
+	{
+		$element = new Element('myElement');
+		$element->value(new \ArrayIterator(array()));
+		$this->assertTrue($element->isEmpty());
+	}
+
+	public function testIsNotEmptyBool()
+	{
+		$element = new Element('myElement');
+		$element->value(true);
+		$this->assertFalse($element->isEmpty());
+		$element->value(false);
+		$this->assertFalse($element->isEmpty());
+	}
+
+	public function testIsNotEmptyDateTime()
+	{
+		$element = new Element('myElement');
+		$element->value(new \DateTime('0000-00-00 00:00:00'));
+		$this->assertFalse($element->isEmpty());
+	}
+
+	public function testIsNotEmptyArrayOfEmptyString()
+	{
+		$element = new Element('myElement');
+		$element->value(array('', '', ''));
+		$this->assertFalse($element->isEmpty());
+	}
+
+	public function testIsNotEmptyArrayOfNull()
+	{
+		$element = new Element('myElement');
+		$element->value(array(null, null, null));
+		$this->assertFalse($element->isEmpty());
+	}
+
 	public function testArrayAccess()
 	{
 		$element = new Element('myElement');

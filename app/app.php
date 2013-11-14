@@ -244,9 +244,11 @@ $app->createData = $app->protect(function($name, $attributes = array(), $options
     }
     switch ($name) {
     case 'comment':
-        if (!isset($attributes['posted_at'])) {
-            $attributes['posted_at'] = $app->clock;
+        if (!isset($options['timezone'])) {
+            $options['timezone'] = $app->timezone;
         }
+        break;
+    case 'image':
         if (!isset($options['timezone'])) {
             $options['timezone'] = $app->timezone;
         }

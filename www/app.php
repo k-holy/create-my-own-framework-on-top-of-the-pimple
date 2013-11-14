@@ -24,8 +24,11 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 
+use Volcanus\FileUploader\FileValidator;
+use Volcanus\FileUploader\Uploader\SymfonyHttpFoundationUploader;
+
 //-----------------------------------------------------------------------------
-// セッションオブジェクトを生成
+// セッションオブジェクト
 //-----------------------------------------------------------------------------
 $app->session = $app->share(function(Application $app) {
     return new Session(
@@ -105,7 +108,7 @@ $app->flash = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
-// トークンオブジェクトを生成
+// トークンオブジェクト
 //-----------------------------------------------------------------------------
 $app->token = $app->share(function(Application $app) {
     return new DataObject(array(
@@ -125,17 +128,34 @@ $app->token = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
+// リクエストオブジェクト
+//-----------------------------------------------------------------------------
+$app->request = $app->share(function(Application $app) {
+    return Request::createFromGlobals();
+});
+
+//-----------------------------------------------------------------------------
+// ファイルバリデータを生成
+//-----------------------------------------------------------------------------
+$app->createFileValidator = $app->protect(function($configurations = array()) use ($app) {
+    return new FileValidator($configurations);
+});
+
+//-----------------------------------------------------------------------------
+// ファイルアップローダを生成
+//-----------------------------------------------------------------------------
+$app->createFileUploader = $app->protect(function($file, $configurations = array()) use ($app) {
+    return new SymfonyHttpFoundationUploader($file, $configurations + array(
+        'moveDirectory' => $app->config->app_root . DIRECTORY_SEPARATOR . 'files',
+        'moveRetry'     => 5,
+    ));
+});
+
+//-----------------------------------------------------------------------------
 // CSRFトークンの検証
 //-----------------------------------------------------------------------------
 $app->csrfVerify = $app->protect(function($method) use ($app) {
     return $app->token->validate($app->findVar($method, $app->token->name()));
-});
-
-//-----------------------------------------------------------------------------
-// リクエストオブジェクトを生成
-//-----------------------------------------------------------------------------
-$app->request = $app->share(function(Application $app) {
-    return Request::createFromGlobals();
 });
 
 //-----------------------------------------------------------------------------
@@ -230,6 +250,14 @@ $app->findVar = $app->protect(function($key, $name, $default = null) use ($app) 
         $value = $default;
     }
     return $value;
+});
+
+//-----------------------------------------------------------------------------
+// アップロードファイルを取得する
+//-----------------------------------------------------------------------------
+$app->findFile = $app->protect(function($name) use ($app) {
+    // \Symfony\Component\HttpFoundation\File\UploadedFile
+    return $app->request->files->get($name);
 });
 
 //-----------------------------------------------------------------------------

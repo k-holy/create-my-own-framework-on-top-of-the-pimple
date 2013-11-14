@@ -17,17 +17,24 @@ trait DataTrait
 {
 
 	/**
-	 * 属性値を初期化します。
+	 * 引数0の場合は属性値のリストを返します。
+	 * 引数1の場合は属性値のリストを初期化します。
 	 *
-	 * @param array 属性値
-	 * @return self
+	 * @return mixed 属性値のリスト または self
 	 */
-	public function setAttributes($attributes = array())
+	public function attributes()
 	{
-		foreach ($attributes as $name => $value) {
-			$this->offsetSet($name, $value);
+		switch (func_num_args()) {
+		case 0:
+			return $this->attributes;
+		case 1:
+			$attributes = func_get_arg(0);
+			foreach ($attributes as $name => $value) {
+				$this->offsetSet($name, $value);
+			}
+			return $this;
 		}
-		return $this;
+		throw new \InvalidArgumentException('Invalid argument count.');
 	}
 
 	/**

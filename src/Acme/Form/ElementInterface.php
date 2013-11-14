@@ -9,7 +9,7 @@
 namespace Acme\Form;
 
 /**
- * フォーム要素
+ * フォーム要素インタフェース
  *
  * @author k.holy74@gmail.com
  */
@@ -70,6 +70,13 @@ interface ElementInterface
 	 * @return bool
 	 */
 	public function equals($value);
+
+	/**
+	 * 要素の値が空かどうかを返します。
+	 *
+	 * @return bool
+	 */
+	public function isEmpty();
 
 	/**
 	 * magic getter

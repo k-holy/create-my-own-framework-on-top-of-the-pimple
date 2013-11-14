@@ -6,4 +6,7 @@ app/log/*
 app/session/*
 !app/session/.gitkeep
 
+app/files/*
+!app/files/.gitkeep
+
 www/*.log
