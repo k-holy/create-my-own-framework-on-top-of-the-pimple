@@ -39,7 +39,7 @@
                 data-placement="right"
                 tal:attributes="data-content php: '<img src=&quot;' . comment.image.get_data_uri() . '&quot; />'">表示</button>
               <span tal:replace="comment/image/file_name">/path/to/file.jpg</span>
-              [<span tal:replace="php:number_format(comment.image.file_size)">10</span>Bytes]
+              (<span tal:replace="comment/image/formatted_file_size">10KB</span>)
             </div>
           </td>
           <td><span tal:replace="comment/posted_at">2013-11-13 00:00:00</span></td>

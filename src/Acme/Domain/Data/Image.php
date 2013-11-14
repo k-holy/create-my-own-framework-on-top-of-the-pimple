@@ -22,6 +22,7 @@ class Image implements \ArrayAccess, \IteratorAggregate
 
 	private $datetimeFormat;
 	private $timezone;
+	private $formatDecimals;
 	private $attributes = [];
 
 	public function __construct($attributes = array(), $options = array())
@@ -42,6 +43,7 @@ class Image implements \ArrayAccess, \IteratorAggregate
 		}
 		$this->setTimezone($options['timezone']);
 		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
+		$this->formatDecimals = isset($options['formatDecimals']) ? $options['formatDecimals'] : 1;
 		$this->attributes = [
 			'id'           => null,
 			'file_name'    => null,
@@ -104,6 +106,31 @@ class Image implements \ArrayAccess, \IteratorAggregate
 	{
 		if (isset($this->attributes['mime_type']) && isset($this->attributes['encoded_data'])) {
 			return sprintf('data:%s;base64,%s', $this->attributes['mime_type'], $this->attributes['encoded_data']);
+		}
+		return null;
+	}
+
+	/**
+	 * バイト単位で書式化されたファイルサイズを返します。
+	 *
+	 * @return string 書式化したファイルサイズ
+	 */
+	public function formatted_file_size()
+	{
+		if (isset($this->attributes['file_size'])) {
+			$value = $this->attributes['file_size'];
+			$number = $value;
+			$unit = '';
+			$units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+			foreach ($units as $_unit) {
+				$unit = $_unit;
+				$number = $value;
+				if ($value < 1024) {
+					break;
+				}
+				$value = $value / 1024;
+			}
+			return number_format($number, $this->formatDecimals) . $unit;
 		}
 		return null;
 	}

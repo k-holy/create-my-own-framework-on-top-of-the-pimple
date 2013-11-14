@@ -34,7 +34,7 @@
         <legend><span class="glyphicon glyphicon -comment"></span>投稿フォーム</legend>
         <input id="file-json" type="hidden" name="image_file_json" value="" tal:attributes="value form/image_file_json/value" />
         <input id="file-input" type="file" name="upload_file" style="visibility:hidden;width:0px;height:0px" />
-        <div class="form-group" tal:attributes="class php:form.author.hasError() ? 'form-group has-error' : 'form-group'">
+        <div class="form-group has-error" tal:attributes="class php:form.author.hasError() ? 'form-group has-error' : 'form-group'">
           <label class="col-md-2 control-label">名前</label>
           <div class="col-md-5">
             <input type="text" name="author" class="form-control" tal:attributes="value form/author/value" />
@@ -43,7 +43,7 @@
             <p class="help-block" tal:content="form/author/error">名前を入力してください。</p>
           </div>
         </div>
-        <div class="form-group" tal:attributes="class php:form.comment.hasError() ? 'form-group has-error' : 'form-group'">
+        <div class="form-group has-error" tal:attributes="class php:form.comment.hasError() ? 'form-group has-error' : 'form-group'">
           <label class="col-md-2 control-label">コメント</label>
           <div class="col-md-5">
             <textarea name="comment" rows="5" class="form-control" tal:content="form/comment/value">コメント内容....</textarea>
@@ -52,13 +52,13 @@
             <p class="help-block" tal:content="form/comment/error">コメントを入力してください。</p>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group has-error" tal:attributes="class php:(form.image_file_name.hasError() || form.image_file_path.hasError()) ? 'form-group has-error' : 'form-group'">
           <label class="col-md-2 control-label">画像</label>
           <div class="col-md-2">
             <input id="file-input-show" type="text" name="image_file_name" class="form-control" tal:attributes="value php:form.image_file_name.hasValue() ? form.image_file_name : ''" />
             <div id="file-show" style="display:none;" tal:attributes="style php:form.image_data_uri.hasValue() ? '' : 'display:none'">
               <p><img alt="" src="" tal:attributes="src php:form.image_data_uri.hasValue() ? form.image_data_uri : '';alt php:form.image_file_name.hasValue() ? form.image_file_name : ''"/></p>
-              <p><a id="file-delete" class="btn btn-sm" href="javascript:void(0)">削除</a></p>
+              <p><button type="button" id="file-delete" class="btn btn-danger btn-sm">削除</button></p>
             </div>
           </div>
           <div class="col-md-3">
@@ -68,6 +68,7 @@
           <div class="col-md-5">
             <p id="file-error" class="error-message text-danger" style="display:none;"></p>
             <p class="help-block" tal:condition="form/image_file_name/hasError" tal:content="form/image_file_name/error">画像を入力してください。</p>
+            <p class="help-block" tal:condition="form/image_file_path/hasError" tal:content="form/image_file_path/error">画像の横幅が999pxを超えています。</p>
           </div>
         </div>
         <div class="form-group">
