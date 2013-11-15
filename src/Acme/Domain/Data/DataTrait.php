@@ -28,6 +28,9 @@ trait DataTrait
 		case 0:
 			return $this->attributes;
 		case 1:
+			$this->attributes = array_fill_keys(
+				array_keys($this->attributes), null
+			);
 			$attributes = func_get_arg(0);
 			foreach ($attributes as $name => $value) {
 				$this->offsetSet($name, $value);

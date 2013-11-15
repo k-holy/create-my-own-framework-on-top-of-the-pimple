@@ -20,10 +20,39 @@ class Image implements \ArrayAccess, \IteratorAggregate
 
 	use DataTrait;
 
+	/**
+	 * @var string 日付書式
+	 */
 	private $datetimeFormat;
+
+	/**
+	 * @var \DateTimeZone タイムゾーン
+	 */
 	private $timezone;
-	private $formatDecimals;
-	private $attributes = [];
+
+	/**
+	 * @var int バイト表記の小数点以下桁数
+	 */
+	private $byteScale;
+
+	/**
+	 * @var array of string バイト表記単位の配列
+	 */
+	private $byteUnits;
+
+	/**
+	 * @var array 属性値の配列
+	 */
+	private $attributes = [
+		'id'           => null,
+		'file_name'    => null,
+		'file_size'    => null,
+		'encoded_data' => null,
+		'mime_type'    => null,
+		'width'        => null,
+		'height'       => null,
+		'created_at'   => null,
+	];
 
 	public function __construct($attributes = array(), $options = array())
 	{
@@ -42,19 +71,15 @@ class Image implements \ArrayAccess, \IteratorAggregate
 			throw new \InvalidArgumentException('Required option "timezone" is not appointed.');
 		}
 		$this->setTimezone($options['timezone']);
+
 		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
-		$this->formatDecimals = isset($options['formatDecimals']) ? $options['formatDecimals'] : 1;
-		$this->attributes = [
-			'id'           => null,
-			'file_name'    => null,
-			'file_size'    => null,
-			'encoded_data' => null,
-			'mime_type'    => null,
-			'width'        => null,
-			'height'       => null,
-			'created_at'   => null,
-		];
+
+		$this->byteScale = isset($options['byteScale']) ? $options['byteScale'] : 1;
+
+		$this->byteUnits = isset($options['byteUnits']) ? $options['byteUnits'] : ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
+
 		$this->attributes($attributes);
+
 		return $this;
 	}
 
@@ -102,7 +127,7 @@ class Image implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @return string Data URI
 	 */
-	public function get_data_uri()
+	public function getDataUri()
 	{
 		if (isset($this->attributes['mime_type']) && isset($this->attributes['encoded_data'])) {
 			return sprintf('data:%s;base64,%s', $this->attributes['mime_type'], $this->attributes['encoded_data']);
@@ -115,22 +140,20 @@ class Image implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @return string 書式化したファイルサイズ
 	 */
-	public function formatted_file_size()
+	public function getFormattedFileSize()
 	{
 		if (isset($this->attributes['file_size'])) {
-			$value = $this->attributes['file_size'];
-			$number = $value;
+			$number = $this->attributes['file_size'];
 			$unit = '';
-			$units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
-			foreach ($units as $_unit) {
-				$unit = $_unit;
-				$number = $value;
-				if ($value < 1024) {
+			foreach ($this->byteUnits as $unit) {
+				if ($number < 1024) {
 					break;
 				}
-				$value = $value / 1024;
+				$number = $number / 1024;
 			}
-			return number_format($number, $this->formatDecimals) . $unit;
+			return (isset($this->byteScale))
+				? number_format($number, $this->byteScale) . $unit
+				: number_format($number) . $unit;
 		}
 		return null;
 	}
