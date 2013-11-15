@@ -146,7 +146,7 @@ $app->createFileValidator = $app->protect(function($configurations = array()) us
 //-----------------------------------------------------------------------------
 $app->createFileUploader = $app->protect(function($file, $configurations = array()) use ($app) {
     return new SymfonyHttpFoundationUploader($file, $configurations + array(
-        'moveDirectory' => $app->config->app_root . DIRECTORY_SEPARATOR . 'files',
+        'moveDirectory' => $app->config->app_root . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . 'files',
         'moveRetry'     => 5,
     ));
 });

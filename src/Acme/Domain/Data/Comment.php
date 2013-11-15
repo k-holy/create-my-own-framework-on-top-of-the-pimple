@@ -20,9 +20,27 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 
 	use DataTrait;
 
+	/**
+	 * @var string 日付書式
+	 */
 	private $datetimeFormat;
+
+	/**
+	 * @var \DateTimeZone タイムゾーン
+	 */
 	private $timezone;
-	private $attributes = [];
+
+	/**
+	 * @var array 属性値の配列
+	 */
+	private $attributes = [
+		'id'        => null,
+		'author'    => null,
+		'comment'   => null,
+		'image_id'  => null,
+		'posted_at' => null,
+		'image'     => null, // 画像
+	];
 
 	public function __construct($attributes = array(), $options = array())
 	{
@@ -41,17 +59,11 @@ class Comment implements \ArrayAccess, \IteratorAggregate
 			throw new \InvalidArgumentException('Required option "timezone" is not appointed.');
 		}
 		$this->setTimezone($options['timezone']);
+
 		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
-		$this->attributes = [
-			'id'        => null,
-			'author'    => null,
-			'comment'   => null,
-			'image_id'  => null,
-			'posted_at' => null,
-			// 画像
-			'image'     => null,
-		];
+
 		$this->attributes($attributes);
+
 		return $this;
 	}
 

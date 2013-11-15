@@ -5,6 +5,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
 <title>トップページ</title>
 </head>
 
@@ -33,13 +35,14 @@
           <td><span tal:replace="comment/comment">コメントです</span></td>
           <td>
             <div tal:condition="exists:comment/image">
-              <button class="btn btn-info btn-xs comment-image-popover"
-                data-trigger="click"
-                data-html="true"
-                data-placement="right"
-                tal:attributes="data-content php: '<img src=&quot;' . comment.image.get_data_uri() . '&quot; />'">表示</button>
+              <button class="btn btn-info btn-xs comment-image-popover">表示</button>
               <span tal:replace="comment/image/file_name">/path/to/file.jpg</span>
-              (<span tal:replace="comment/image/formatted_file_size">10KB</span>)
+              (<span tal:replace="comment/image/getFormattedFileSize">10KB</span>)
+              <div class="comment-image">
+                <img src="profile.jpg" alt="profile.jpg" title="profile.jpg"
+                  tal:attributes="src comment/image/getDataUri; alt comment/image/file_name; title comment/image/file_name; width comment/image/width; height comment/image/height;"
+                />
+              </div>
             </div>
           </td>
           <td><span tal:replace="comment/posted_at">2013-11-13 00:00:00</span></td>
@@ -48,7 +51,15 @@
     </table>
   <script type="text/javascript">
   $(function() {
-    $('.comment-image-popover').popover();
+    $('.comment-image').hide();
+    $('.comment-image-popover').popover({
+      html: true,
+      trigger: 'click',
+      placement: 'right',
+      content: function() {
+        return $(this).parent().children('.comment-image').children('img').get(0).outerHTML;
+      }
+    });
   });
   </script>
   </div>
