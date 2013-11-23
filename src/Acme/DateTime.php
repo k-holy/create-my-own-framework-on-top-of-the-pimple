@@ -281,6 +281,20 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
+	 * __set_state
+	 *
+	 * @param array
+	 * @return object
+	 */
+	public static function __set_state($attributes)
+	{
+		return new static(
+			isset($attributes['datetime']) ? $attributes['datetime'] : null,
+			isset($attributes['format']) ? $attributes['format'] : null
+		);
+	}
+
+	/**
 	 * ArrayAccess::offsetExists()
 	 *
 	 * @param mixed
