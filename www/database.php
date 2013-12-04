@@ -55,6 +55,10 @@ CREATE TABLE comments
 SQL
     );
 
+    $app->metaCacheProcessor->unsetMetaTables();
+    $app->metaCacheProcessor->unsetMetaColumns('images');
+    $app->metaCacheProcessor->unsetMetaColumns('comments');
+
     return $app->redirect('/database', 303);
 
 });

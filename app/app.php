@@ -22,9 +22,14 @@ use Volcanus\Error\ExceptionFormatter;
 use Volcanus\Error\TraceFormatter;
 use Volcanus\Error\StackTraceIterator;
 
+use Volcanus\Database\Dsn;
+use Volcanus\Database\DsnParser;
+use Volcanus\Database\DoctrineCacheFactory;
+use Volcanus\Database\Driver\Pdo\PdoFactory;
 use Volcanus\Database\Driver\Pdo\PdoDriver;
 use Volcanus\Database\Driver\Pdo\PdoTransaction;
-use Volcanus\Database\MetaDataProcessor\SqliteMetaDataProcessor;
+use Volcanus\Database\MetaData\SqliteMetaDataProcessor;
+use Volcanus\Database\MetaData\Cache\DoctrineCacheProcessor;
 
 use Volcanus\TemplateRenderer\Renderer;
 use Volcanus\TemplateRenderer\Adapter\PhpTalAdapter;
@@ -48,6 +53,9 @@ $app->config = $app->share(function(Application $app) {
         'timezone'   => 'Asia/Tokyo',
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
+            'meta_cache' => array(
+                'directory' => realpath(__DIR__ . '/cache/db/meta'),
+            ),
         ),
     ), Configuration::EXECUTE_CALLABLE);
     $config['log_file'] = function($config) use ($app) {
@@ -204,25 +212,39 @@ $app->errorLevelToLogLevel = $app->protect(function($level) {
 });
 
 //-----------------------------------------------------------------------------
+// DSN
+//-----------------------------------------------------------------------------
+$app->dsn = $app->share(function(Application $app) {
+    $parser = new DsnParser($app->config->database->dsn);
+    return new Dsn($parser->getAttributes());
+});
+
+//-----------------------------------------------------------------------------
 // PDO
 //-----------------------------------------------------------------------------
 $app->pdo = $app->share(function(Application $app) {
-    try {
-        $pdo = new \PDO($app->config->database->dsn);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-    } catch (\PDOException $e) {
-        throw new \RuntimeException(
-            sprintf('Invalid DSN: "%s"', $app->config->database->dsn)
-        );
-    }
-    return $pdo;
+    return PdoFactory::createFromDsn($app->dsn);
+});
+
+//-----------------------------------------------------------------------------
+// メタデータキャッシュ
+//-----------------------------------------------------------------------------
+$app->metaCacheProcessor = $app->share(function(Application $app) {
+    $cache = DoctrineCacheFactory::create('phpFile', array(
+        'directory' => $app->config->database->meta_cache->directory,
+    ));
+    return new DoctrineCacheProcessor($cache);
 });
 
 //-----------------------------------------------------------------------------
 // データベースドライバ
 //-----------------------------------------------------------------------------
 $app->db = $app->share(function(Application $app) {
-    return new PdoDriver($app->pdo, new SqliteMetaDataProcessor());
+    $metaDataProcessor = new SqliteMetaDataProcessor();
+    $metaDataProcessor->setCacheProcessor($app->metaCacheProcessor);
+    $db = new PdoDriver($app->pdo, $metaDataProcessor);
+    $db->setDsn($app->dsn);
+    return $db;
 });
 
 //-----------------------------------------------------------------------------
