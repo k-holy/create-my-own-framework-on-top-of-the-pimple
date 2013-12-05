@@ -23,7 +23,6 @@ use Volcanus\Error\TraceFormatter;
 use Volcanus\Error\StackTraceIterator;
 
 use Volcanus\Database\Dsn;
-use Volcanus\Database\DsnParser;
 use Volcanus\Database\DoctrineCacheFactory;
 use Volcanus\Database\Driver\Pdo\PdoFactory;
 use Volcanus\Database\Driver\Pdo\PdoDriver;
@@ -53,9 +52,7 @@ $app->config = $app->share(function(Application $app) {
         'timezone'   => 'Asia/Tokyo',
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
-            'meta_cache' => array(
-                'directory' => realpath(__DIR__ . '/cache/db/meta'),
-            ),
+            'meta_cache_dir' => realpath(__DIR__ . '/cache/db/meta'),
         ),
     ), Configuration::EXECUTE_CALLABLE);
     $config['log_file'] = function($config) use ($app) {
@@ -215,8 +212,7 @@ $app->errorLevelToLogLevel = $app->protect(function($level) {
 // DSN
 //-----------------------------------------------------------------------------
 $app->dsn = $app->share(function(Application $app) {
-    $parser = new DsnParser($app->config->database->dsn);
-    return new Dsn($parser->getAttributes());
+    return Dsn::createFromString($app->config->database->dsn);
 });
 
 //-----------------------------------------------------------------------------
@@ -231,7 +227,7 @@ $app->pdo = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 $app->metaCache = $app->share(function(Application $app) {
     $cache = DoctrineCacheFactory::create('phpFile', array(
-        'directory' => $app->config->database->meta_cache->directory,
+        'directory' => $app->config->database->meta_cache_dir,
     ));
     return new DoctrineCacheProcessor($cache);
 });
