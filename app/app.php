@@ -227,9 +227,9 @@ $app->pdo = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
-// メタデータキャッシュ
+// メタキャッシュ
 //-----------------------------------------------------------------------------
-$app->metaCacheProcessor = $app->share(function(Application $app) {
+$app->metaCache = $app->share(function(Application $app) {
     $cache = DoctrineCacheFactory::create('phpFile', array(
         'directory' => $app->config->database->meta_cache->directory,
     ));
@@ -240,9 +240,7 @@ $app->metaCacheProcessor = $app->share(function(Application $app) {
 // データベースドライバ
 //-----------------------------------------------------------------------------
 $app->db = $app->share(function(Application $app) {
-    $metaDataProcessor = new SqliteMetaDataProcessor();
-    $metaDataProcessor->setCacheProcessor($app->metaCacheProcessor);
-    $db = new PdoDriver($app->pdo, $metaDataProcessor);
+    $db = new PdoDriver($app->pdo, new SqliteMetaDataProcessor($app->metaCache));
     $db->setDsn($app->dsn);
     return $db;
 });

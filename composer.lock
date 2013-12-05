@@ -455,12 +455,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-database.git",
-                "reference": "143196f45f623019bec663b20b796e22aa0b8eba"
+                "reference": "e02d340eb284431de4116be134f278317bc02eaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/143196f45f623019bec663b20b796e22aa0b8eba",
-                "reference": "143196f45f623019bec663b20b796e22aa0b8eba",
+                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/e02d340eb284431de4116be134f278317bc02eaf",
+                "reference": "e02d340eb284431de4116be134f278317bc02eaf",
                 "shasum": ""
             },
             "require": {
@@ -487,7 +487,7 @@
             ],
             "description": "database abstraction layer",
             "homepage": "https://github.com/k-holy/volcanus-database",
-            "time": "2013-12-04 10:22:49"
+            "time": "2013-12-05 04:18:25"
         },
         {
             "name": "volcanus/error",
