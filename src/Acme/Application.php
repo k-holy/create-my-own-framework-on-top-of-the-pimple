@@ -42,7 +42,7 @@ class Application extends \Pimple
 	 */
 	public function __get($name)
 	{
-		return parent::offsetGet($name);
+		return $this->offsetGet($name);
 	}
 
 	/**
@@ -53,13 +53,13 @@ class Application extends \Pimple
 	 */
 	public function __set($name, $value)
 	{
-		parent::offsetSet($name, $value);
+		$this->offsetSet($name, $value);
 	}
 
 	/**
-	 * magic isset
+	 * __isset()
 	 *
-	 * @param string 属性名
+	 * @param string
 	 * @return bool
 	 */
 	public function __isset($name)
@@ -68,9 +68,9 @@ class Application extends \Pimple
 	}
 
 	/**
-	 * magic unset
+	 * __unset()
 	 *
-	 * @param string 属性名
+	 * @param string
 	 */
 	public function __unset($name)
 	{

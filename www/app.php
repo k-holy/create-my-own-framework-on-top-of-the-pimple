@@ -14,8 +14,6 @@ use Acme\DataObject;
 use Acme\Exception\HttpException;
 use Acme\Form\Form;
 
-use Monolog\Logger;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -359,7 +357,12 @@ $app->addHandler('init', function(Application $app) {
 //-----------------------------------------------------------------------------
 $app->run = $app->protect(function() use ($app) {
 
-    $app->init();
+    $response = $app->init();
+
+    if (isset($response) && $response instanceof Response) {
+        $response->send();
+        return;
+    }
 
     try {
         $uri = $app->request->getRequestUri();

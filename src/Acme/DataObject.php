@@ -17,7 +17,7 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 {
 
 	/**
-	 * @var array 属性値の配列
+	 * @var array 属性の配列
 	 */
 	protected $attributes;
 
@@ -47,6 +47,17 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
+	 * ArrayAccess::offsetExists()
+	 *
+	 * @param mixed
+	 * @return bool
+	 */
+	public function offsetExists($name)
+	{
+		return array_key_exists($name, $this->attributes);
+	}
+
+	/**
 	 * ArrayAccess::offsetGet()
 	 *
 	 * @param mixed
@@ -72,17 +83,6 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * ArrayAccess::offsetExists()
-	 *
-	 * @param mixed
-	 * @return bool
-	 */
-	public function offsetExists($name)
-	{
-		return array_key_exists($name, $this->attributes);
-	}
-
-	/**
 	 * ArrayAccess::offsetUnset()
 	 *
 	 * @param mixed
@@ -95,9 +95,20 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * magic getter
+	 * __isset()
 	 *
-	 * @param string 属性名
+	 * @param string
+	 * @return bool
+	 */
+	public function __isset($name)
+	{
+		return $this->offsetExists($name);
+	}
+
+	/**
+	 * __get()
+	 *
+	 * @param string
 	 */
 	public function __get($name)
 	{
@@ -105,10 +116,10 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * magic setter
+	 * __set()
 	 *
-	 * @param string 属性名
-	 * @param mixed 属性値
+	 * @param string
+	 * @param mixed
 	 */
 	public function __set($name, $value)
 	{
@@ -121,20 +132,9 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * magic isset
+	 * __unset()
 	 *
-	 * @param string 属性名
-	 * @return bool
-	 */
-	public function __isset($name)
-	{
-		return $this->offsetExists($name);
-	}
-
-	/**
-	 * magic unset
-	 *
-	 * @param string 属性名
+	 * @param string
 	 */
 	public function __unset($name)
 	{
@@ -142,7 +142,7 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * magic call method
+	 * __call()
 	 *
 	 * @param string
 	 * @param array
@@ -158,14 +158,6 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * __toString
-	 */
-	public function __toString()
-	{
-		return var_export($this->toArray(), true);
-	}
-
-	/**
 	 * IteratorAggregate::getIterator()
 	 *
 	 * @return \ArrayIterator
@@ -173,6 +165,14 @@ class DataObject implements \ArrayAccess, \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->toArray());
+	}
+
+	/**
+	 * __toString
+	 */
+	public function __toString()
+	{
+		return var_export($this->toArray(), true);
 	}
 
 	/**

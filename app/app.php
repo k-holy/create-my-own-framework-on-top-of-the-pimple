@@ -78,7 +78,7 @@ $app->clock = $app->share(function(Application $app) {
     $datetime = new DateTime(
         new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME']))
     );
-    $datetime->setTimeZone($app->timezone);
+    $datetime->setTimezone($app->timezone);
     return $datetime;
 });
 
