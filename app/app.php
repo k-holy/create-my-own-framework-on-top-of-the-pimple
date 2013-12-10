@@ -22,9 +22,13 @@ use Volcanus\Error\ExceptionFormatter;
 use Volcanus\Error\TraceFormatter;
 use Volcanus\Error\StackTraceIterator;
 
+use Volcanus\Database\Dsn;
+use Volcanus\Database\DoctrineCacheFactory;
+use Volcanus\Database\Driver\Pdo\PdoFactory;
 use Volcanus\Database\Driver\Pdo\PdoDriver;
 use Volcanus\Database\Driver\Pdo\PdoTransaction;
-use Volcanus\Database\MetaDataProcessor\SqliteMetaDataProcessor;
+use Volcanus\Database\MetaData\SqliteMetaDataProcessor;
+use Volcanus\Database\MetaData\Cache\DoctrineCacheProcessor;
 
 use Volcanus\TemplateRenderer\Renderer;
 use Volcanus\TemplateRenderer\Adapter\PhpTalAdapter;
@@ -48,6 +52,7 @@ $app->config = $app->share(function(Application $app) {
         'timezone'   => 'Asia/Tokyo',
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
+            'meta_cache_dir' => realpath(__DIR__ . '/cache/db/meta'),
         ),
     ), Configuration::EXECUTE_CALLABLE);
     $config['log_file'] = function($config) use ($app) {
@@ -73,7 +78,7 @@ $app->clock = $app->share(function(Application $app) {
     $datetime = new DateTime(
         new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME']))
     );
-    $datetime->setTimeZone($app->timezone);
+    $datetime->setTimezone($app->timezone);
     return $datetime;
 });
 
@@ -204,25 +209,36 @@ $app->errorLevelToLogLevel = $app->protect(function($level) {
 });
 
 //-----------------------------------------------------------------------------
+// DSN
+//-----------------------------------------------------------------------------
+$app->dsn = $app->share(function(Application $app) {
+    return Dsn::createFromString($app->config->database->dsn);
+});
+
+//-----------------------------------------------------------------------------
 // PDO
 //-----------------------------------------------------------------------------
 $app->pdo = $app->share(function(Application $app) {
-    try {
-        $pdo = new \PDO($app->config->database->dsn);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-    } catch (\PDOException $e) {
-        throw new \RuntimeException(
-            sprintf('Invalid DSN: "%s"', $app->config->database->dsn)
-        );
-    }
-    return $pdo;
+    return PdoFactory::createFromDsn($app->dsn);
+});
+
+//-----------------------------------------------------------------------------
+// メタキャッシュ
+//-----------------------------------------------------------------------------
+$app->metaCache = $app->share(function(Application $app) {
+    $cache = DoctrineCacheFactory::create('phpFile', array(
+        'directory' => $app->config->database->meta_cache_dir,
+    ));
+    return new DoctrineCacheProcessor($cache);
 });
 
 //-----------------------------------------------------------------------------
 // データベースドライバ
 //-----------------------------------------------------------------------------
 $app->db = $app->share(function(Application $app) {
-    return new PdoDriver($app->pdo, new SqliteMetaDataProcessor());
+    $db = new PdoDriver($app->pdo, new SqliteMetaDataProcessor($app->metaCache));
+    $db->setDsn($app->dsn);
+    return $db;
 });
 
 //-----------------------------------------------------------------------------

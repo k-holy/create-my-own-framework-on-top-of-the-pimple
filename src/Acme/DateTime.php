@@ -281,6 +281,17 @@ class DateTime implements \ArrayAccess
 	}
 
 	/**
+	 * __sleep
+	 *
+	 * @param void
+	 * @return void
+	 */
+	public function __sleep()
+	{
+		return ['datetime', 'format'];
+	}
+
+	/**
 	 * __set_state
 	 *
 	 * @param array

@@ -3,8 +3,77 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "9a9738eeb09b81702b0598873329f80b",
+    "hash": "4219ff85ecc518aac72ae9f5c40aced9",
     "packages": [
+        {
+            "name": "doctrine/cache",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/cache.git",
+                "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/d0e4447707a064a5814b18cb0dcc2f24185f6179",
+                "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "conflict": {
+                "doctrine/common": ">2.2,<2.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Common\\Cache\\": "lib/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com",
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
+                },
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "http://jmsyst.com",
+                    "role": "Developer of wrapped JMSSerializerBundle"
+                }
+            ],
+            "description": "Caching library offering an object-oriented API for many cache backends",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "cache",
+                "caching"
+            ],
+            "time": "2013-09-26 19:23:25"
+        },
         {
             "name": "monolog/monolog",
             "version": "1.5.0",
@@ -244,17 +313,17 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.3.6",
+            "version": "v2.3.7",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3"
+                "reference": "1c4b897064f4f621031a0e3bc19fd7054d5e0315"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/59e712338cd05463ebcb8da6422a01b1291871e3",
-                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/1c4b897064f4f621031a0e3bc19fd7054d5e0315",
+                "reference": "1c4b897064f4f621031a0e3bc19fd7054d5e0315",
                 "shasum": ""
             },
             "require": {
@@ -289,7 +358,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2013-09-29 19:41:41"
+            "time": "2013-11-13 21:27:40"
         },
         {
             "name": "twig/twig",
@@ -346,21 +415,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-configuration.git",
-                "reference": "6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f"
+                "reference": "482f27387a8064c8969164bae6b3af784c9e0961"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-configuration/zipball/6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f",
-                "reference": "6d054f42c5fc1450fd19d9ba7acdd4d51bea5d7f",
+                "url": "https://api.github.com/repos/k-holy/volcanus-configuration/zipball/482f27387a8064c8969164bae6b3af784c9e0961",
+                "reference": "482f27387a8064c8969164bae6b3af784c9e0961",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3"
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Volcanus\\Configuration": ""
+                    "Volcanus\\Configuration": "."
                 }
             },
             "license": [
@@ -374,7 +446,7 @@
             ],
             "description": "Array class for configurations",
             "homepage": "https://github.com/k-holy/volcanus-configuration",
-            "time": "2013-10-21 04:23:14"
+            "time": "2013-11-26 10:39:54"
         },
         {
             "name": "volcanus/database",
@@ -383,21 +455,25 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-database.git",
-                "reference": "d23bbdb8d95a5fa86ffe6cb508a555acca9bd599"
+                "reference": "0c6e23a72f71e7e0d9debbba350b4480a17dc17c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/d23bbdb8d95a5fa86ffe6cb508a555acca9bd599",
-                "reference": "d23bbdb8d95a5fa86ffe6cb508a555acca9bd599",
+                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/0c6e23a72f71e7e0d9debbba350b4480a17dc17c",
+                "reference": "0c6e23a72f71e7e0d9debbba350b4480a17dc17c",
                 "shasum": ""
             },
             "require": {
+                "doctrine/cache": "1.2.*",
                 "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Volcanus\\Database": ""
+                    "Volcanus\\Database": "."
                 }
             },
             "license": [
@@ -411,7 +487,7 @@
             ],
             "description": "database abstraction layer",
             "homepage": "https://github.com/k-holy/volcanus-database",
-            "time": "2013-10-21 02:39:05"
+            "time": "2013-12-05 10:39:02"
         },
         {
             "name": "volcanus/error",
@@ -420,21 +496,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-error.git",
-                "reference": "7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5"
+                "reference": "e3585a690bc3003019a1ed730f3f8fb001dcea5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-error/zipball/7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5",
-                "reference": "7c44cf6feb06a6722cdb13845a9a5751d9ebd1d5",
+                "url": "https://api.github.com/repos/k-holy/volcanus-error/zipball/e3585a690bc3003019a1ed730f3f8fb001dcea5f",
+                "reference": "e3585a690bc3003019a1ed730f3f8fb001dcea5f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "require-dev": {
+                "satooshi/php-coveralls": "dev-master"
+            },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Volcanus\\Error": ""
+                    "Volcanus\\Error": "."
                 }
             },
             "license": [
@@ -448,7 +527,7 @@
             ],
             "description": "simple error and exception handler",
             "homepage": "https://github.com/k-holy/volcanus-error",
-            "time": "2013-10-21 04:43:14"
+            "time": "2013-11-26 10:41:56"
         },
         {
             "name": "volcanus/file-uploader",
@@ -457,27 +536,27 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-file-uploader.git",
-                "reference": "e0eefe2780fe46d74651d9397646821b1375d4ec"
+                "reference": "1a989840f34fea23e951e0ca70fe1702a859c68f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-file-uploader/zipball/e0eefe2780fe46d74651d9397646821b1375d4ec",
-                "reference": "e0eefe2780fe46d74651d9397646821b1375d4ec",
+                "url": "https://api.github.com/repos/k-holy/volcanus-file-uploader/zipball/1a989840f34fea23e951e0ca70fe1702a859c68f",
+                "reference": "1a989840f34fea23e951e0ca70fe1702a859c68f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
+                "satooshi/php-coveralls": "dev-master",
                 "symfony/http-foundation": "2.3.*"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Volcanus\\FileUploader": ""
+                    "Volcanus\\FileUploader": "."
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -489,7 +568,7 @@
             ],
             "description": "file uploader",
             "homepage": "https://github.com/k-holy/volcanus-file-uploader",
-            "time": "2013-11-07 10:13:57"
+            "time": "2013-11-26 10:42:37"
         },
         {
             "name": "volcanus/routing",
@@ -498,21 +577,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-routing.git",
-                "reference": "a1a8b045508b3290dbd436866dd6dbdfb59756f8"
+                "reference": "ff7f55959d9c04b1de9b56cd83f8ee7388572e1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-routing/zipball/a1a8b045508b3290dbd436866dd6dbdfb59756f8",
-                "reference": "a1a8b045508b3290dbd436866dd6dbdfb59756f8",
+                "url": "https://api.github.com/repos/k-holy/volcanus-routing/zipball/ff7f55959d9c04b1de9b56cd83f8ee7388572e1e",
+                "reference": "ff7f55959d9c04b1de9b56cd83f8ee7388572e1e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3"
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Volcanus\\Routing": ""
+                    "Volcanus\\Routing": "."
                 }
             },
             "license": [
@@ -526,7 +608,7 @@
             ],
             "description": "request-URI routing for page-controller scripts.",
             "homepage": "https://github.com/k-holy/Volcanus_Routing",
-            "time": "2013-10-21 03:01:02"
+            "time": "2013-11-26 10:43:33"
         },
         {
             "name": "volcanus/template-renderer",
@@ -535,12 +617,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-template-renderer.git",
-                "reference": "4f5b93d3565856b306fe4dc12f7c2e023c67fc2b"
+                "reference": "dd3c7d0496ff7beb0f8c2696a4bbd9326be0ca73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-template-renderer/zipball/4f5b93d3565856b306fe4dc12f7c2e023c67fc2b",
-                "reference": "4f5b93d3565856b306fe4dc12f7c2e023c67fc2b",
+                "url": "https://api.github.com/repos/k-holy/volcanus-template-renderer/zipball/dd3c7d0496ff7beb0f8c2696a4bbd9326be0ca73",
+                "reference": "dd3c7d0496ff7beb0f8c2696a4bbd9326be0ca73",
                 "shasum": ""
             },
             "require": {
@@ -548,13 +630,14 @@
             },
             "require-dev": {
                 "phptal/phptal": "dev-master",
+                "satooshi/php-coveralls": "dev-master",
                 "smarty/smarty": "3.1.*",
                 "twig/twig": "1.*"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Volcanus\\TemplateRenderer": ""
+                    "Volcanus\\TemplateRenderer": "."
                 }
             },
             "license": [
@@ -566,8 +649,9 @@
                     "email": "k.holy74@gmail.com"
                 }
             ],
+            "description": "renderer class for some template systems",
             "homepage": "https://github.com/k-holy/volcanus-template-renderer",
-            "time": "2013-10-21 02:35:36"
+            "time": "2013-11-26 10:44:10"
         }
     ],
     "packages-dev": [

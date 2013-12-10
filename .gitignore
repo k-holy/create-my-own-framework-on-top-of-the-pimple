@@ -9,4 +9,7 @@ app/session/*
 app/temp/files/*
 !app/temp/files/.gitkeep
 
+app/cache/db/meta/*
+!app/cache/db/meta/.gitkeep
+
 www/*.log

@@ -32,6 +32,8 @@
               <th>デフォルト値</th>
               <th>NOT NULL</th>
               <th>PRIMARY KEY</th>
+              <th>UNIQUE KEY</th>
+              <th>コメント</th>
             </tr>
           </thead>
           <tbody>
@@ -42,6 +44,8 @@
               <td tal:content="column/default">default</td>
               <td tal:content="column/notNull">notNull</td>
               <td tal:content="column/primaryKey">primaryKey</td>
+              <td tal:content="column/uniqueKey">uniqueKey</td>
+              <td tal:content="column/comment">comment</td>
             </tr>
           </tbody>
         </table>
