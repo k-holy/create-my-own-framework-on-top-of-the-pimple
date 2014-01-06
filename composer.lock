@@ -269,11 +269,11 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v3.1.15",
+            "version": "v3.1.16",
             "source": {
                 "type": "svn",
                 "url": "http://smarty-php.googlecode.com/svn",
-                "reference": "/tags/v3.1.15/@4782"
+                "reference": "/tags/v3.1.16/@4802"
             },
             "require": {
                 "php": ">=5.2"
@@ -286,7 +286,6 @@
                     "distribution/libs/sysplugins/smarty_security.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "LGPL-3.0"
             ],
@@ -309,21 +308,21 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-01 21:08:54"
+            "time": "2013-12-17 16:56:58"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.3.7",
+            "version": "v2.3.9",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "1c4b897064f4f621031a0e3bc19fd7054d5e0315"
+                "reference": "3c103d1e14cabd17de3fbff5af8db657da4a50e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/1c4b897064f4f621031a0e3bc19fd7054d5e0315",
-                "reference": "1c4b897064f4f621031a0e3bc19fd7054d5e0315",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/3c103d1e14cabd17de3fbff5af8db657da4a50e0",
+                "reference": "3c103d1e14cabd17de3fbff5af8db657da4a50e0",
                 "shasum": ""
             },
             "require": {
@@ -358,20 +357,20 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2013-11-13 21:27:40"
+            "time": "2014-01-02 21:42:04"
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.2",
+            "version": "v1.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64"
+                "reference": "85e4ff98000157ff753d934b9f13659a953f5666"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/ca445842fcea4f844d68203ffa2d00f5e3cdea64",
-                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/85e4ff98000157ff753d934b9f13659a953f5666",
+                "reference": "85e4ff98000157ff753d934b9f13659a953f5666",
                 "shasum": ""
             },
             "require": {
@@ -380,7 +379,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.14-dev"
+                    "dev-master": "1.15-dev"
                 }
             },
             "autoload": {
@@ -406,7 +405,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-30 08:20:53"
+            "time": "2013-12-06 07:47:10"
         },
         {
             "name": "volcanus/configuration",
@@ -451,16 +450,15 @@
         {
             "name": "volcanus/database",
             "version": "dev-master",
-            "target-dir": "Volcanus/Database",
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-holy/volcanus-database.git",
-                "reference": "0c6e23a72f71e7e0d9debbba350b4480a17dc17c"
+                "reference": "530c76681d66358a2c67c78a5a074ac8ebea8172"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/0c6e23a72f71e7e0d9debbba350b4480a17dc17c",
-                "reference": "0c6e23a72f71e7e0d9debbba350b4480a17dc17c",
+                "url": "https://api.github.com/repos/k-holy/volcanus-database/zipball/530c76681d66358a2c67c78a5a074ac8ebea8172",
+                "reference": "530c76681d66358a2c67c78a5a074ac8ebea8172",
                 "shasum": ""
             },
             "require": {
@@ -473,7 +471,7 @@
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Volcanus\\Database": "."
+                    "Volcanus\\Database": "src/"
                 }
             },
             "license": [
@@ -487,7 +485,7 @@
             ],
             "description": "database abstraction layer",
             "homepage": "https://github.com/k-holy/volcanus-database",
-            "time": "2013-12-05 10:39:02"
+            "time": "2014-01-06 06:45:34"
         },
         {
             "name": "volcanus/error",
