@@ -38,37 +38,25 @@ SQL
 
     $statement->execute(['limit' => 20, 'offset' => 0]);
 
-    $statement->setFetchMode(Statement::FETCH_FUNC, function(
-        $id,
-        $author,
-        $comment,
-        $image_id,
-        $posted_at,
-        $image_file_name,
-        $image_file_size,
-        $image_encoded_data,
-        $image_mime_type,
-        $image_width,
-        $image_height,
-        $image_created_at
-    ) use ($app) {
+    $statement->setFetchMode(Statement::FETCH_ASSOC);
+    $statement->setFetchCallback(function($cols) use ($app) {
         $comment = $app->createData('comment', [
-            'id'        => $id,
-            'author'    => $author,
-            'comment'   => $comment,
-            'image_id'  => $image_id,
-            'posted_at' => $posted_at,
+            'id'        => $cols['id'],
+            'author'    => $cols['author'],
+            'comment'   => $cols['comment'],
+            'image_id'  => $cols['image_id'],
+            'posted_at' => $cols['posted_at'],
         ]);
-        if (!is_null($image_id)) {
+        if (!is_null($cols['image_id'])) {
             $image = $app->createData('image', [
-                'id'           => $image_id,
-                'file_name'    => $image_file_name,
-                'file_size'    => $image_file_size,
-                'encoded_data' => $image_encoded_data,
-                'mime_type'    => $image_mime_type,
-                'width'        => $image_width,
-                'height'       => $image_height,
-                'created_at'   => $image_created_at,
+                'id'           => $cols['image_id'],
+                'file_name'    => $cols['image_file_name'],
+                'file_size'    => $cols['image_file_size'],
+                'encoded_data' => $cols['image_encoded_data'],
+                'mime_type'    => $cols['image_mime_type'],
+                'width'        => $cols['image_width'],
+                'height'       => $cols['image_height'],
+                'created_at'   => $cols['image_created_at'],
             ]);
             $comment->image = $image;
         }
