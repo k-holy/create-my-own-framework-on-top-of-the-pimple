@@ -5,7 +5,11 @@ php:
   - 5.5
 
 before_script:
- - composer install
+  - composer install --dev --no-interaction --prefer-source
 
 script:
- - phpunit
+  - mkdir -p build/logs
+  - phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
+
+after_script:
+  - php vendor/bin/coveralls -v -c .coveralls.yml
