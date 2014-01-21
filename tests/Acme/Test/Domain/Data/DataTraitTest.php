@@ -6,7 +6,7 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Tests\Domain\Data;
+namespace Acme\Test\Domain\Data;
 
 use Acme\Domain\Data\DataTrait;
 

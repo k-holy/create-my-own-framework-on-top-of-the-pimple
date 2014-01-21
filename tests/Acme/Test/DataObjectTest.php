@@ -6,7 +6,7 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Tests;
+namespace Acme\Test;
 
 use Acme\DataObject;
 

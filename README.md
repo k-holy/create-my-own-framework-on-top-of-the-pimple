@@ -2,6 +2,7 @@ Create my own framework on top of the Pimple
 =================================================
 
 [![Build Status](https://travis-ci.org/k-holy/create-my-own-framework-on-top-of-the-pimple.png?branch=master)](https://travis-ci.org/k-holy/create-my-own-framework-on-top-of-the-pimple)
+[![Coverage Status](https://coveralls.io/repos/k-holy/create-my-own-framework-on-top-of-the-pimple/badge.png?branch=master)](https://coveralls.io/r/k-holy/create-my-own-framework-on-top-of-the-pimple?branch=master)
 
 Dependency Injection Container [Pimple](https://github.com/fabpot/Pimple) を拡張して作成した小さなアプリケーションクラスを使って、
 テスト用のWebアプリケーションを作成しながら、自分がフレームワークに求めるものを洗い出そうという試み。
