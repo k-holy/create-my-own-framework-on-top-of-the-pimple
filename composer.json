@@ -1,18 +1,13 @@
 {
+    "name": "k-holy/create-my-own-framework-on-top-of-the-pimple",
+    "homepage": "https://github.com/k-holy/create-my-own-framework-on-top-of-the-pimple",
+    "type": "library",
+    "description": "example",
     "license": "MIT",
     "authors": [
         {
             "name": "k-holy",
             "email": "k.holy74@gmail.com"
-        }
-    ],
-    "repositories": [
-        {
-            "packagist": false
-        },
-        {
-            "type": "composer",
-            "url": "http://composer-proxy.jp/proxy/packagist"
         }
     ],
     "config": {
@@ -26,8 +21,8 @@
     "require": {
         "php": ">=5.4",
         "pimple/pimple": "1.0.2",
-        "monolog/monolog": ">=1.5,<1.5.x-dev",
-        "symfony/http-foundation": ">=2.3,<2.4-dev",
+        "monolog/monolog": "1.5.*",
+        "symfony/http-foundation": "2.4.*",
         "phptal/phptal": "dev-master",
         "smarty/smarty": "3.1.*",
         "twig/twig": "1.*",
@@ -37,5 +32,8 @@
         "volcanus/database": "dev-master",
         "volcanus/template-renderer": "dev-master",
         "volcanus/file-uploader": "dev-master"
+    },
+    "require-dev": {
+        "satooshi/php-coveralls": "dev-master"
     }
 }
