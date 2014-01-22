@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * ドメインデータ
  *
  * @copyright 2013 k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -8,102 +8,79 @@
 
 namespace Acme\Domain\Data;
 
-use Acme\DateTime;
+use Acme\Domain\Data\DataInterface;
+use Acme\Domain\Data\DataTrait;
+use Acme\Domain\Data\DateTime;
+use Acme\Domain\Data\Image;
 
 /**
  * コメント
  *
  * @author k.holy74@gmail.com
  */
-class Comment implements \ArrayAccess, \IteratorAggregate
+class Comment implements DataInterface
 {
 
 	use DataTrait;
 
 	/**
-	 * @var string 日付書式
+	 * @var int
 	 */
-	private $datetimeFormat;
+	private $id;
 
 	/**
-	 * @var \DateTimeZone タイムゾーン
+	 * @var string
 	 */
-	private $timezone;
+	private $author;
 
 	/**
-	 * @var array 属性値の配列
+	 * @var string
 	 */
-	private $attributes = [
-		'id'        => null,
-		'author'    => null,
-		'comment'   => null,
-		'image_id'  => null,
-		'posted_at' => null,
-		'image'     => null, // 画像
-	];
+	private $comment;
 
-	public function __construct($attributes = array(), $options = array())
+	/**
+	 * @var int
+	 */
+	private $imageId;
+
+	/**
+	 * @var Acme\Domain\Data\DateTime
+	 */
+	private $postedAt;
+
+	/**
+	 * @var Acme\Domain\Data\Image
+	 */
+	private $image;
+
+	/**
+	 * postedAtの値をセットします。
+	 *
+	 * @param Acme\Domain\Data\DateTime
+	 */
+	private function setPostedAt(DateTime $postedAt)
 	{
-		$this->initialize($attributes, $options);
+		$this->postedAt = $postedAt;
 	}
 
 	/**
-	 * プロパティを初期化します。
+	 * imageの値をセットします。
 	 *
-	 * @param array プロパティ
-	 * @return self
+	 * @param Acme\Domain\Data\Image
 	 */
-	public function initialize($attributes = array(), $options = array())
+	private function setImage(Image $image = null)
 	{
-		if (!isset($options['timezone'])) {
-			throw new \InvalidArgumentException('Required option "timezone" is not appointed.');
-		}
-		$this->setTimezone($options['timezone']);
-
-		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
-
-		$this->attributes($attributes);
-
-		return $this;
+		$this->image = $image;
 	}
 
 	/**
-	 * DateTimeZoneオブジェクトをセットします。
+	 * postedAtの値に出力用のTimezoneをセットして返します。
 	 *
-	 * @param \DateTimeZone タイムゾーン
+	 * @return Acme\Domain\Data\DateTime
 	 */
-	public function setTimezone(\DateTimeZone $timezone)
+	public function getPostedAt()
 	{
-		$this->timezone = $timezone;
-	}
-
-	/**
-	 * setter for posted_at
-	 *
-	 * @param mixed
-	 */
-	public function set_posted_at($datetime)
-	{
-		if (false === ($datetime instanceof DateTime)) {
-			$datetime = new DateTime($datetime);
-		}
-		$datetime->setTimezone($this->timezone);
-		$this->attributes['posted_at'] = $datetime->getTimestamp(); // 実体はUnixTimestampで保持
-	}
-
-	/**
-	 * getter for posted_at
-	 *
-	 * @return \Acme\DateTime
-	 */
-	public function get_posted_at()
-	{
-		if (isset($this->attributes['posted_at'])) {
-			$datetime = new DateTime($this->attributes['posted_at'], $this->datetimeFormat); // UnixTimestampで保持している値をDateTimeクラスで変換して出力
-			$datetime->setTimezone($this->timezone);
-			return $datetime;
-		}
-		return null;
+		return isset($this->postedAt) ? $this->postedAt : null;
 	}
 
 }

@@ -340,7 +340,6 @@ $app->on = $app->protect(function($allowableMethod, $function) use ($app) {
 //-----------------------------------------------------------------------------
 $app->addHandler('init', function(Application $app) {
     // 現在時刻
-    $app->clock->setFormat('Y/n/j G:i');
     $app->renderer->assign('clock', $app->clock);
     // $_SERVER
     $app->renderer->assign('server', $app->request->server->all());
@@ -357,26 +356,28 @@ $app->addHandler('init', function(Application $app) {
 //-----------------------------------------------------------------------------
 $app->run = $app->protect(function() use ($app) {
 
-    $response = $app->init();
-
-    if (isset($response) && $response instanceof Response) {
-        $response->send();
-        return;
-    }
-
     try {
+
+        $response = $app->init();
+        if (isset($response) && $response instanceof Response) {
+            $response->send();
+            return;
+        }
+
         $uri = $app->request->getRequestUri();
         $method = $app->request->getMethod();
         $handlerName = 'on' . ucfirst(strtolower($method));
         if (!$app->offsetExists($handlerName)) {
             throw new HttpException(405);
         }
+
         $response = $app->{$handlerName}($app, $method);
         if (false === $response instanceof Response) {
             throw new \RuntimeException(
                 sprintf("Response is not returned. Request:'%s %s'", $method, $uri)
             );
         }
+
     } catch (\Exception $e) {
         if (false === $e instanceof HttpException) {
             $app->logException($e);

@@ -10,7 +10,7 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
-use Acme\DateTime;
+use Acme\Domain\Data\DateTime;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -50,6 +50,7 @@ $app->config = $app->share(function(Application $app) {
         'error_view' => 'error.html',
         'secret_key' => 'CCi:wYD-4:iV:@X%1zun[Y@:',
         'timezone'   => 'Asia/Tokyo',
+        'datetimeFormat' => 'Y/n/j H:i:s',
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
             'meta_cache_dir' => realpath(__DIR__ . '/cache/db/meta'),
@@ -75,11 +76,10 @@ $app->timezone = $app->share(function(Application $app) {
 // システム時計
 //-----------------------------------------------------------------------------
 $app->clock = $app->share(function(Application $app) {
-    $datetime = new DateTime(
-        new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME']))
-    );
-    $datetime->setTimezone($app->timezone);
-    return $datetime;
+    return new DateTime([
+        'datetime' => new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME'])),
+        'timezone' => $app->timezone,
+    ]);
 });
 
 //-----------------------------------------------------------------------------
@@ -251,26 +251,14 @@ $app->transaction = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 // ドメインデータファクトリ
 //-----------------------------------------------------------------------------
-$app->createData = $app->protect(function($name, $attributes = array(), $options = array()) use ($app) {
+$app->createData = $app->protect(function($name, array $properties = array()) use ($app) {
     $class = '\\Acme\\Domain\\Data\\' . ucfirst($name);
     if (!class_exists($class, true)) {
         throw new \InvalidArgumentException(
             sprintf('The Domain Data "%s" is not found.', $name)
         );
     }
-    switch ($name) {
-    case 'comment':
-        if (!isset($options['timezone'])) {
-            $options['timezone'] = $app->timezone;
-        }
-        break;
-    case 'image':
-        if (!isset($options['timezone'])) {
-            $options['timezone'] = $app->timezone;
-        }
-        break;
-    }
-    return new $class($attributes, $options);
+    return new $class($properties);
 });
 
 //-----------------------------------------------------------------------------

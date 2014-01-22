@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * ドメインデータ
  *
  * @copyright 2013 k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -8,27 +8,59 @@
 
 namespace Acme\Domain\Data;
 
-use Acme\DateTime;
+use Acme\Domain\Data\DataInterface;
+use Acme\Domain\Data\DataTrait;
+use Acme\Domain\Data\DateTime;
 
 /**
  * 画像
  *
  * @author k.holy74@gmail.com
  */
-class Image implements \ArrayAccess, \IteratorAggregate
+class Image implements DataInterface
 {
 
 	use DataTrait;
 
 	/**
-	 * @var string 日付書式
+	 * @var int
 	 */
-	private $datetimeFormat;
+	private $id;
 
 	/**
-	 * @var \DateTimeZone タイムゾーン
+	 * @var string
 	 */
-	private $timezone;
+	private $fileName;
+
+	/**
+	 * @var int
+	 */
+	private $fileSize;
+
+	/**
+	 * @var string
+	 */
+	private $encodedData;
+
+	/**
+	 * @var string
+	 */
+	private $mimeType;
+
+	/**
+	 * @var int
+	 */
+	private $width;
+
+	/**
+	 * @var int
+	 */
+	private $height;
+
+	/**
+	 * @var Acme\Domain\Data\DateTime
+	 */
+	private $createdAt;
 
 	/**
 	 * @var int バイト表記の小数点以下桁数
@@ -41,98 +73,54 @@ class Image implements \ArrayAccess, \IteratorAggregate
 	private $byteUnits;
 
 	/**
-	 * @var array 属性値の配列
-	 */
-	private $attributes = [
-		'id'           => null,
-		'file_name'    => null,
-		'file_size'    => null,
-		'encoded_data' => null,
-		'mime_type'    => null,
-		'width'        => null,
-		'height'       => null,
-		'created_at'   => null,
-	];
-
-	public function __construct($attributes = array(), $options = array())
-	{
-		$this->initialize($attributes, $options);
-	}
-
-	/**
-	 * プロパティを初期化します。
+	 * __construct()
 	 *
-	 * @param array プロパティ
-	 * @return self
+	 * @param array プロパティの配列
 	 */
-	public function initialize($attributes = array(), $options = array())
+	public function __construct(array $properties = [])
 	{
-		if (!isset($options['timezone'])) {
-			throw new \InvalidArgumentException('Required option "timezone" is not appointed.');
+
+		if (!isset($properties['byteScale'])) {
+			$properties['byteScale'] = 1;
 		}
-		$this->setTimezone($options['timezone']);
 
-		$this->datetimeFormat = isset($options['datetimeFormat']) ? $options['datetimeFormat'] : 'Y-m-d H:i:s';
-
-		$this->byteScale = isset($options['byteScale']) ? $options['byteScale'] : 1;
-
-		$this->byteUnits = isset($options['byteUnits']) ? $options['byteUnits'] : ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
-
-		$this->attributes($attributes);
-
-		return $this;
-	}
-
-	/**
-	 * DateTimeZoneオブジェクトをセットします。
-	 *
-	 * @param \DateTimeZone タイムゾーン
-	 */
-	public function setTimezone(\DateTimeZone $timezone)
-	{
-		$this->timezone = $timezone;
-	}
-
-	/**
-	 * setter for created_at
-	 *
-	 * @param mixed
-	 */
-	public function set_created_at($datetime)
-	{
-		if (false === ($datetime instanceof DateTime)) {
-			$datetime = new DateTime($datetime);
+		if (!isset($properties['byteUnits'])) {
+			$properties['byteUnits'] = ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
 		}
-		$datetime->setTimezone($this->timezone);
-		$this->attributes['created_at'] = $datetime->getTimestamp(); // 実体はUnixTimestampで保持
+
+		$this->initialize($properties);
 	}
 
 	/**
-	 * getter for created_at
+	 * createdAtの値をセットします。
 	 *
-	 * @return \Acme\DateTime
+	 * @param Acme\Domain\Data\DateTime
 	 */
-	public function get_created_at()
+	private function setCreatedAt(DateTime $createdAt)
 	{
-		if (isset($this->attributes['created_at'])) {
-			$datetime = new DateTime($this->attributes['created_at'], $this->datetimeFormat); // UnixTimestampで保持している値をDateTimeクラスで変換して出力
-			$datetime->setTimezone($this->timezone);
-			return $datetime;
-		}
-		return null;
+		$this->createdAt = $createdAt;
 	}
 
 	/**
-	 * getter for Data URI
+	 * createdAtの値に出力用のTimezoneをセットして返します。
+	 *
+	 * @return Acme\Domain\Data\DateTime
+	 */
+	public function getCreatedAt()
+	{
+		return isset($this->createdAt) ? $this->createdAt : null;
+	}
+
+	/**
+	 * エンコードされたデータを Data URI 形式で返します。
 	 *
 	 * @return string Data URI
 	 */
 	public function getDataUri()
 	{
-		if (isset($this->attributes['mime_type']) && isset($this->attributes['encoded_data'])) {
-			return sprintf('data:%s;base64,%s', $this->attributes['mime_type'], $this->attributes['encoded_data']);
-		}
-		return null;
+		return (isset($this->mimeType) && isset($this->encodedData))
+			? sprintf('data:%s;base64,%s', $this->mimeType, $this->encodedData)
+			: null;
 	}
 
 	/**
@@ -142,8 +130,8 @@ class Image implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function getFormattedFileSize()
 	{
-		if (isset($this->attributes['file_size'])) {
-			$number = $this->attributes['file_size'];
+		if (isset($this->fileSize)) {
+			$number = $this->fileSize;
 			$unit = '';
 			foreach ($this->byteUnits as $unit) {
 				if ($number < 1024) {
