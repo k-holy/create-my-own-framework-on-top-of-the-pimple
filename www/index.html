@@ -36,16 +36,16 @@
           <td>
             <div tal:condition="exists:comment/image">
               <button class="btn btn-info btn-xs comment-image-popover">表示</button>
-              <span tal:replace="comment/image/file_name">/path/to/file.jpg</span>
+              <span tal:replace="comment/image/fileName">/path/to/file.jpg</span>
               (<span tal:replace="comment/image/getFormattedFileSize">10KB</span>)
               <div class="comment-image">
                 <img src="profile.jpg" alt="profile.jpg" title="profile.jpg"
-                  tal:attributes="src comment/image/getDataUri; alt comment/image/file_name; title comment/image/file_name; width comment/image/width; height comment/image/height;"
+                  tal:attributes="src comment/image/getDataUri; alt comment/image/fileName; title comment/image/fileName; width comment/image/width; height comment/image/height;"
                 />
               </div>
             </div>
           </td>
-          <td><span tal:replace="comment/posted_at">2013-11-13 00:00:00</span></td>
+          <td><span tal:replace="comment/postedAt">2013-11-13 00:00:00</span></td>
         </tr>
       </tbody>
     </table>

@@ -19,16 +19,9 @@ $app->on('GET|POST', function($app, $method) {
         'ignore_error'      => $app->findVar('P', 'ignore_error'),
         'change_secret_key' => $app->findVar('P', 'change_secret_key'),
         'validate_token'    => $app->findVar('P', 'validate_token'),
-        'timezone'          => $app->findVar('P', 'timezone'),
-        'timezones'         => \DateTimeZone::listIdentifiers(\DateTimeZone::ASIA),
     );
 
     if ($method === 'POST') {
-
-        // タイムゾーン設定を動的に切り替える
-        if (isset($form['timezone'])) {
-            $app->clock->setTimeZone($form['timezone']);
-        }
 
         // デバッグ設定を動的に切り替える
         $app->config->debug = (isset($form['enable_debug']));

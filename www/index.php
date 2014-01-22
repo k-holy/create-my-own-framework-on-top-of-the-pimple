@@ -9,6 +9,8 @@
  */
 $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
+use Acme\Domain\Data\DateTime;
+
 use Volcanus\Database\Statement;
 
 $app->on('GET', function($app) {
@@ -20,13 +22,14 @@ SELECT
 , com.comment
 , com.image_id
 , com.posted_at
-, img.file_name AS "image_file_name"
-, img.file_size AS "image_file_size"
-, img.encoded_data AS "image_encoded_data"
-, img.mime_type AS "image_mime_type"
-, img.width AS "image_width"
-, img.height AS "image_height"
-, img.created_at AS "image_created_at"
+, img.id AS "image:id"
+, img.file_name AS "image:file_name"
+, img.file_size AS "image:file_size"
+, img.encoded_data AS "image:encoded_data"
+, img.mime_type AS "image:mime_type"
+, img.width AS "image:width"
+, img.height AS "image:height"
+, img.created_at AS "image:created_at"
 FROM
   comments com
 LEFT OUTER JOIN
@@ -40,26 +43,39 @@ SQL
 
     $statement->setFetchMode(Statement::FETCH_ASSOC);
     $statement->setFetchCallback(function($cols) use ($app) {
-        $comment = $app->createData('comment', [
-            'id'        => $cols['id'],
-            'author'    => $cols['author'],
-            'comment'   => $cols['comment'],
-            'image_id'  => $cols['image_id'],
-            'posted_at' => $cols['posted_at'],
-        ]);
-        if (!is_null($cols['image_id'])) {
+
+        // 画像
+        if (!is_null($cols['image:id'])) {
             $image = $app->createData('image', [
-                'id'           => $cols['image_id'],
-                'file_name'    => $cols['image_file_name'],
-                'file_size'    => $cols['image_file_size'],
-                'encoded_data' => $cols['image_encoded_data'],
-                'mime_type'    => $cols['image_mime_type'],
-                'width'        => $cols['image_width'],
-                'height'       => $cols['image_height'],
-                'created_at'   => $cols['image_created_at'],
+                'id' => (int)$cols['image:id'],
+                'fileName' => $cols['image:file_name'],
+                'fileSize' => $cols['image:file_size'],
+                'encodedData' => $cols['image:encoded_data'],
+                'mimeType' => $cols['image:mime_type'],
+                'width' => (int)$cols['image:width'],
+                'height' => (int)$cols['image:height'],
+                'createdAt' => new DateTime([
+                    'datetime' => new \DateTime($cols['image:created_at']),
+                    'timezone' => $app->clock->getTimezone(),
+                    'format' => $app->config->datetimeFormat,
+                ]),
             ]);
-            $comment->image = $image;
         }
+
+        // コメント
+        $comment = $app->createData('comment', [
+            'id' => (int)$cols['id'],
+            'author' => $cols['author'],
+            'comment' => $cols['comment'],
+            'imageId' => (int)$cols['image_id'],
+            'postedAt' => new DateTime([
+                'datetime' => new \DateTime($cols['posted_at']),
+                'timezone' => $app->clock->getTimezone(),
+                'format' => $app->config->datetimeFormat,
+            ]),
+            'image' => (isset($image)) ? $image : null,
+        ]);
+
         return $comment;
     });
 

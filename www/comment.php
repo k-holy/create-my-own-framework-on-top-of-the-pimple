@@ -109,13 +109,13 @@ $app->on('GET|POST', function($app, $method) {
                 if (isset($fileInfo)) {
 
                     $row = [
-                        'file_name'    => $form->image_file_name->value(),
-                        'file_size'    => $form->image_file_size->value(),
-                        'encoded_data' => $form->image_encoded_data->value(),
-                        'mime_type'    => $form->image_mime_type->value(),
-                        'width'        => $form->image_width->value(),
-                        'height'       => $form->image_height->value(),
-                        'created_at'   => $app->clock,
+                        'fileName'    => $form->image_file_name->value(),
+                        'fileSize'    => $form->image_file_size->value(),
+                        'encodedData' => $form->image_encoded_data->value(),
+                        'mimeType'    => $form->image_mime_type->value(),
+                        'width'       => $form->image_width->value(),
+                        'height'      => $form->image_height->value(),
+                        'createdAt'   => $app->clock,
                     ];
 
                     $statement = $app->db->prepare(<<<'SQL'
@@ -128,31 +128,31 @@ INSERT INTO images (
    ,height
    ,created_at
 ) VALUES (
-    :file_name
-   ,:file_size
-   ,:encoded_data
-   ,:mime_type
+    :fileName
+   ,:fileSize
+   ,:encodedData
+   ,:mimeType
    ,:width
    ,:height
-   ,:created_at
+   ,:createdAt
 )
 SQL
                     );
 
                     $statement->execute($row);
 
-                    $image = $app->createData('image', $row);
+                    $row['id'] = $app->db->lastInsertId();
 
-                    $image->id = $app->db->lastInsertId();
+                    $image = $app->createData('image', $row);
 
                 }
 
                 // コメントを登録
                 $row = [
-                    'author'    => $form->author->value(),
-                    'comment'   => $form->comment->value(),
-                    'image_id'  => (isset($image)) ? $image->id : null,
-                    'posted_at' => $app->clock,
+                    'author'   => $form->author->value(),
+                    'comment'  => $form->comment->value(),
+                    'imageId'  => (isset($image)) ? $image->id : null,
+                    'postedAt' => $app->clock,
                 ];
 
                 $statement = $app->db->prepare(<<<'SQL'
@@ -164,21 +164,21 @@ INSERT INTO comments (
 ) VALUES (
     :author
    ,:comment
-   ,:image_id
-   ,:posted_at
+   ,:imageId
+   ,:postedAt
 )
 SQL
                 );
 
                 $statement->execute($row);
 
-                $comment = $app->createData('comment', $row);
-
-                $comment->id = $app->db->lastInsertId();
+                $row['id'] = $app->db->lastInsertId();
 
                 if (isset($image)) {
-                    $comment->image = $image;
+                    $row['image'] = $image;
                 }
+
+                $comment = $app->createData('comment', $row);
 
                 $app->transaction->commit();
 
