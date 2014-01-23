@@ -11,11 +11,11 @@ namespace Acme\Domain\Data;
 use Acme\Domain\Data\DataInterface;
 
 /**
- * DataTrait
+ * AbstractData
  *
  * @author k.holy74@gmail.com
  */
-trait DataTrait
+abstract class AbstractData implements DataInterface, \ArrayAccess, \IteratorAggregate
 {
 
 	/**
@@ -33,7 +33,7 @@ trait DataTrait
 	 *
 	 * @param array プロパティの配列
 	 */
-	private function initialize(array $properties = array())
+	protected function initialize(array $properties = array())
 	{
 		foreach (array_keys(get_object_vars($this)) as $name) {
 			$this->{$name} = null;
@@ -137,7 +137,7 @@ trait DataTrait
 	 */
 	public static function __set_state($properties)
 	{
-		return new self($properties);
+		return new static($properties);
 	}
 
 	/**

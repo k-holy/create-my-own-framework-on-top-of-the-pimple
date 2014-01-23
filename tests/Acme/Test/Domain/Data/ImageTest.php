@@ -18,67 +18,73 @@ use Acme\Domain\Data\Image;
 class ImageTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testConstructWithAttributes()
+	public function testConstructWithProperties()
 	{
-		$image = new Image([
-			'id'           => '1',
-			'file_name'    => 'foo',
-			'file_size'    => 100,
-			'encoded_data' => 'encoded-data',
-			'mime_type'    => 'image/png',
-		], [
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$this->assertEquals('1', $image->id);
-		$this->assertEquals('foo', $image->file_name);
-		$this->assertEquals(100, $image->file_size);
-		$this->assertEquals('encoded-data', $image->encoded_data);
-		$this->assertEquals('image/png', $image->mime_type);
-	}
+		$createdAt = $this->getMock('Acme\Domain\Data\DateTime');
 
-	public function testCreatedAt()
-	{
-		$createdAt = new \DateTime(sprintf('@%d', time()));
-		$image = new Image([
-			'created_at' => $createdAt,
-		], [
-			'datetimeFormat' => 'Y/n/j H:i:s',
-			'timezone'       => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$this->assertInstanceOf('\Acme\DateTime', $image->created_at);
-		$this->assertEquals(
-			$createdAt->getTimestamp(),
-			$image->created_at->getTimestamp()
-		);
+		$image = new Image(array(
+			'id'          => '1',
+			'fileName'    => 'foo',
+			'fileSize'    => 100,
+			'encodedData' => 'encoded-data',
+			'mimeType'    => 'image/png',
+			'createdAt'   => $createdAt,
+		));
+
+		$this->assertEquals('1', $image->id);
+		$this->assertEquals('foo', $image->fileName);
+		$this->assertEquals(100, $image->fileSize);
+		$this->assertEquals('encoded-data', $image->encodedData);
+		$this->assertEquals('image/png', $image->mimeType);
+		$this->assertInstanceOf('Acme\Domain\Data\DateTime', $image->createdAt);
 	}
 
 	public function testGetDataUri()
 	{
-		$image = new Image([
-			'encoded_data' => 'encoded-data',
-			'mime_type'    => 'image/png',
-		], [
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$this->assertEquals('data:image/png;base64,encoded-data', $image->data_uri);
+		$image = new Image(array(
+			'encodedData' => 'encoded-data',
+			'mimeType'    => 'image/png',
+		));
+
+		$this->assertEquals('data:image/png;base64,encoded-data', $image->dataUri);
 	}
 
 	public function testGetFormattedFileSize()
 	{
-		$image = new Image([], [
+		$image = new Image(array(
 			'byteScale' => 0,
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$image->file_size = 100;
-		$this->assertEquals('100B', $image->formatted_file_size);
-		$image->file_size = 1024;
-		$this->assertEquals('1KB', $image->formatted_file_size);
-		$image->file_size = 1024 * 2;
-		$this->assertEquals('2KB', $image->formatted_file_size);
-		$image->file_size = 1024 * 1024 * 2;
-		$this->assertEquals('2MB', $image->formatted_file_size);
-		$image->file_size = 1024 * 1024 * 1024 * 2;
-		$this->assertEquals('2GB', $image->formatted_file_size);
+			'fileSize'  => 100,
+		));
+
+		$this->assertEquals('100B', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024,
+		));
+
+		$this->assertEquals('1KB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024 * 2,
+		));
+
+		$this->assertEquals('2KB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024 * 1024 * 2,
+		));
+
+		$this->assertEquals('2MB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024 * 1024 * 1024 * 2,
+		));
+
+		$this->assertEquals('2GB', $image->formattedFileSize);
 	}
 
 	public function testGetFormattedFileSizeByBcMath()
@@ -86,22 +92,48 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 		if (!extension_loaded('bcmath')) {
 			$this->markTestSkipped('BC Math extension is not loaded.');
 		}
-		$image = new Image([], [
+
+		$image = new Image(array(
 			'byteScale' => 0,
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$image->file_size = bcmul(bcpow('1024', '3'), '2');
-		$this->assertEquals('2GB', $image->formatted_file_size);
-		$image->file_size = bcmul(bcpow('1024', '4'), '2');
-		$this->assertEquals('2TB', $image->formatted_file_size);
-		$image->file_size = bcmul(bcpow('1024', '5'), '2');
-		$this->assertEquals('2PB', $image->formatted_file_size);
-		$image->file_size = bcmul(bcpow('1024', '6'), '2');
-		$this->assertEquals('2EB', $image->formatted_file_size);
-		$image->file_size = bcmul(bcpow('1024', '7'), '2');
-		$this->assertEquals('2ZB', $image->formatted_file_size);
-		$image->file_size = bcmul(bcpow('1024', '8'), '2');
-		$this->assertEquals('2YB', $image->formatted_file_size);
+			'fileSize'  => bcmul(bcpow('1024', '3'), '2'),
+		));
+
+		$this->assertEquals('2GB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => bcmul(bcpow('1024', '4'), '2'),
+		));
+
+		$this->assertEquals('2TB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => bcmul(bcpow('1024', '5'), '2'),
+		));
+
+		$this->assertEquals('2PB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => bcmul(bcpow('1024', '6'), '2'),
+		));
+
+		$this->assertEquals('2EB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => bcmul(bcpow('1024', '7'), '2'),
+		));
+
+		$this->assertEquals('2ZB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => bcmul(bcpow('1024', '8'), '2'),
+		));
+
+		$this->assertEquals('2YB', $image->formattedFileSize);
 	}
 
 	public function testGetFormattedFileSizeByGmp()
@@ -109,59 +141,129 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 		if (!extension_loaded('gmp')) {
 			$this->markTestSkipped('GMP extension is not loaded.');
 		}
-		$image = new Image([], [
+
+		$image = new Image(array(
 			'byteScale' => 0,
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$image->file_size = gmp_strval(gmp_mul(gmp_pow('1024', '3'), '2'));
-		$this->assertEquals('2GB', $image->formatted_file_size);
-		$image->file_size = gmp_strval(gmp_mul(gmp_pow('1024', '4'), '2'));
-		$this->assertEquals('2TB', $image->formatted_file_size);
-		$image->file_size = gmp_strval(gmp_mul(gmp_pow('1024', '5'), '2'));
-		$this->assertEquals('2PB', $image->formatted_file_size);
-		$image->file_size = gmp_strval(gmp_mul(gmp_pow('1024', '6'), '2'));
-		$this->assertEquals('2EB', $image->formatted_file_size);
-		$image->file_size = gmp_strval(gmp_mul(gmp_pow('1024', '7'), '2'));
-		$this->assertEquals('2ZB', $image->formatted_file_size);
-		$image->file_size = gmp_strval(gmp_mul(gmp_pow('1024', '8'), '2'));
-		$this->assertEquals('2YB', $image->formatted_file_size);
+			'fileSize'  => gmp_strval(gmp_mul(gmp_pow('1024', '3'), '2')),
+		));
+
+		$this->assertEquals('2GB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => gmp_strval(gmp_mul(gmp_pow('1024', '4'), '2')),
+		));
+
+		$this->assertEquals('2TB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => gmp_strval(gmp_mul(gmp_pow('1024', '5'), '2')),
+		));
+
+		$this->assertEquals('2PB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => gmp_strval(gmp_mul(gmp_pow('1024', '6'), '2')),
+		));
+
+		$this->assertEquals('2EB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => gmp_strval(gmp_mul(gmp_pow('1024', '7'), '2')),
+		));
+
+		$this->assertEquals('2ZB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => gmp_strval(gmp_mul(gmp_pow('1024', '8'), '2')),
+		));
+
+		$this->assertEquals('2YB', $image->formattedFileSize);
 	}
 
 	public function testGetFormattedFileSizeWithByteScale()
 	{
-		$image = new Image([], [
+		$image = new Image(array(
 			'byteScale' => 1,
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$image->file_size = 100;
-		$this->assertEquals('100.0B', $image->formatted_file_size);
-		$image->file_size = 1024;
-		$this->assertEquals('1.0KB', $image->formatted_file_size);
-		$image->file_size = 1024 * 2;
-		$this->assertEquals('2.0KB', $image->formatted_file_size);
-		$image->file_size = 1024 * 1024 * 2;
-		$this->assertEquals('2.0MB', $image->formatted_file_size);
-		$image->file_size = 1024 * 1024 * 1024 * 2;
-		$this->assertEquals('2.0GB', $image->formatted_file_size);
+			'fileSize'  => 100,
+		));
+
+		$this->assertEquals('100.0B', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 1,
+			'fileSize'  => 1024,
+		));
+
+		$this->assertEquals('1.0KB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 1,
+			'fileSize'  => 1024 * 2,
+		));
+
+		$this->assertEquals('2.0KB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 1,
+			'fileSize'  => 1024 * 1024 * 2,
+		));
+
+		$this->assertEquals('2.0MB', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 1,
+			'fileSize'  => 1024 * 1024 * 1024 * 2,
+		));
+
+		$this->assertEquals('2.0GB', $image->formattedFileSize);
 	}
 
 	public function testGetFormattedFileSizeWithByteUnits()
 	{
-		$image = new Image([], [
+		$image = new Image(array(
 			'byteScale' => 0,
-			'byteUnits' => [' Bytes', ' KiloBytes', ' MegaBytes', ' GigaBytes', ' TeraBytes', ' PetaBytes', ' ExaBytes', ' ZettaBytes', ' YottaBytes'],
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$image->file_size = 100;
-		$this->assertEquals('100 Bytes', $image->formatted_file_size);
-		$image->file_size = 1024;
-		$this->assertEquals('1 KiloBytes', $image->formatted_file_size);
-		$image->file_size = 1024 * 2;
-		$this->assertEquals('2 KiloBytes', $image->formatted_file_size);
-		$image->file_size = 1024 * 1024 * 2;
-		$this->assertEquals('2 MegaBytes', $image->formatted_file_size);
-		$image->file_size = 1024 * 1024 * 1024 * 2;
-		$this->assertEquals('2 GigaBytes', $image->formatted_file_size);
+			'fileSize'  => 100,
+			'byteUnits' => array(' Bytes', ' KiloBytes', ' MegaBytes', ' GigaBytes', ' TeraBytes', ' PetaBytes', ' ExaBytes', ' ZettaBytes', ' YottaBytes'),
+		));
+
+		$this->assertEquals('100 Bytes', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024,
+			'byteUnits' => array(' Bytes', ' KiloBytes', ' MegaBytes', ' GigaBytes', ' TeraBytes', ' PetaBytes', ' ExaBytes', ' ZettaBytes', ' YottaBytes'),
+		));
+
+		$this->assertEquals('1 KiloBytes', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024 * 2,
+			'byteUnits' => array(' Bytes', ' KiloBytes', ' MegaBytes', ' GigaBytes', ' TeraBytes', ' PetaBytes', ' ExaBytes', ' ZettaBytes', ' YottaBytes'),
+		));
+
+		$this->assertEquals('2 KiloBytes', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024 * 1024 * 2,
+			'byteUnits' => array(' Bytes', ' KiloBytes', ' MegaBytes', ' GigaBytes', ' TeraBytes', ' PetaBytes', ' ExaBytes', ' ZettaBytes', ' YottaBytes'),
+		));
+
+		$this->assertEquals('2 MegaBytes', $image->formattedFileSize);
+
+		$image = new Image(array(
+			'byteScale' => 0,
+			'fileSize'  => 1024 * 1024 * 1024 * 2,
+			'byteUnits' => array(' Bytes', ' KiloBytes', ' MegaBytes', ' GigaBytes', ' TeraBytes', ' PetaBytes', ' ExaBytes', ' ZettaBytes', ' YottaBytes'),
+		));
+
+		$this->assertEquals('2 GigaBytes', $image->formattedFileSize);
 	}
 
 }

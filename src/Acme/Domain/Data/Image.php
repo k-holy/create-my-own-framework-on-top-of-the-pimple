@@ -17,7 +17,7 @@ use Acme\Domain\Data\DateTime;
  *
  * @author k.holy74@gmail.com
  */
-class Image implements DataInterface
+class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 {
 
 	use DataTrait;
@@ -99,16 +99,6 @@ class Image implements DataInterface
 	private function setCreatedAt(DateTime $createdAt)
 	{
 		$this->createdAt = $createdAt;
-	}
-
-	/**
-	 * createdAtの値に出力用のTimezoneをセットして返します。
-	 *
-	 * @return Acme\Domain\Data\DateTime
-	 */
-	public function getCreatedAt()
-	{
-		return isset($this->createdAt) ? $this->createdAt : null;
 	}
 
 	/**

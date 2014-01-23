@@ -16,7 +16,7 @@ use Acme\Domain\Data\DataTrait;
  *
  * @author k.holy74@gmail.com
  */
-class DateTime implements DataInterface
+class DateTime implements DataInterface, \ArrayAccess, \IteratorAggregate
 {
 
 	use DataTrait;
@@ -44,8 +44,12 @@ class DateTime implements DataInterface
 	public function __construct(array $properties = [])
 	{
 
+		if (!isset($properties['datetime'])) {
+			$properties['datetime'] = new \DateTime();
+		}
+
 		if (!isset($properties['timezone'])) {
-			$properties['timezone'] = date_default_timezone_get();
+			$properties['timezone'] = new \DateTimeZone(date_default_timezone_get());
 		}
 
 		if (!isset($properties['format'])) {
@@ -76,10 +80,24 @@ class DateTime implements DataInterface
 	 *
 	 * @param mixed
 	 */
-	public function setDatetime(\DateTime $datetime)
+	public function setDatetime($datetime = null)
 	{
-		if (!isset($this->timezone)) {
-			$this->timezone = $datetime->getTimezone();
+		if ($datetime instanceof \DateTime) {
+			if (!isset($this->timezone)) {
+				$this->timezone = $datetime->getTimezone();
+			}
+		} elseif (is_int($datetime) || ctype_digit($datetime)) {
+			$datetime = new \DateTime(sprintf('@%d', $datetime));
+		} elseif (is_string($datetime)) {
+			$datetime = new \DateTime($datetime);
+		}
+		if (false === ($datetime instanceof \DateTime)) {
+			throw new \InvalidArgumentException(
+				sprintf('Invalid type:%s', (is_object($datetime))
+					? get_class($datetime)
+					: gettype($datetime)
+				)
+			);
 		}
 		$this->datetime = $datetime;
 	}
@@ -87,14 +105,25 @@ class DateTime implements DataInterface
 	/**
 	 * タイムゾーンをセットします。
 	 *
-	 * @param DateTimeZone
+	 * @param mixed
 	 */
-	private function setTimezone(\DateTimeZone $timezone)
+	private function setTimezone($timezone)
 	{
-		$this->timezone = $timezone;
+		if (is_string($timezone)) {
+			$timezone = new \DateTimeZone($timezone);
+		}
+		if (false === ($timezone instanceof \DateTimeZone)) {
+			throw new \InvalidArgumentException(
+				sprintf('Invalid type:%s', (is_object($timezone))
+					? get_class($timezone)
+					: gettype($timezone)
+				)
+			);
+		}
 		if (isset($this->datetime)) {
 			$this->datetime->setTimezone($timezone);
 		}
+		$this->timezone = $timezone;
 	}
 
 	/**
@@ -112,7 +141,7 @@ class DateTime implements DataInterface
 	 *
 	 * @return int 年 (4桁)
 	 */
-	public function year()
+	public function getYear()
 	{
 		return (int)$this->datetime->format('Y');
 	}
@@ -122,7 +151,7 @@ class DateTime implements DataInterface
 	 *
 	 * @return int 月 (0-59)
 	 */
-	public function month()
+	public function getMonth()
 	{
 		return (int)$this->datetime->format('m');
 	}
@@ -132,7 +161,7 @@ class DateTime implements DataInterface
 	 *
 	 * @return int 日 (1-31)
 	 */
-	public function day()
+	public function getDay()
 	{
 		return (int)$this->datetime->format('d');
 	}
@@ -142,7 +171,7 @@ class DateTime implements DataInterface
 	 *
 	 * @return int 時 (0-23)
 	 */
-	public function hour()
+	public function getHour()
 	{
 		return (int)$this->datetime->format('H');
 	}
@@ -152,7 +181,7 @@ class DateTime implements DataInterface
 	 *
 	 * @return int 分 (0-59)
 	 */
-	public function minute()
+	public function getMinute()
 	{
 		return (int)$this->datetime->format('i');
 	}
@@ -162,7 +191,7 @@ class DateTime implements DataInterface
 	 *
 	 * @return int 秒 (0-59)
 	 */
-	public function second()
+	public function getSecond()
 	{
 		return (int)$this->datetime->format('s');
 	}
@@ -172,7 +201,7 @@ class DateTime implements DataInterface
 	 *
 	 * @param int
 	 */
-	public function timestamp()
+	public function getTimestamp()
 	{
 		return (int)$this->datetime->format('U');
 	}
@@ -182,7 +211,7 @@ class DateTime implements DataInterface
 	 *
 	 * @return int 日 (28-31)
 	 */
-	public function lastDay()
+	public function getLastday()
 	{
 		return (int)$this->datetime->format('t');
 	}
@@ -195,30 +224,6 @@ class DateTime implements DataInterface
 	public function __toString()
 	{
 		return $this->datetime->format($this->format);
-	}
-
-	/**
-	 * __wakeup
-	 *
-	 * @param void
-	 * @return void
-	 */
-	public function __wakeup()
-	{
-		$this->initialize(new \DateTime());
-	}
-
-	/**
-	 * __sleep
-	 *
-	 * @param void
-	 * @return void
-	 */
-	public function __sleep()
-	{
-		return array(
-			array('datetime', 'timezone', 'format'),
-		);
 	}
 
 }

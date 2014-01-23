@@ -9,6 +9,7 @@
 namespace Acme\Test\Domain\Data;
 
 use Acme\Domain\Data\Comment;
+use Acme\Domain\Data\DateTime;
 
 /**
  * Test for Comment
@@ -18,44 +19,26 @@ use Acme\Domain\Data\Comment;
 class CommentTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testConstructWithAttributes()
+	public function testConstructWithProperties()
 	{
-		$currentDateTime = new \DateTime(sprintf('@%d', time()));
-		$comment = new Comment([
-			'author'    => 'foo',
-			'comment'   => 'bar',
-			'posted_at' => $currentDateTime,
-		], [
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
+		$postedAt = $this->getMock('Acme\Domain\Data\DateTime');
+		$image = $this->getMock('Acme\Domain\Data\Image');
+
+		$comment = new Comment(array(
+			'id'       => 1,
+			'author'   => 'foo',
+			'comment'  => 'bar',
+			'imageId'  => 2,
+			'postedAt' => $postedAt,
+			'image'    => $image,
+		));
+
+		$this->assertEquals(1, $comment->id);
 		$this->assertEquals('foo', $comment->author);
 		$this->assertEquals('bar', $comment->comment);
-		$this->assertEquals(
-			$currentDateTime->getTimestamp(),
-			$comment->posted_at->getTimestamp()
-		);
-	}
-
-	public function testSetAttributeByArrayAccess()
-	{
-		$comment = new Comment([],[
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$comment['author'] = 'foo';
-		$comment['comment'] = 'bar';
-		$this->assertEquals('foo', $comment['author']);
-		$this->assertEquals('bar', $comment['comment']);
-	}
-
-	public function testSetAttributeByProperty()
-	{
-		$comment = new Comment([],[
-			'timezone' => new \DateTimeZone('Asia/Tokyo'),
-		]);
-		$comment->author = 'foo';
-		$comment->comment = 'bar';
-		$this->assertEquals('foo', $comment->author);
-		$this->assertEquals('bar', $comment->comment);
+		$this->assertEquals(2, $comment->imageId);
+		$this->assertInstanceOf('Acme\Domain\Data\DateTime', $comment->postedAt);
+		$this->assertInstanceOf('Acme\Domain\Data\Image', $comment->image);
 	}
 
 }

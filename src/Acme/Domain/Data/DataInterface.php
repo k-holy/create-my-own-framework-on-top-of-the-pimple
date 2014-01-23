@@ -13,8 +13,15 @@ namespace Acme\Domain\Data;
  *
  * @author k.holy74@gmail.com
  */
-interface DataInterface extends \IteratorAggregate
+interface DataInterface
 {
+
+	/**
+	 * このオブジェクトを配列に変換して返します。
+	 *
+	 * @return array
+	 */
+	public function toArray();
 
 	/**
 	 * __isset
@@ -50,6 +57,23 @@ interface DataInterface extends \IteratorAggregate
 	 * @return object
 	 */
 	public static function __set_state($properties);
+
+	/**
+	 * ArrayAccess::offsetExists()
+	 *
+	 * @param mixed
+	 * @return bool
+	 */
+	public function offsetExists($name);
+
+	/**
+	 * ArrayAccess::offsetGet()
+	 *
+	 * @param mixed
+	 * @return mixed
+	 * @throws \InvalidArgumentException
+	 */
+	public function offsetGet($name);
 
 	/**
 	 * IteratorAggregate::getIterator()
