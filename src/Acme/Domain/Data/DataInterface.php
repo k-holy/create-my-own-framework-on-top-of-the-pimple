@@ -2,7 +2,7 @@
 /**
  * ドメインデータ
  *
- * @copyright 2013 k-holy <k.holy74@gmail.com>
+ * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 

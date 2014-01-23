@@ -4,7 +4,7 @@
  *
  * ビルトインWebサーバ用起動スクリプト
  *
- * @copyright 2013 k-holy <k.holy74@gmail.com>
+ * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
