@@ -18,7 +18,7 @@ use Acme\Domain\Data\Image;
  *
  * @author k.holy74@gmail.com
  */
-class Comment implements DataInterface
+class Comment implements DataInterface, \ArrayAccess, \IteratorAggregate
 {
 
 	use DataTrait;
@@ -71,16 +71,6 @@ class Comment implements DataInterface
 	private function setImage(Image $image = null)
 	{
 		$this->image = $image;
-	}
-
-	/**
-	 * postedAtの値に出力用のTimezoneをセットして返します。
-	 *
-	 * @return Acme\Domain\Data\DateTime
-	 */
-	public function getPostedAt()
-	{
-		return isset($this->postedAt) ? $this->postedAt : null;
 	}
 
 }
