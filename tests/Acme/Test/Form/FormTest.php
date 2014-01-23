@@ -2,11 +2,11 @@
 /**
  * Create my own framework on top of the Pimple
  *
- * @copyright 2013 k-holy <k.holy74@gmail.com>
+ * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Tests;
+namespace Acme\Test\Form;
 
 use Acme\Form\Form;
 

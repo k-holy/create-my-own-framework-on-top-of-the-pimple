@@ -4,7 +4,7 @@
  *
  * Volcanus_TemplateRenderer Smartyコンテンツ
  *
- * @copyright 2013 k-holy <k.holy74@gmail.com>
+ * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';

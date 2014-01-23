@@ -4,7 +4,7 @@
  *
  * アプリケーション共通初期処理
  *
- * @copyright 2013 k-holy <k.holy74@gmail.com>
+ * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
