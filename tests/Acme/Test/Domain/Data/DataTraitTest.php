@@ -159,7 +159,6 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	public function testIteration()
 	{
 		$now = new \DateTime();
-		$nowImmutable = new \DateTimeImmutable();
 		$properties = array(
 			'string'     => 'Foo',
 			'null'       => null,

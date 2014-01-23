@@ -8,8 +8,6 @@
 
 namespace Acme\Test\Domain\Data;
 
-use Acme\Domain\Data\AbstractData;
-
 /**
  * Test for AbstractData
  *
@@ -161,7 +159,6 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 	public function testIteration()
 	{
 		$now = new \DateTime();
-		$nowImmutable = new \DateTimeImmutable();
 		$properties = array(
 			'string'     => 'Foo',
 			'null'       => null,
