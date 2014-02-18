@@ -57,7 +57,7 @@ $app->config = $app->share(function(Application $app) {
         ),
     ), Configuration::EXECUTE_CALLABLE);
     $config['log_file'] = function($config) use ($app) {
-        return sprintf('%d-%02d.log', $app->clock->year(), $app->clock->month());
+        return sprintf('%d-%02d.log', $app->clock->getYear(), $app->clock->getMonth());
     };
     $config['error_log'] = function($config) {
         return $config['log_dir'] . DIRECTORY_SEPARATOR . $config['log_file'];
@@ -86,15 +86,13 @@ $app->clock = $app->share(function(Application $app) {
 // レンダラオブジェクト
 //-----------------------------------------------------------------------------
 $app->renderer = $app->share(function(Application $app) {
-    $phptal = new \PHPTAL();
-    $adapter = new PhpTalAdapter($phptal, array(
+    $renderer = new Renderer(new PhpTalAdapter(new \PHPTAL(), array(
         'outputMode'         => \PHPTAL::XHTML,
         'encoding'           => 'UTF-8',
         'templateRepository' => $app->config->web_root,
         'phpCodeDestination' => sys_get_temp_dir(),
         'forceReparse'       => true,
-    ));
-    $renderer = new Renderer($adapter);
+    )));
     // アプリケーション設定
     $renderer->assign('config', $app->config);
     return $renderer;
@@ -236,9 +234,7 @@ $app->metaCache = $app->share(function(Application $app) {
 // データベースドライバ
 //-----------------------------------------------------------------------------
 $app->db = $app->share(function(Application $app) {
-    $db = new PdoDriver($app->pdo, new SqliteMetaDataProcessor($app->metaCache));
-    $db->setDsn($app->dsn);
-    return $db;
+    return new PdoDriver($app->pdo, new SqliteMetaDataProcessor($app->metaCache));
 });
 
 //-----------------------------------------------------------------------------
