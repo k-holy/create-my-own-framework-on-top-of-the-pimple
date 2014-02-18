@@ -6,7 +6,7 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data\Test;
+namespace Acme\Test\Domain\Data;
 
 use Acme\Domain\Data\DateTime;
 
