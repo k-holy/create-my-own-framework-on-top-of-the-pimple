@@ -9,8 +9,6 @@
  */
 $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
-use Acme\Domain\Data\DateTime;
-
 use Volcanus\Database\Statement;
 
 $app->on('GET', function($app) {
@@ -54,7 +52,7 @@ SQL
                 'mimeType' => $cols['image:mime_type'],
                 'width' => (int)$cols['image:width'],
                 'height' => (int)$cols['image:height'],
-                'createdAt' => new DateTime([
+                'createdAt' => $app->createData('dateTime', [
                     'datetime' => new \DateTime($cols['image:created_at']),
                     'timezone' => $app->clock->getTimezone(),
                     'format' => $app->config->datetimeFormat,
@@ -68,7 +66,7 @@ SQL
             'author' => $cols['author'],
             'comment' => $cols['comment'],
             'imageId' => (int)$cols['image_id'],
-            'postedAt' => new DateTime([
+            'postedAt' => $app->createData('dateTime',[
                 'datetime' => new \DateTime($cols['posted_at']),
                 'timezone' => $app->clock->getTimezone(),
                 'format' => $app->config->datetimeFormat,

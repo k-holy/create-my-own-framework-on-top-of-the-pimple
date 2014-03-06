@@ -68,10 +68,7 @@ abstract class AbstractData implements DataInterface, \ArrayAccess, \IteratorAgg
 	{
 		$values = array();
 		foreach (array_keys(get_object_vars($this)) as $name) {
-			$value = $this->__get($name);
-			$values[$name] = ($value instanceof DataInterface)
-				? $value->toArray()
-				: $value;
+			$values[$name] = $this->__get($name);
 		}
 		return $values;
 	}
