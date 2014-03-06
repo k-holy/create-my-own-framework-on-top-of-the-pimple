@@ -48,12 +48,15 @@ $app->config = $app->share(function(Application $app) {
         'log_file'   => null,
         'error_log'  => null,
         'error_view' => 'error.html',
-        'secret_key' => 'CCi:wYD-4:iV:@X%1zun[Y@:',
         'timezone'   => 'Asia/Tokyo',
         'datetimeFormat' => 'Y/n/j H:i:s',
         'database'   => array(
             'dsn' => sprintf('sqlite:%s', __DIR__ . DIRECTORY_SEPARATOR . 'app.sqlite'),
             'meta_cache_dir' => realpath(__DIR__ . '/cache/db/meta'),
+        ),
+        'security' => array(
+            'secret_key' => 'JoABXFuyYZ$3[@wmAyF8-ECx',
+            'secret_salt' => 'mPg`UT]GnHtihLWH1bq5D&AW',
         ),
     ), Configuration::EXECUTE_CALLABLE);
     $config['log_file'] = function($config) use ($app) {
