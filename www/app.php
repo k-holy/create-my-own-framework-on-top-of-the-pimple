@@ -111,10 +111,10 @@ $app->flash = $app->share(function(Application $app) {
 $app->token = $app->share(function(Application $app) {
     return new DataObject(array(
         'name'  => function() use ($app) {
-            return sha1($app->config->secret_key);
+            return hash('sha256', $app->config->security->secret_key, false);
         },
         'value' => function() use ($app) {
-            return $app->session->getId();
+            return hash('sha256', $app->config->security->secret_salt . $app->session->getId(), false);
         },
         'validate' => function($value) use ($app) {
             if (is_null($value)) {
