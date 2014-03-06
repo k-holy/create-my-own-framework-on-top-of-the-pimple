@@ -199,11 +199,21 @@ class DateTime implements DataInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * UnixTimeを返します。
 	 *
-	 * @param int
+	 * @return int
 	 */
 	public function getTimestamp()
 	{
 		return (int)$this->datetime->format('U');
+	}
+
+	/**
+	 * DateTimeを返します。
+	 *
+	 * @return \DateTime
+	 */
+	public function getDatetime()
+	{
+		return $this->datetime;
 	}
 
 	/**
