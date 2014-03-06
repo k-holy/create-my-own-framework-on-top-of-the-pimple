@@ -11,6 +11,7 @@ namespace Acme\Domain\Data;
 use Acme\Domain\Data\DataInterface;
 use Acme\Domain\Data\DataTrait;
 use Acme\Domain\Data\DateTime;
+use Acme\Domain\Data\Byte;
 
 /**
  * 画像
@@ -33,7 +34,7 @@ class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 	private $fileName;
 
 	/**
-	 * @var int
+	 * @var Acme\Domain\Data\Byte
 	 */
 	private $fileSize;
 
@@ -92,13 +93,23 @@ class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * createdAtの値をセットします。
+	 * 登録日時をセットします。
 	 *
 	 * @param Acme\Domain\Data\DateTime
 	 */
 	private function setCreatedAt(DateTime $createdAt)
 	{
 		$this->createdAt = $createdAt;
+	}
+
+	/**
+	 * ファイルサイズをセットします。
+	 *
+	 * @param Acme\Domain\Data\DateTime
+	 */
+	private function setFileSize(Byte $fileSize)
+	{
+		$this->fileSize = $fileSize;
 	}
 
 	/**
@@ -111,29 +122,6 @@ class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 		return (isset($this->mimeType) && isset($this->encodedData))
 			? sprintf('data:%s;base64,%s', $this->mimeType, $this->encodedData)
 			: null;
-	}
-
-	/**
-	 * バイト単位で書式化されたファイルサイズを返します。
-	 *
-	 * @return string 書式化したファイルサイズ
-	 */
-	public function getFormattedFileSize()
-	{
-		if (isset($this->fileSize)) {
-			$number = $this->fileSize;
-			$unit = '';
-			foreach ($this->byteUnits as $unit) {
-				if ($number < 1024) {
-					break;
-				}
-				$number = $number / 1024;
-			}
-			return (isset($this->byteScale))
-				? number_format($number, $this->byteScale) . $unit
-				: number_format($number) . $unit;
-		}
-		return null;
 	}
 
 }

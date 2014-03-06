@@ -37,7 +37,7 @@
             <div tal:condition="exists:comment/image">
               <button class="btn btn-info btn-xs comment-image-popover">表示</button>
               <span tal:replace="comment/image/fileName">/path/to/file.jpg</span>
-              (<span tal:replace="comment/image/getFormattedFileSize">10KB</span>)
+              (<span tal:replace="comment/image/fileSize">10KB</span>)
               <div class="comment-image">
                 <img src="profile.jpg" alt="profile.jpg" title="profile.jpg"
                   tal:attributes="src comment/image/getDataUri; alt comment/image/fileName; title comment/image/fileName; width comment/image/width; height comment/image/height;"

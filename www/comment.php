@@ -141,9 +141,7 @@ SQL
 
                     $statement->execute($row);
 
-                    $row['id'] = $app->db->lastInsertId();
-
-                    $image = $app->createData('image', $row);
+                    $imageId = $app->db->lastInsertId();
 
                 }
 
@@ -151,7 +149,7 @@ SQL
                 $row = [
                     'author'   => $form->author->value(),
                     'comment'  => $form->comment->value(),
-                    'imageId'  => (isset($image)) ? $image->id : null,
+                    'imageId'  => (isset($imageId)) ? $imageId : null,
                     'postedAt' => $app->clock,
                 ];
 
@@ -171,14 +169,6 @@ SQL
                 );
 
                 $statement->execute($row);
-
-                $row['id'] = $app->db->lastInsertId();
-
-                if (isset($image)) {
-                    $row['image'] = $image;
-                }
-
-                $comment = $app->createData('comment', $row);
 
                 $app->transaction->commit();
 

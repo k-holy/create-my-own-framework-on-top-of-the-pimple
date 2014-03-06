@@ -47,7 +47,10 @@ SQL
             $image = $app->createData('image', [
                 'id' => (int)$cols['image:id'],
                 'fileName' => $cols['image:file_name'],
-                'fileSize' => $cols['image:file_size'],
+                'fileSize' => $app->createData('byte', [
+                    'value' => $cols['image:file_size'],
+                    'decimals' => 1,
+                ]),
                 'encodedData' => $cols['image:encoded_data'],
                 'mimeType' => $cols['image:mime_type'],
                 'width' => (int)$cols['image:width'],
