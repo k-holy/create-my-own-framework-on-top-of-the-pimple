@@ -6,20 +6,20 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Domain\Data;
+namespace Acme\Test\Domain\Entity;
 
 /**
- * Test for DataTrait
+ * Test for EntityTrait
  *
  * @author k.holy74@gmail.com
  */
-class DataTraitTest extends \PHPUnit_Framework_TestCase
+class EntityTraitTest extends \PHPUnit_Framework_TestCase
 {
 
 	public function testConstructorDefensiveCopy()
 	{
 		$now = new \DateTime();
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'datetime' => $now,
 		));
 		$this->assertEquals($now, $test->datetime);
@@ -31,14 +31,14 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testConstructorRaiseInvalidArgumentExceptionUndefinedProperty()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'undefined_property' => 'Foo',
 		));
 	}
 
 	public function testIsset()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'string' => 'Foo',
 			'null'   => null,
 		));
@@ -49,7 +49,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 
 	public function testGet()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'string' => 'Foo',
 			'null'   => null,
 		));
@@ -62,7 +62,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testGetRaiseInvalidArgumentExceptionUndefinedProperty()
 	{
-		$test = new DataTraitTestData();
+		$test = new EntityTraitTestData();
 		$test->undefined_property;
 	}
 
@@ -71,7 +71,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSetRaiseLogicException()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'string'  => 'Foo',
 			'boolean' => true,
 		));
@@ -83,7 +83,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testUnsetRaiseLogicException()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'string' => 'Foo',
 		));
 		unset($test->string);
@@ -92,7 +92,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	public function testGetDatetimeAsString()
 	{
 		$now = new \DateTime();
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'datetime' => $now,
 		));
 		$this->assertEquals($now->format('Y-m-d H:i:s'), $test->datetimeAsString);
@@ -101,7 +101,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 	public function testGetDatetimeAsStringWithDateFormat()
 	{
 		$now = new \DateTime();
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'datetime'   => $now,
 			'dateFormat' => \DateTime::RFC3339,
 		));
@@ -110,7 +110,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 
 	public function testSerialize()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'string'     => 'Foo',
 			'null'       => null,
 			'boolean'    => true,
@@ -126,7 +126,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 
 	public function testVarExport()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'string'     => 'Foo',
 			'null'       => null,
 			'boolean'    => true,
@@ -142,7 +142,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 
 	public function testClone()
 	{
-		$test = new DataTraitTestData(array(
+		$test = new EntityTraitTestData(array(
 			'string'     => 'Foo',
 			'null'       => null,
 			'boolean'    => true,
@@ -166,7 +166,7 @@ class DataTraitTest extends \PHPUnit_Framework_TestCase
 			'datetime'   => $now,
 			'dateFormat' => \DateTime::RFC3339,
 		);
-		$test = new DataTraitTestData($properties);
+		$test = new EntityTraitTestData($properties);
 		foreach ($test as $name => $value) {
 			if (array_key_exists($name, $properties)) {
 				switch ($name) {

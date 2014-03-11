@@ -83,6 +83,8 @@ class DateTime implements ValueInterface, \ArrayAccess, \IteratorAggregate
 			}
 		}
 
+		$value->setTimezone($options['timezone']);
+
 		if (!isset($options['format'])) {
 			$options['format'] = 'Y-m-d H:i:s';
 		}
@@ -122,9 +124,6 @@ class DateTime implements ValueInterface, \ArrayAccess, \IteratorAggregate
 	 */
 	private function setTimezone(\DateTimeZone $timezone)
 	{
-		if (isset($this->value)) {
-			$this->value->setTimezone($timezone);
-		}
 		$this->timezone = $timezone;
 	}
 
