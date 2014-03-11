@@ -6,10 +6,9 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Domain\Data;
+namespace Acme\Test\Domain\Entity;
 
-use Acme\Domain\Data\Comment;
-use Acme\Domain\Data\DateTime;
+use Acme\Domain\Entity\Comment;
 
 /**
  * Test for Comment
@@ -21,8 +20,13 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 
 	public function testConstructWithProperties()
 	{
-		$postedAt = $this->getMock('Acme\Domain\Data\DateTime');
-		$image = $this->getMock('Acme\Domain\Data\Image');
+		$postedAt = $this->getMockBuilder('Acme\Value\DateTime')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$image = $this->getMockBuilder('Acme\Domain\Entity\Image')
+			->disableOriginalConstructor()
+			->getMock();
 
 		$comment = new Comment(array(
 			'id'       => 1,
@@ -37,8 +41,8 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $comment->author);
 		$this->assertEquals('bar', $comment->comment);
 		$this->assertEquals(2, $comment->imageId);
-		$this->assertInstanceOf('Acme\Domain\Data\DateTime', $comment->postedAt);
-		$this->assertInstanceOf('Acme\Domain\Data\Image', $comment->image);
+		$this->assertInstanceOf('Acme\Value\DateTime', $comment->postedAt);
+		$this->assertInstanceOf('Acme\Domain\Entity\Image', $comment->image);
 	}
 
 }

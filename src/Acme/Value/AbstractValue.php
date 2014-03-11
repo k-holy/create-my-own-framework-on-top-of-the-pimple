@@ -8,14 +8,12 @@
 
 namespace Acme\Value;
 
-use Acme\Value\ValueInterface;
-
 /**
  * AbstractValue
  *
  * @author k.holy74@gmail.com
  */
-abstract class AbstractValue implements ValueInterface, \ArrayAccess, \IteratorAggregate
+abstract class AbstractValue
 {
 
 	/**

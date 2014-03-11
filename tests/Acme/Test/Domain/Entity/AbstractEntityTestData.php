@@ -6,45 +6,41 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Domain\Data;
+namespace Acme\Test\Domain\Entity;
 
-use Acme\Domain\Data\AbstractData;
+use Acme\Domain\Entity\AbstractEntity;
+use Acme\Domain\Entity\EntityInterface;
 
 /**
- * TestData for AbstractData
+ * TestData for AbstractEntity
  *
  * @author k.holy74@gmail.com
  */
-final class AbstractDataTestData extends AbstractData
+final class AbstractEntityTestData extends AbstractEntity implements EntityInterface, \ArrayAccess, \IteratorAggregate
 {
 
+	protected $id;
 	protected $string;
 	protected $null;
 	protected $boolean;
 	protected $datetime;
 	protected $dateFormat;
 
-	/**
-	 * @param \DateTime
-	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	protected function setDateTime(\DateTime $datetime)
 	{
 		$this->datetime = $datetime;
 	}
 
-	/**
-	 * 日付の出力用書式をセットします。
-	 *
-	 * @param string
-	 */
 	protected function setDateFormat($dateFormat)
 	{
 		$this->dateFormat = $dateFormat;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getDatetimeAsString()
 	{
 		return (isset($this->datetime)) ? $this->datetime->format($this->dateFormat ?: 'Y-m-d H:i:s') : null;

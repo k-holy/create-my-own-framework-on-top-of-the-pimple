@@ -6,9 +6,9 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Domain\Data;
+namespace Acme\Test\Value;
 
-use Acme\Domain\Data\Byte;
+use Acme\Value\Byte;
 
 /**
  * Test for Byte
@@ -65,131 +65,93 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testConstructorWithByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1B',
-		));
+		$byte = new Byte('1B');
 		$this->assertEquals('1', $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2B',
-		));
+		$byte = new Byte('2B');
 		$this->assertEquals('2', $byte->value);
 	}
 
 	public function testConstructorWithKiloByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1KB',
-		));
+		$byte = new Byte('1KB');
 		$this->assertEquals($this->getKiloByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2KB',
-		));
+		$byte = new Byte('2KB');
 		$this->assertEquals($this->getKiloByte(2), $byte->value);
 	}
 
 	public function testConstructorWithMegaByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1MB',
-		));
+		$byte = new Byte('1MB');
 		$this->assertEquals($this->getMegaByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2MB',
-		));
+		$byte = new Byte('2MB');
 		$this->assertEquals($this->getMegaByte(2), $byte->value);
 	}
 
 	public function testConstructorWithGigaByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1GB',
-		));
+		$byte = new Byte('1GB');
 		$this->assertEquals($this->getGigaByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2GB',
-		));
+		$byte = new Byte('2GB');
 		$this->assertEquals($this->getGigaByte(2), $byte->value);
 	}
 
 	public function testConstructorWithTeraByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1TB',
-		));
+		$byte = new Byte('1TB');
 		$this->assertEquals($this->getTeraByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2TB',
-		));
+		$byte = new Byte('2TB');
 		$this->assertEquals($this->getTeraByte(2), $byte->value);
 	}
 
 	public function testConstructorWithPetaByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1PB',
-		));
+		$byte = new Byte('1PB');
 		$this->assertEquals($this->getPetaByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2PB',
-		));
+		$byte = new Byte('2PB');
 		$this->assertEquals($this->getPetaByte(2), $byte->value);
 	}
 
 	public function testConstructorWithExaByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1EB',
-		));
+		$byte = new Byte('1EB');
 		$this->assertEquals($this->getExaByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2EB',
-		));
+		$byte = new Byte('2EB');
 		$this->assertEquals($this->getExaByte(2), $byte->value);
 	}
 
 	public function testConstructorWithZettaByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1ZB',
-		));
+		$byte = new Byte('1ZB');
 		$this->assertEquals($this->getZettaByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2ZB',
-		));
+		$byte = new Byte('2ZB');
 		$this->assertEquals($this->getZettaByte(2), $byte->value);
 	}
 
 	public function testConstructorWithYottaByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1YB',
-		));
+		$byte = new Byte('1YB');
 		$this->assertEquals($this->getYottaByte(1), $byte->value);
 
-		$byte = new Byte(array(
-			'value' => '2YB',
-		));
+		$byte = new Byte('2YB');
 		$this->assertEquals($this->getYottaByte(2), $byte->value);
 	}
 
 	public function testFormatByte()
 	{
-		$byte = new Byte(array(
-			'value' => '1',
+		$byte = new Byte('1', array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1B', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => '2',
+		$byte = new Byte('2', array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2B', $byte->format());
@@ -197,14 +159,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatKiloByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getKiloByte(1),
+		$byte = new Byte($this->getKiloByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1KB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getKiloByte(2),
+		$byte = new Byte($this->getKiloByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2KB', $byte->format());
@@ -212,14 +172,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatMegaByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getMegaByte(1),
+		$byte = new Byte($this->getMegaByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1MB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getMegaByte(2),
+		$byte = new Byte($this->getMegaByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2MB', $byte->format());
@@ -227,14 +185,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatGigaByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getGigaByte(1),
+		$byte = new Byte($this->getGigaByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1GB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getGigaByte(2),
+		$byte = new Byte($this->getGigaByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2GB', $byte->format());
@@ -242,14 +198,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatTeraByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getTeraByte(1),
+		$byte = new Byte($this->getTeraByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1TB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getTeraByte(2),
+		$byte = new Byte($this->getTeraByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2TB', $byte->format());
@@ -257,14 +211,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatPetaByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getPetaByte(1),
+		$byte = new Byte($this->getPetaByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1PB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getPetaByte(2),
+		$byte = new Byte($this->getPetaByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2PB', $byte->format());
@@ -272,14 +224,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatExaByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getExaByte(1),
+		$byte = new Byte($this->getExaByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1EB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getExaByte(2),
+		$byte = new Byte($this->getExaByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2EB', $byte->format());
@@ -287,14 +237,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatZettaByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getZettaByte(1),
+		$byte = new Byte($this->getZettaByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1ZB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getZettaByte(2),
+		$byte = new Byte($this->getZettaByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2ZB', $byte->format());
@@ -302,14 +250,12 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatYottaByte()
 	{
-		$byte = new Byte(array(
-			'value' => $this->getYottaByte(1),
+		$byte = new Byte($this->getYottaByte(1), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('1YB', $byte->format());
 
-		$byte = new Byte(array(
-			'value' => $this->getYottaByte(2),
+		$byte = new Byte($this->getYottaByte(2), array(
 			'decimals' => 0,
 		));
 		$this->assertEquals('2YB', $byte->format());
@@ -317,39 +263,29 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testFormatByteWithDecimals()
 	{
-		$byte = new Byte(array(
-			'value' => 1024 + 512,
-		));
+		$byte = new Byte(1024 + 512);
 		$this->assertEquals('1.5KB', $byte->format(1));
 		$this->assertEquals('1.50KB', $byte->format(2));
 
-		$byte = new Byte(array(
-			'value' => 1024 + 512 + 256,
-		));
+		$byte = new Byte(1024 + 512 + 256);
 		$this->assertEquals('1.8KB', $byte->format(1));
 		$this->assertEquals('1.75KB', $byte->format(2));
 		$this->assertEquals('1.750KB', $byte->format(3));
 
-		$byte = new Byte(array(
-			'value' => 1024 + 512 + 256 + 128,
-		));
+		$byte = new Byte(1024 + 512 + 256 + 128);
 		$this->assertEquals('1.9KB', $byte->format(1));
 		$this->assertEquals('1.88KB', $byte->format(2));
 		$this->assertEquals('1.875KB', $byte->format(3));
 		$this->assertEquals('1.8750KB', $byte->format(4));
 
-		$byte = new Byte(array(
-			'value' => 1024 + 512 + 256 + 128 + 64,
-		));
+		$byte = new Byte(1024 + 512 + 256 + 128 + 64);
 		$this->assertEquals('1.9KB', $byte->format(1));
 		$this->assertEquals('1.94KB', $byte->format(2));
 		$this->assertEquals('1.938KB', $byte->format(3));
 		$this->assertEquals('1.9375KB', $byte->format(4));
 		$this->assertEquals('1.93750KB', $byte->format(5));
 
-		$byte = new Byte(array(
-			'value' => 1024 + 512 + 256 + 128 + 64 + 32,
-		));
+		$byte = new Byte(1024 + 512 + 256 + 128 + 64 + 32);
 		$this->assertEquals('2.0KB', $byte->format(1));
 		$this->assertEquals('1.97KB', $byte->format(2));
 		$this->assertEquals('1.969KB', $byte->format(3));
@@ -357,9 +293,7 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('1.96875KB', $byte->format(5));
 		$this->assertEquals('1.968750KB', $byte->format(6));
 
-		$byte = new Byte(array(
-			'value' => 1024 + 512 + 256 + 128 + 64 + 32 + 16,
-		));
+		$byte = new Byte(1024 + 512 + 256 + 128 + 64 + 32 + 16);
 		$this->assertEquals('2.0KB', $byte->format(1));
 		$this->assertEquals('1.98KB', $byte->format(2));
 		$this->assertEquals('1.984KB', $byte->format(3));
@@ -368,9 +302,7 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('1.984375KB', $byte->format(6));
 		$this->assertEquals('1.9843750KB', $byte->format(7));
 
-		$byte = new Byte(array(
-			'value' => 1024 + 512 + 256 + 128 + 64 + 32 + 16 + 8,
-		));
+		$byte = new Byte(1024 + 512 + 256 + 128 + 64 + 32 + 16 + 8);
 		$this->assertEquals('2.0KB', $byte->format(1));
 		$this->assertEquals('1.99KB', $byte->format(2));
 		$this->assertEquals('1.992KB', $byte->format(3));
@@ -380,9 +312,7 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('1.9921875KB', $byte->format(7));
 		$this->assertEquals('1.99218750KB', $byte->format(8));
 
-		$byte = new Byte(array(
-			'value' => 1024 + 512 + 256 + 128 + 64 + 32 + 16 + 8 + 4,
-		));
+		$byte = new Byte(1024 + 512 + 256 + 128 + 64 + 32 + 16 + 8 + 4);
 		$this->assertEquals('2.0KB', $byte->format(1));
 		$this->assertEquals('2.00KB', $byte->format(2));
 		$this->assertEquals('1.996KB', $byte->format(3));

@@ -6,20 +6,20 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Domain\Data;
+namespace Acme\Test\Domain\Entity;
 
 /**
- * Test for AbstractData
+ * Test for AbstractEntity
  *
  * @author k.holy74@gmail.com
  */
-class AbstractDataTest extends \PHPUnit_Framework_TestCase
+class AbstractEntityTest extends \PHPUnit_Framework_TestCase
 {
 
 	public function testConstructorDefensiveCopy()
 	{
 		$now = new \DateTime();
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'datetime' => $now,
 		));
 		$this->assertEquals($now, $test->datetime);
@@ -31,14 +31,14 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testConstructorRaiseInvalidArgumentExceptionUndefinedProperty()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'undefined_property' => 'Foo',
 		));
 	}
 
 	public function testIsset()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'string' => 'Foo',
 			'null'   => null,
 		));
@@ -49,7 +49,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 
 	public function testGet()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'string' => 'Foo',
 			'null'   => null,
 		));
@@ -62,7 +62,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testGetRaiseInvalidArgumentExceptionUndefinedProperty()
 	{
-		$test = new AbstractDataTestData();
+		$test = new AbstractEntityTestData();
 		$test->undefined_property;
 	}
 
@@ -71,7 +71,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSetRaiseLogicException()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'string'  => 'Foo',
 			'boolean' => true,
 		));
@@ -83,7 +83,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testUnsetRaiseLogicException()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'string' => 'Foo',
 		));
 		unset($test->string);
@@ -92,7 +92,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 	public function testGetDatetimeAsString()
 	{
 		$now = new \DateTime();
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'datetime' => $now,
 		));
 		$this->assertEquals($now->format('Y-m-d H:i:s'), $test->datetimeAsString);
@@ -101,7 +101,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 	public function testGetDatetimeAsStringWithDateFormat()
 	{
 		$now = new \DateTime();
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'datetime'   => $now,
 			'dateFormat' => \DateTime::RFC3339,
 		));
@@ -110,7 +110,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 
 	public function testSerialize()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'string'     => 'Foo',
 			'null'       => null,
 			'boolean'    => true,
@@ -126,7 +126,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 
 	public function testVarExport()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'string'     => 'Foo',
 			'null'       => null,
 			'boolean'    => true,
@@ -142,7 +142,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 
 	public function testClone()
 	{
-		$test = new AbstractDataTestData(array(
+		$test = new AbstractEntityTestData(array(
 			'string'     => 'Foo',
 			'null'       => null,
 			'boolean'    => true,
@@ -166,7 +166,7 @@ class AbstractDataTest extends \PHPUnit_Framework_TestCase
 			'datetime'   => $now,
 			'dateFormat' => \DateTime::RFC3339,
 		);
-		$test = new AbstractDataTestData($properties);
+		$test = new AbstractEntityTestData($properties);
 		foreach ($test as $name => $value) {
 			if (array_key_exists($name, $properties)) {
 				switch ($name) {
