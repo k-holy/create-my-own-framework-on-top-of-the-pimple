@@ -1,24 +1,24 @@
 <?php
 /**
- * ドメインデータ
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
+namespace Acme\Value;
 
-use Acme\Domain\Data\AbstractData;
+use Acme\Value\AbstractValue;
 
 /**
  * バイト数
  *
  * @author k.holy74@gmail.com
  */
-class Byte implements DataInterface, \ArrayAccess, \IteratorAggregate
+class Byte implements ValueInterface, \ArrayAccess, \IteratorAggregate
 {
 
-	use DataTrait;
+	use ValueTrait;
 
 	/**
 	 * @var string
@@ -40,28 +40,14 @@ class Byte implements DataInterface, \ArrayAccess, \IteratorAggregate
 	 *
 	 * @param array プロパティの配列
 	 */
-	public function __construct(array $properties = array())
+	public function __construct($value = null, array $options = array())
 	{
 
-		if (!isset($properties['decimals'])) {
-			$properties['decimals'] = 0;
-		}
-
-		$this->initialize($properties);
-	}
-
-	/**
-	 * バイト数をセットします。
-	 *
-	 * @param mixed バイト数または単位付きバイト数(B,KB,MB,GB,TB,PB,EB,ZB,YB)
-	 */
-	private function setValue($value = null)
-	{
 		if (!is_string($value)) {
 			$value = (string)$value;
 		}
-		$this->value = $this->unitToValue($value);
-		if ($this->value === false) {
+		$value = $this->unitToValue($value);
+		if ($value === false) {
 			throw new \InvalidArgumentException(
 				sprintf('Invalid type:%s', (is_object($value))
 					? get_class($value)
@@ -69,6 +55,12 @@ class Byte implements DataInterface, \ArrayAccess, \IteratorAggregate
 				)
 			);
 		}
+
+		if (!isset($properties['decimals'])) {
+			$properties['decimals'] = 0;
+		}
+
+		$this->initialize($value, $options);
 	}
 
 	/**

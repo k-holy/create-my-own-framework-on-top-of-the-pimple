@@ -1,61 +1,64 @@
 <?php
 /**
- * ドメインデータ
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
+namespace Acme\Value;
 
-use Acme\Domain\Data\DataInterface;
+use Acme\Value\ValueInterface;
 
 /**
- * DataTrait
+ * AbstractValue
  *
  * @author k.holy74@gmail.com
  */
-trait DataTrait
+abstract class AbstractValue implements ValueInterface, \ArrayAccess, \IteratorAggregate
 {
 
 	/**
 	 * __construct()
 	 *
-	 * @param array プロパティの配列
+	 * @param mixed 値
+	 * @param array オプション
 	 */
-	public function __construct(array $properties = array())
+	public function __construct($value = null, array $options = array())
 	{
-		$this->initialize($properties);
+		$this->initialize($value, $options);
 	}
 
 	/**
 	 * データを初期化します。
 	 *
-	 * @param array プロパティの配列
+	 * @param mixed 値
+	 * @param array オプション
 	 */
-	private function initialize(array $properties = array())
+	protected function initialize($value = null, array $options = array())
 	{
 		foreach (array_keys(get_object_vars($this)) as $name) {
 			$this->{$name} = null;
-			if (array_key_exists($name, $properties)) {
-				$value = (is_object($properties[$name]))
-					? clone $properties[$name]
-					: $properties[$name];
+			if (array_key_exists($name, $options)) {
+				$option = (is_object($options[$name]))
+					? clone $options[$name]
+					: $options[$name];
 				if (method_exists($this, 'set' . $name)) {
-					$this->{'set' . $name}($value);
+					$this->{'set' . $name}($option);
 				} else {
-					$this->{$name} = $value;
+					$this->{$name} = $option;
 				}
-				unset($properties[$name]);
+				unset($options[$name]);
 			}
 		}
-		if (count($properties) !== 0) {
+		if (count($options) !== 0) {
 			throw new \InvalidArgumentException(
 				sprintf('Not supported properties [%s]',
-					implode(',', array_keys($properties))
+					implode(',', array_keys($options))
 				)
 			);
 		}
+		$this->value = $value;
 		return $this;
 	}
 
@@ -68,10 +71,7 @@ trait DataTrait
 	{
 		$values = array();
 		foreach (array_keys(get_object_vars($this)) as $name) {
-			$value = $this->__get($name);
-			$values[$name] = ($value instanceof DataInterface)
-				? $value->toArray()
-				: $value;
+			$values[$name] = $this->__get($name);
 		}
 		return $values;
 	}
@@ -135,9 +135,9 @@ trait DataTrait
 	 * @param array
 	 * @return object
 	 */
-	public static function __set_state($properties)
+	public static function __set_state($options)
 	{
-		return new self($properties);
+		return new static($options);
 	}
 
 	/**
