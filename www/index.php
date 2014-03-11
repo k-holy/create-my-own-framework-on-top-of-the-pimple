@@ -44,36 +44,25 @@ SQL
 
         // 画像
         if (!is_null($cols['image:id'])) {
-            $image = $app->createData('image', [
+            $image = $app->createEntity('image', [
                 'id' => (int)$cols['image:id'],
                 'fileName' => $cols['image:file_name'],
-                'fileSize' => $app->createData('byte', [
-                    'value' => $cols['image:file_size'],
-                    'decimals' => 1,
-                ]),
+                'fileSize' => $app->createValue('byte', $cols['image:file_size']),
                 'encodedData' => $cols['image:encoded_data'],
                 'mimeType' => $cols['image:mime_type'],
                 'width' => (int)$cols['image:width'],
                 'height' => (int)$cols['image:height'],
-                'createdAt' => $app->createData('dateTime', [
-                    'datetime' => new \DateTime($cols['image:created_at']),
-                    'timezone' => $app->clock->getTimezone(),
-                    'format' => $app->config->datetimeFormat,
-                ]),
+                'createdAt' => $app->createValue('dateTime', $cols['image:created_at']),
             ]);
         }
 
         // コメント
-        $comment = $app->createData('comment', [
+        $comment = $app->createEntity('comment', [
             'id' => (int)$cols['id'],
             'author' => $cols['author'],
             'comment' => $cols['comment'],
             'imageId' => (int)$cols['image_id'],
-            'postedAt' => $app->createData('dateTime',[
-                'datetime' => new \DateTime($cols['posted_at']),
-                'timezone' => $app->clock->getTimezone(),
-                'format' => $app->config->datetimeFormat,
-            ]),
+            'postedAt' => $app->createValue('dateTime',$cols['posted_at']),
             'image' => (isset($image)) ? $image : null,
         ]);
 

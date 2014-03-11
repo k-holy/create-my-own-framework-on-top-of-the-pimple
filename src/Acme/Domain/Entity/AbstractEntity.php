@@ -1,21 +1,19 @@
 <?php
 /**
- * ドメインデータ
+ * エンティティオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
-
-use Acme\Domain\Data\DataInterface;
+namespace Acme\Domain\Entity;
 
 /**
- * AbstractData
+ * AbstractEntity
  *
  * @author k.holy74@gmail.com
  */
-abstract class AbstractData implements DataInterface, \ArrayAccess, \IteratorAggregate
+abstract class AbstractEntity
 {
 
 	/**

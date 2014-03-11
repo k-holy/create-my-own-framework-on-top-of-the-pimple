@@ -1,27 +1,28 @@
 <?php
 /**
- * ドメインデータ
+ * エンティティオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
+namespace Acme\Domain\Entity;
 
-use Acme\Domain\Data\DataInterface;
-use Acme\Domain\Data\DataTrait;
-use Acme\Domain\Data\DateTime;
-use Acme\Domain\Data\Byte;
+use Acme\Domain\Entity\EntityInterface;
+use Acme\Domain\Entity\EntityTrait;
+
+use Acme\Value\DateTime;
+use Acme\Value\Byte;
 
 /**
  * 画像
  *
  * @author k.holy74@gmail.com
  */
-class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
+class Image implements EntityInterface, \ArrayAccess, \IteratorAggregate
 {
 
-	use DataTrait;
+	use EntityTrait;
 
 	/**
 	 * @var int
@@ -34,7 +35,7 @@ class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 	private $fileName;
 
 	/**
-	 * @var Acme\Domain\Data\Byte
+	 * @var Acme\Value\Byte
 	 */
 	private $fileSize;
 
@@ -59,7 +60,7 @@ class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 	private $height;
 
 	/**
-	 * @var Acme\Domain\Data\DateTime
+	 * @var Acme\Value\DateTime
 	 */
 	private $createdAt;
 
@@ -93,9 +94,19 @@ class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
+	 * このオブジェクトのIDを返します。
+	 *
+	 * @return string
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * 登録日時をセットします。
 	 *
-	 * @param Acme\Domain\Data\DateTime
+	 * @param Acme\Value\DateTime
 	 */
 	private function setCreatedAt(DateTime $createdAt)
 	{
@@ -105,7 +116,7 @@ class Image implements DataInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * ファイルサイズをセットします。
 	 *
-	 * @param Acme\Domain\Data\DateTime
+	 * @param Acme\Value\DateTime
 	 */
 	private function setFileSize(Byte $fileSize)
 	{

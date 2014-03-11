@@ -1,27 +1,28 @@
 <?php
 /**
- * ドメインデータ
+ * エンティティオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
+namespace Acme\Domain\Entity;
 
-use Acme\Domain\Data\DataInterface;
-use Acme\Domain\Data\DataTrait;
-use Acme\Domain\Data\DateTime;
-use Acme\Domain\Data\Image;
+use Acme\Domain\Entity\EntityInterface;
+use Acme\Domain\Entity\EntityTrait;
+use Acme\Domain\Entity\Image;
+
+use Acme\Value\DateTime;
 
 /**
  * コメント
  *
  * @author k.holy74@gmail.com
  */
-class Comment implements DataInterface, \ArrayAccess, \IteratorAggregate
+class Comment implements EntityInterface, \ArrayAccess, \IteratorAggregate
 {
 
-	use DataTrait;
+	use EntityTrait;
 
 	/**
 	 * @var int
@@ -44,19 +45,29 @@ class Comment implements DataInterface, \ArrayAccess, \IteratorAggregate
 	private $imageId;
 
 	/**
-	 * @var Acme\Domain\Data\DateTime
+	 * @var Acme\Value\DateTime
 	 */
 	private $postedAt;
 
 	/**
-	 * @var Acme\Domain\Data\Image
+	 * @var Acme\Domain\Entity\Image
 	 */
 	private $image;
 
 	/**
+	 * このオブジェクトのIDを返します。
+	 *
+	 * @return string
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * postedAtの値をセットします。
 	 *
-	 * @param Acme\Domain\Data\DateTime
+	 * @param Acme\Value\DateTime
 	 */
 	private function setPostedAt(DateTime $postedAt)
 	{
@@ -66,7 +77,7 @@ class Comment implements DataInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * imageの値をセットします。
 	 *
-	 * @param Acme\Domain\Data\Image
+	 * @param Acme\Domain\Entity\Image
 	 */
 	private function setImage(Image $image = null)
 	{
