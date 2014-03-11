@@ -1,21 +1,19 @@
 <?php
 /**
- * ドメインデータ
+ * エンティティオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
-
-use Acme\Domain\Data\DataInterface;
+namespace Acme\Domain\Entity;
 
 /**
- * DataTrait
+ * AbstractEntity
  *
  * @author k.holy74@gmail.com
  */
-trait DataTrait
+abstract class AbstractEntity
 {
 
 	/**
@@ -33,7 +31,7 @@ trait DataTrait
 	 *
 	 * @param array プロパティの配列
 	 */
-	private function initialize(array $properties = array())
+	protected function initialize(array $properties = array())
 	{
 		foreach (array_keys(get_object_vars($this)) as $name) {
 			$this->{$name} = null;
@@ -68,10 +66,7 @@ trait DataTrait
 	{
 		$values = array();
 		foreach (array_keys(get_object_vars($this)) as $name) {
-			$value = $this->__get($name);
-			$values[$name] = ($value instanceof DataInterface)
-				? $value->toArray()
-				: $value;
+			$values[$name] = $this->__get($name);
 		}
 		return $values;
 	}
@@ -137,7 +132,7 @@ trait DataTrait
 	 */
 	public static function __set_state($properties)
 	{
-		return new self($properties);
+		return new static($properties);
 	}
 
 	/**

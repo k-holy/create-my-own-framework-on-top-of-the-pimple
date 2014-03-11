@@ -10,7 +10,7 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
-use Acme\Domain\Data\DateTime;
+use Acme\Value\DateTime;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -79,10 +79,10 @@ $app->timezone = $app->share(function(Application $app) {
 // システム時計
 //-----------------------------------------------------------------------------
 $app->clock = $app->share(function(Application $app) {
-    return new DateTime([
-        'datetime' => new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME'])),
-        'timezone' => $app->timezone,
-    ]);
+    return new DateTime(
+        new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME'])),
+        ['timezone' => $app->timezone]
+    );
 });
 
 //-----------------------------------------------------------------------------
@@ -248,16 +248,44 @@ $app->transaction = $app->share(function(Application $app) {
 });
 
 //-----------------------------------------------------------------------------
-// ドメインデータファクトリ
+// エンティティオブジェクトファクトリ
 //-----------------------------------------------------------------------------
-$app->createData = $app->protect(function($name, array $properties = array()) use ($app) {
-    $class = '\\Acme\\Domain\\Data\\' . ucfirst($name);
+$app->createEntity = $app->protect(function($name, array $properties = array()) use ($app) {
+    $class = '\\Acme\\Domain\\Entity\\' . ucfirst($name);
     if (!class_exists($class, true)) {
         throw new \InvalidArgumentException(
-            sprintf('The Domain Data "%s" is not found.', $name)
+            sprintf('The EntityObject "%s" is not found.', $name)
         );
     }
     return new $class($properties);
+});
+
+//-----------------------------------------------------------------------------
+// バリューオブジェクトファクトリ
+//-----------------------------------------------------------------------------
+$app->createValue = $app->protect(function($name, $value, array $options = array()) use ($app) {
+    $class = '\\Acme\\Value\\' . ucfirst($name);
+    if (!class_exists($class, true)) {
+        throw new \InvalidArgumentException(
+            sprintf('The ValueObject "%s" is not found.', $name)
+        );
+    }
+    switch ($name) {
+    case 'byte':
+        if (!isset($options['decimals'])) {
+            $options['decimals'] = 1;
+        }
+        break;
+    case 'datetime':
+        if (!isset($options['timezone'])) {
+            $options['timezone'] = $app->clock->getTimezone();
+        }
+        if (!isset($options['format'])) {
+            $options['format'] = $app->config->datetimeFormat;
+        }
+        break;
+    }
+    return new $class($value, $options);
 });
 
 //-----------------------------------------------------------------------------

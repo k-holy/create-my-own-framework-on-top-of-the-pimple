@@ -1,61 +1,64 @@
 <?php
 /**
- * ドメインデータ
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
+namespace Acme\Value;
 
-use Acme\Domain\Data\DataInterface;
+use Acme\Value\ValueInterface;
 
 /**
- * AbstractData
+ * ValueTrait
  *
  * @author k.holy74@gmail.com
  */
-abstract class AbstractData implements DataInterface, \ArrayAccess, \IteratorAggregate
+trait ValueTrait
 {
 
 	/**
 	 * __construct()
 	 *
-	 * @param array プロパティの配列
+	 * @param mixed 値
+	 * @param array オプション
 	 */
-	public function __construct(array $properties = array())
+	public function __construct($value = null, array $options = array())
 	{
-		$this->initialize($properties);
+		$this->initialize($value, $options);
 	}
 
 	/**
 	 * データを初期化します。
 	 *
-	 * @param array プロパティの配列
+	 * @param mixed 値
+	 * @param array オプション
 	 */
-	protected function initialize(array $properties = array())
+	private function initialize($value = null, array $options = array())
 	{
 		foreach (array_keys(get_object_vars($this)) as $name) {
 			$this->{$name} = null;
-			if (array_key_exists($name, $properties)) {
-				$value = (is_object($properties[$name]))
-					? clone $properties[$name]
-					: $properties[$name];
+			if (array_key_exists($name, $options)) {
+				$option = (is_object($options[$name]))
+					? clone $options[$name]
+					: $options[$name];
 				if (method_exists($this, 'set' . $name)) {
-					$this->{'set' . $name}($value);
+					$this->{'set' . $name}($option);
 				} else {
-					$this->{$name} = $value;
+					$this->{$name} = $option;
 				}
-				unset($properties[$name]);
+				unset($options[$name]);
 			}
 		}
-		if (count($properties) !== 0) {
+		if (count($options) !== 0) {
 			throw new \InvalidArgumentException(
 				sprintf('Not supported properties [%s]',
-					implode(',', array_keys($properties))
+					implode(',', array_keys($options))
 				)
 			);
 		}
+		$this->value = $value;
 		return $this;
 	}
 
@@ -132,9 +135,9 @@ abstract class AbstractData implements DataInterface, \ArrayAccess, \IteratorAgg
 	 * @param array
 	 * @return object
 	 */
-	public static function __set_state($properties)
+	public static function __set_state($options)
 	{
-		return new static($properties);
+		return new static($options);
 	}
 
 	/**

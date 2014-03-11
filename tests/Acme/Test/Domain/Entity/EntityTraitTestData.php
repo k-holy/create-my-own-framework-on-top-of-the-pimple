@@ -6,47 +6,42 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Domain\Data;
+namespace Acme\Test\Domain\Entity;
 
-use Acme\Domain\Data\DataInterface;
-use Acme\Domain\Data\DataTrait;
+use Acme\Domain\Entity\EntityInterface;
+use Acme\Domain\Entity\EntityTrait;
 
 /**
- * TestData for DataTrait
+ * TestData for EntityTrait
  *
  * @author k.holy74@gmail.com
  */
-final class DataTraitTestData implements DataInterface, \ArrayAccess, \IteratorAggregate
+final class EntityTraitTestData implements EntityInterface, \ArrayAccess, \IteratorAggregate
 {
-	use DataTrait;
+	use EntityTrait;
 
+	private $id;
 	private $string;
 	private $null;
 	private $boolean;
 	private $datetime;
 	private $dateFormat;
 
-	/**
-	 * @param \DateTime
-	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	private function setDateTime(\DateTime $datetime)
 	{
 		$this->datetime = $datetime;
 	}
 
-	/**
-	 * 日付の出力用書式をセットします。
-	 *
-	 * @param string
-	 */
 	private function setDateFormat($dateFormat)
 	{
 		$this->dateFormat = $dateFormat;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getDatetimeAsString()
 	{
 		return (isset($this->datetime)) ? $this->datetime->format($this->dateFormat ?: 'Y-m-d H:i:s') : null;

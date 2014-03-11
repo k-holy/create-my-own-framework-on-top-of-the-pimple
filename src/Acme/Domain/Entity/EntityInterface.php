@@ -1,20 +1,27 @@
 <?php
 /**
- * ドメインデータ
+ * エンティティオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Domain\Data;
+namespace Acme\Domain\Entity;
 
 /**
- * DataInterface
+ * EntityInterface
  *
  * @author k.holy74@gmail.com
  */
-interface DataInterface
+interface EntityInterface
 {
+
+	/**
+	 * このオブジェクトのIDを返します。
+	 *
+	 * @return string
+	 */
+	public function getId();
 
 	/**
 	 * このオブジェクトを配列に変換して返します。
