@@ -20,11 +20,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
 	public function testConstructWithProperties()
 	{
-		$createdAt = $this->getMockBuilder('Acme\Value\DateTime')
+		$createdAt = $this->getMockBuilder('Acme\Domain\Value\DateTime')
 			->disableOriginalConstructor()
 			->getMock();
 
-		$fileSize = $this->getMockBuilder('Acme\Value\Byte')
+		$fileSize = $this->getMockBuilder('Acme\Domain\Value\Byte')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -41,8 +41,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $image->fileName);
 		$this->assertEquals('encoded-data', $image->encodedData);
 		$this->assertEquals('image/png', $image->mimeType);
-		$this->assertInstanceOf('Acme\Value\Byte', $image->fileSize);
-		$this->assertInstanceOf('Acme\Value\DateTime', $image->createdAt);
+		$this->assertInstanceOf('Acme\Domain\Value\Byte', $image->fileSize);
+		$this->assertInstanceOf('Acme\Domain\Value\DateTime', $image->createdAt);
 	}
 
 	public function testGetDataUri()

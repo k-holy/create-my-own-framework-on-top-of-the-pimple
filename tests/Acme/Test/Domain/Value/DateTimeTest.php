@@ -6,9 +6,9 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Value;
+namespace Acme\Test\Domain\Value;
 
-use Acme\Value\DateTime;
+use Acme\Domain\Value\DateTime;
 
 /**
  * Test for DateTime

@@ -12,7 +12,7 @@ use Acme\Domain\Entity\EntityInterface;
 use Acme\Domain\Entity\EntityTrait;
 use Acme\Domain\Entity\Image;
 
-use Acme\Value\DateTime;
+use Acme\Domain\Value\DateTime;
 
 /**
  * コメント
@@ -45,7 +45,7 @@ class Comment implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $imageId;
 
 	/**
-	 * @var Acme\Value\DateTime
+	 * @var Acme\Domain\Value\DateTime
 	 */
 	private $postedAt;
 
@@ -67,7 +67,7 @@ class Comment implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * postedAtの値をセットします。
 	 *
-	 * @param Acme\Value\DateTime
+	 * @param Acme\Domain\Value\DateTime
 	 */
 	private function setPostedAt(DateTime $postedAt)
 	{

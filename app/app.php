@@ -10,7 +10,7 @@
 include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
-use Acme\Value\DateTime;
+use Acme\Domain\Value\DateTime;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -264,7 +264,7 @@ $app->createEntity = $app->protect(function($name, array $properties = array()) 
 // バリューオブジェクトファクトリ
 //-----------------------------------------------------------------------------
 $app->createValue = $app->protect(function($name, $value, array $options = array()) use ($app) {
-    $class = '\\Acme\\Value\\' . ucfirst($name);
+    $class = '\\Acme\\Domain\\Value\\' . ucfirst($name);
     if (!class_exists($class, true)) {
         throw new \InvalidArgumentException(
             sprintf('The ValueObject "%s" is not found.', $name)
