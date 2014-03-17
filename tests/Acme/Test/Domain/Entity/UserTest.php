@@ -20,11 +20,11 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
 	public function testConstructWithProperties()
 	{
-		$createdAt = $this->getMockBuilder('Acme\Value\DateTime')
+		$createdAt = $this->getMockBuilder('Acme\Domain\Value\DateTime')
 			->disableOriginalConstructor()
 			->getMock();
 
-		$updatedAt = $this->getMockBuilder('Acme\Value\DateTime')
+		$updatedAt = $this->getMockBuilder('Acme\Domain\Value\DateTime')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -47,8 +47,8 @@ class UserTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('login-id', $user->loginId);
 		$this->assertEquals('encoded-password', $user->loginPassword);
 		$this->assertEquals('salty', $user->hashSalt);
-		$this->assertInstanceOf('Acme\Value\DateTime', $user->createdAt);
-		$this->assertInstanceOf('Acme\Value\DateTime', $user->updatedAt);
+		$this->assertInstanceOf('Acme\Domain\Value\DateTime', $user->createdAt);
+		$this->assertInstanceOf('Acme\Domain\Value\DateTime', $user->updatedAt);
 		$this->assertInstanceOf('Acme\Security\PasswordProcessorInterface', $user->passwordProcessor);
 	}
 

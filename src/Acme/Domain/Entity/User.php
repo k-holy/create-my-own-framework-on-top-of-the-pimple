@@ -11,7 +11,7 @@ namespace Acme\Domain\Entity;
 use Acme\Domain\Entity\EntityInterface;
 use Acme\Domain\Entity\EntityTrait;
 
-use Acme\Value\DateTime;
+use Acme\Domain\Value\DateTime;
 
 use Acme\Security\PasswordProcessorInterface;
 
@@ -51,12 +51,12 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $name;
 
 	/**
-	 * @var Acme\Value\DateTime
+	 * @var Acme\Domain\Value\DateTime
 	 */
 	private $createdAt;
 
 	/**
-	 * @var Acme\Value\DateTime
+	 * @var Acme\Domain\Value\DateTime
 	 */
 	private $updatedAt;
 
@@ -78,7 +78,7 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * 登録日をセットします。
 	 *
-	 * @param Acme\Value\DateTime
+	 * @param Acme\Domain\Value\DateTime
 	 */
 	private function setCreatedAt(DateTime $createdAt)
 	{
@@ -88,7 +88,7 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * 更新日をセットします。
 	 *
-	 * @param Acme\Value\DateTime
+	 * @param Acme\Domain\Value\DateTime
 	 */
 	private function setUpdatedAt(DateTime $updatedAt)
 	{
