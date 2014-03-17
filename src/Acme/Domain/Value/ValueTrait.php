@@ -6,9 +6,9 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Value;
+namespace Acme\Domain\Value;
 
-use Acme\Value\ValueInterface;
+use Acme\Domain\Value\ValueInterface;
 
 /**
  * ValueTrait

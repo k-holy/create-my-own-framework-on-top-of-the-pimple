@@ -6,10 +6,10 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Value;
+namespace Acme\Domain\Value;
 
-use Acme\Value\ValueInterface;
-use Acme\Value\ValueTrait;
+use Acme\Domain\Value\ValueInterface;
+use Acme\Domain\Value\ValueTrait;
 
 /**
  * 日時
