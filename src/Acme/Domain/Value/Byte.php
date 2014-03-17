@@ -6,9 +6,9 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Value;
+namespace Acme\Domain\Value;
 
-use Acme\Value\AbstractValue;
+use Acme\Domain\Value\AbstractValue;
 
 /**
  * バイト数

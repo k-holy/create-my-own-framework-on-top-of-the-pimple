@@ -20,7 +20,7 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 
 	public function testConstructWithProperties()
 	{
-		$postedAt = $this->getMockBuilder('Acme\Value\DateTime')
+		$postedAt = $this->getMockBuilder('Acme\Domain\Value\DateTime')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -41,7 +41,7 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $comment->author);
 		$this->assertEquals('bar', $comment->comment);
 		$this->assertEquals(2, $comment->imageId);
-		$this->assertInstanceOf('Acme\Value\DateTime', $comment->postedAt);
+		$this->assertInstanceOf('Acme\Domain\Value\DateTime', $comment->postedAt);
 		$this->assertInstanceOf('Acme\Domain\Entity\Image', $comment->image);
 	}
 

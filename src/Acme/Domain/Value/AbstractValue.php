@@ -6,7 +6,7 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Value;
+namespace Acme\Domain\Value;
 
 /**
  * AbstractValue

@@ -6,9 +6,9 @@
  * @license The MIT License (MIT)
  */
 
-namespace Acme\Test\Value;
+namespace Acme\Test\Domain\Value;
 
-use Acme\Value\Byte;
+use Acme\Domain\Value\Byte;
 
 /**
  * Test for Byte

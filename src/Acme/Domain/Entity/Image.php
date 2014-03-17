@@ -11,8 +11,8 @@ namespace Acme\Domain\Entity;
 use Acme\Domain\Entity\EntityInterface;
 use Acme\Domain\Entity\EntityTrait;
 
-use Acme\Value\DateTime;
-use Acme\Value\Byte;
+use Acme\Domain\Value\DateTime;
+use Acme\Domain\Value\Byte;
 
 /**
  * 画像
@@ -35,7 +35,7 @@ class Image implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $fileName;
 
 	/**
-	 * @var Acme\Value\Byte
+	 * @var Acme\Domain\Value\Byte
 	 */
 	private $fileSize;
 
@@ -60,7 +60,7 @@ class Image implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $height;
 
 	/**
-	 * @var Acme\Value\DateTime
+	 * @var Acme\Domain\Value\DateTime
 	 */
 	private $createdAt;
 
@@ -106,7 +106,7 @@ class Image implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * 登録日時をセットします。
 	 *
-	 * @param Acme\Value\DateTime
+	 * @param Acme\Domain\Value\DateTime
 	 */
 	private function setCreatedAt(DateTime $createdAt)
 	{
@@ -116,7 +116,7 @@ class Image implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * ファイルサイズをセットします。
 	 *
-	 * @param Acme\Value\DateTime
+	 * @param Acme\Domain\Value\DateTime
 	 */
 	private function setFileSize(Byte $fileSize)
 	{
