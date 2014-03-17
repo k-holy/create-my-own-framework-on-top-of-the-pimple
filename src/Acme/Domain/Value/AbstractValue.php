@@ -56,7 +56,7 @@ abstract class AbstractValue
 				)
 			);
 		}
-		$this->value = $value;
+		$this->value = (is_object($value)) ? clone $value : $value;
 		return $this;
 	}
 
@@ -135,7 +135,12 @@ abstract class AbstractValue
 	 */
 	public static function __set_state($options)
 	{
-		return new static($options);
+		$value = null;
+		if (isset($options['value'])) {
+			$value = $options['value'];
+			unset($options['value']);
+		}
+		return new static($value, $options);
 	}
 
 	/**
