@@ -1,6 +1,6 @@
 <?php
 /**
- * バリューオブジェクト
+ * Create my own framework on top of the Pimple
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -164,16 +164,6 @@ abstract class AbstractValue
 	public function offsetGet($name)
 	{
 		return $this->__get($name);
-	}
-
-	/**
-	 * IteratorAggregate::getIterator()
-	 *
-	 * @return \ArrayIterator
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator(get_object_vars($this));
 	}
 
 	/**

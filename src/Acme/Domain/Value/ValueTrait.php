@@ -1,6 +1,6 @@
 <?php
 /**
- * バリューオブジェクト
+ * Create my own framework on top of the Pimple
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -58,7 +58,7 @@ trait ValueTrait
 				)
 			);
 		}
-		$this->value = $value;
+		$this->value = (is_object($value)) ? clone $value : $value;
 		return $this;
 	}
 
@@ -137,7 +137,12 @@ trait ValueTrait
 	 */
 	public static function __set_state($options)
 	{
-		return new static($options);
+		$value = null;
+		if (isset($options['value'])) {
+			$value = $options['value'];
+			unset($options['value']);
+		}
+		return new static($value, $options);
 	}
 
 	/**
@@ -161,16 +166,6 @@ trait ValueTrait
 	public function offsetGet($name)
 	{
 		return $this->__get($name);
-	}
-
-	/**
-	 * IteratorAggregate::getIterator()
-	 *
-	 * @return \ArrayIterator
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator(get_object_vars($this));
 	}
 
 	/**

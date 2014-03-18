@@ -16,7 +16,7 @@ use Acme\Domain\Value\ValueInterface;
  *
  * @author k.holy74@gmail.com
  */
-final class AbstractValueTestData extends AbstractValue implements ValueInterface, \ArrayAccess, \IteratorAggregate
+final class AbstractValueTestData extends AbstractValue implements ValueInterface, \ArrayAccess
 {
 
 	protected $value;
@@ -25,22 +25,22 @@ final class AbstractValueTestData extends AbstractValue implements ValueInterfac
 
 	public function __construct(\DateTime $value = null, array $options = array())
 	{
-		if (!isset($options['format'])) {
-			$options['format'] = 'Y-m-d H:i:s';
+		if ($value === null) {
+			$value = new \DateTime();
 		}
 		if (!isset($options['timezone'])) {
 			$options['timezone'] = new \DateTimeZone(date_default_timezone_get());
 		}
-		if ($value !== null) {
-			$value = clone $value;
-			$value->setTimezone($options['timezone']);
+		$value->setTimezone($options['timezone']);
+		if (!isset($options['format'])) {
+			$options['format'] = 'Y-m-d H:i:s';
 		}
 		$this->initialize($value, $options);
 	}
 
 	public function __toString()
 	{
-		return ($this->value !== null) ? $this->value->format($this->format) : null;
+		return $this->value->format($this->format);
 	}
 
 	protected function setFormat($format)
@@ -48,7 +48,7 @@ final class AbstractValueTestData extends AbstractValue implements ValueInterfac
 		$this->format = $format;
 	}
 
-	protected function setTimezone(\DateTimeZone $timezone = null)
+	protected function setTimezone(\DateTimeZone $timezone)
 	{
 		$this->timezone = $timezone;
 	}

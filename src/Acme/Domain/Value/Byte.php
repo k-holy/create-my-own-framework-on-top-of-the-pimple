@@ -1,6 +1,6 @@
 <?php
 /**
- * バリューオブジェクト
+ * Create my own framework on top of the Pimple
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -8,14 +8,15 @@
 
 namespace Acme\Domain\Value;
 
-use Acme\Domain\Value\AbstractValue;
+use Acme\Domain\Value\ValueInterface;
+use Acme\Domain\Value\ValueTrait;
 
 /**
  * バイト数
  *
  * @author k.holy74@gmail.com
  */
-class Byte implements ValueInterface, \ArrayAccess, \IteratorAggregate
+class Byte implements ValueInterface, \ArrayAccess
 {
 
 	use ValueTrait;
@@ -23,22 +24,23 @@ class Byte implements ValueInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * @var string
 	 */
-	protected $value;
+	private $value;
 
 	/**
 	 * @var int
 	 */
-	protected $decimals;
+	private $decimals;
 
 	/**
 	 * @var array バイト単位
 	 */
-	protected static $units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+	private static $units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
 
 	/**
 	 * __construct()
 	 *
-	 * @param array プロパティの配列
+	 * @param mixed 値
+	 * @param array オプション
 	 */
 	public function __construct($value = null, array $options = array())
 	{
