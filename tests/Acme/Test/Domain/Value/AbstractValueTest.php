@@ -8,6 +8,8 @@
 
 namespace Acme\Test\Domain\Value;
 
+use Acme\Test\Domain\Value\AbstractValueTestData;
+
 /**
  * Test for AbstractValue
  *
@@ -154,35 +156,6 @@ class AbstractValueTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotSame($test->value, $cloned->value);
 		$this->assertEquals($test->timezone, $cloned->timezone);
 		$this->assertNotSame($test->timezone, $cloned->timezone);
-	}
-
-	public function testIteration()
-	{
-		$now = new \DateTime();
-		$timezone = new \DateTimeZone('Asia/Tokyo');
-		$properties = array(
-			'format' => \DateTime::RFC3339,
-			'timezone' => $timezone,
-		);
-		$test = new AbstractValueTestData($now, $properties);
-		foreach ($test as $name => $value) {
-			if (array_key_exists($name, $properties)) {
-				switch ($name) {
-				case 'value':
-					$this->assertEquals($now, $value);
-					$this->assertNotSame($now, $value);
-					$this->assertEquals($now->format(\DateTime::RFC3339), $value->format(\DateTime::RFC3339));
-					break;
-				case 'timezone':
-					$this->assertEquals($timezone, $value);
-					$this->assertNotSame($timezone, $value);
-					break;
-				case 'format':
-					$this->assertEquals($properties[$name], $value);
-					break;
-				}
-			}
-		}
 	}
 
 }

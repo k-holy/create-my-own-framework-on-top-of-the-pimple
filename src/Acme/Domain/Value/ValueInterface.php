@@ -1,6 +1,6 @@
 <?php
 /**
- * バリューオブジェクト
+ * Create my own framework on top of the Pimple
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -81,12 +81,5 @@ interface ValueInterface
 	 * @throws \InvalidArgumentException
 	 */
 	public function offsetGet($name);
-
-	/**
-	 * IteratorAggregate::getIterator()
-	 *
-	 * @return \ArrayIterator
-	 */
-	public function getIterator();
 
 }

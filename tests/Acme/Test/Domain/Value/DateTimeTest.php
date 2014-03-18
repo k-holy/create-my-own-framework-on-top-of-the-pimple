@@ -183,7 +183,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		unset($datetime['year']);
 	}
 
-	public function testSetFormatAndToString()
+	public function testToStringWithFormat()
 	{
 		$datetime = new DateTime('2013-05-01 12:34:56', array(
 			'format'   => 'Y/n/j G:i',
@@ -212,15 +212,76 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($datetime1->datetime->getOffset(), $datetime2->datetime->getOffset());
 	}
 
-/* TODO
-	public function testImplementsDateTimeInterface()
+	public function testConstructorDefensiveCopy()
 	{
-		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-			$this->markTestSkipped('Test skipped, for PHP 5.5 or higher.');
-		}
-		$datetime = new DateTime('2013-05-01 12:34:56');
-		$this->assertInstanceOf('\\DateTimeInterface', $datetime);
+		$now = new \DateTime();
+		$timezone = new \DateTimeZone('Asia/Tokyo');
+		$datetime = new DateTime($now, array(
+			'format' => 'Y-m-d H:i:s',
+			'timezone' => $timezone,
+		));
+		$this->assertEquals($now, $datetime->value);
+		$this->assertNotSame($now, $datetime->value);
+		$this->assertEquals($timezone, $datetime->timezone);
+		$this->assertNotSame($timezone, $datetime->timezone);
 	}
-*/
+
+	public function testToArray()
+	{
+		$datetime = new DateTime('2013-05-01 12:34:56', array(
+			'format'   => \DateTime::RFC3339,
+			'timezone' => new \DateTimeZone('Asia/Tokyo'),
+		));
+		$array = $datetime->toArray();
+		$this->assertEquals($datetime->value, $array['value']);
+		$this->assertSame($datetime->value, $array['value']);
+		$this->assertEquals($datetime->timezone, $array['timezone']);
+		$this->assertSame($datetime->timezone, $array['timezone']);
+	}
+
+	public function testSerialize()
+	{
+		$datetime = new DateTime('2013-05-01 12:34:56', array(
+			'format'   => \DateTime::RFC3339,
+			'timezone' => new \DateTimeZone('Asia/Tokyo'),
+		));
+		$deserialized = unserialize(serialize($datetime));
+		$this->assertEquals($datetime, $deserialized);
+		$this->assertNotSame($datetime, $deserialized);
+		$this->assertEquals($datetime->value, $deserialized->value);
+		$this->assertNotSame($datetime->value, $deserialized->value);
+		$this->assertEquals($datetime->timezone, $deserialized->timezone);
+		$this->assertNotSame($datetime->timezone, $deserialized->timezone);
+	}
+
+	public function testVarExport()
+	{
+		$datetime = new DateTime('2013-05-01 12:34:56', array(
+			'format'   => \DateTime::RFC3339,
+			'timezone' => new \DateTimeZone('Asia/Tokyo'),
+		));
+		eval('$exported = ' . var_export($datetime, true) . ';');
+		$this->assertEquals($datetime, $exported);
+		$this->assertNotSame($datetime, $exported);
+		$this->assertEquals($datetime->value, $exported->value);
+		$this->assertNotSame($datetime->value, $exported->value);
+		$this->assertEquals($datetime->timezone, $exported->timezone);
+		$this->assertNotSame($datetime->timezone, $exported->timezone);
+	}
+
+	public function testClone()
+	{
+		$datetime = new DateTime('2013-05-01 12:34:56', array(
+			'format'   => \DateTime::RFC3339,
+			'timezone' => new \DateTimeZone('Asia/Tokyo'),
+		));
+		$cloned = clone $datetime;
+		$this->assertEquals($datetime, $cloned);
+		$this->assertNotSame($datetime, $cloned);
+		$this->assertEquals($datetime->value, $cloned->value);
+		$this->assertNotSame($datetime->value, $cloned->value);
+		$this->assertEquals($datetime->timezone, $cloned->timezone);
+		$this->assertNotSame($datetime->timezone, $cloned->timezone);
+	}
 
 }

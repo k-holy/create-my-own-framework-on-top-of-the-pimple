@@ -1,6 +1,6 @@
 <?php
 /**
- * バリューオブジェクト
+ * Create my own framework on top of the Pimple
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -16,7 +16,7 @@ use Acme\Domain\Value\ValueTrait;
  *
  * @author k.holy74@gmail.com
  */
-class DateTime implements ValueInterface, \ArrayAccess, \IteratorAggregate
+class DateTime implements ValueInterface, \ArrayAccess
 {
 
 	use ValueTrait;
