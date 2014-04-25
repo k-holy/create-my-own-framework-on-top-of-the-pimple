@@ -28,47 +28,48 @@ class UserTest extends \PHPUnit_Framework_TestCase
 			->disableOriginalConstructor()
 			->getMock();
 
-		$passwordProcessor = $this->getMockBuilder('Acme\Security\PasswordProcessorInterface')
+		$hashProcessor = $this->getMockBuilder('Acme\Security\HashProcessorInterface')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$user = new User(array(
 			'id' => 1,
 			'loginId' => 'login-id',
-			'loginPassword' => 'encoded-password',
+			'loginPassword' => 'hashed-password',
 			'hashSalt' => 'salty',
-			'name' => 'foo',
+			'nickname' => 'foo',
 			'createdAt' => $createdAt,
 			'updatedAt' => $updatedAt,
-			'passwordProcessor' => $passwordProcessor,
+			'hashProcessor' => $hashProcessor,
 		));
 
 		$this->assertEquals(1, $user->id);
 		$this->assertEquals('login-id', $user->loginId);
-		$this->assertEquals('encoded-password', $user->loginPassword);
+		$this->assertEquals('hashed-password', $user->loginPassword);
 		$this->assertEquals('salty', $user->hashSalt);
+		$this->assertEquals('foo', $user->nickname);
 		$this->assertInstanceOf('Acme\Domain\Value\DateTime', $user->createdAt);
 		$this->assertInstanceOf('Acme\Domain\Value\DateTime', $user->updatedAt);
-		$this->assertInstanceOf('Acme\Security\PasswordProcessorInterface', $user->passwordProcessor);
+		$this->assertInstanceOf('Acme\Security\HashProcessorInterface', $user->hashProcessor);
 	}
 
 	public function testVerifyPassword()
 	{
-		$passwordProcessor = $this->getMockBuilder('Acme\Security\PasswordProcessorInterface')
+		$hashProcessor = $this->getMockBuilder('Acme\Security\HashProcessorInterface')
 			->disableOriginalConstructor()
 			->getMock();
 
-		$passwordProcessor->expects($this->any())
-			->method('encode')
+		$hashProcessor->expects($this->any())
+			->method('hash')
 			->will($this->returnArgument(0));
 
 		$user = new User(array(
-			'loginPassword' => 'encoded-password',
+			'loginPassword' => 'hashed-password',
 			'hashSalt' => 'salty',
-			'passwordProcessor' => $passwordProcessor,
+			'hashProcessor' => $hashProcessor,
 		));
 
-		$this->assertTrue($user->verifyPassword('encoded-password'));
+		$this->assertTrue($user->verifyPassword('hashed-password'));
 	}
 
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -36,6 +36,11 @@ final class AbstractValueTestData extends AbstractValue implements ValueInterfac
 			$options['format'] = 'Y-m-d H:i:s';
 		}
 		$this->initialize($value, $options);
+	}
+
+	public function getValue()
+	{
+		return $this->value;
 	}
 
 	public function __toString()

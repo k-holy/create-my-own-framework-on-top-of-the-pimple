@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -46,6 +46,21 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri = new Uri('/foo.bar.baz.ext');
 		$this->assertEquals('ext', $uri->getExtension());
 		$this->assertEquals('ext', $uri->extension);
+	}
+
+	public function testGetValue()
+	{
+		$uri = new Uri('http://www.example.com/foo/bar/baz?param=value#fragment');
+		$this->assertEquals('http://www.example.com/foo/bar/baz?param=value#fragment', $uri->getValue());
+
+		$uri = new Uri(null, array(
+			'scheme' => 'http',
+			'host' => 'www.example.com',
+			'path' => '/foo/bar/baz.ext',
+			'query' => 'param=value',
+			'fragment' => 'fragment',
+		));
+		$this->assertEquals('http://www.example.com/foo/bar/baz.ext?param=value#fragment', $uri->getValue());
 	}
 
 }

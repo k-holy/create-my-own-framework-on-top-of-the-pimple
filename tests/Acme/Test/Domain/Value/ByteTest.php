@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -322,6 +322,26 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('1.9960938KB', $byte->format(7));
 		$this->assertEquals('1.99609375KB', $byte->format(8));
 		$this->assertEquals('1.996093750KB', $byte->format(9));
+	}
+
+	public function testGetValue()
+	{
+		$byte = new Byte('1', array(
+			'decimals' => 0,
+		));
+		$this->assertEquals('1', $byte->getValue());
+
+		$kb = $this->getKiloByte(1);
+		$byte = new Byte($kb, array(
+			'decimals' => 0,
+		));
+		$this->assertEquals($kb, $byte->getValue());
+
+		$yb = $this->getYottaByte(1);
+		$byte = new Byte($yb, array(
+			'decimals' => 0,
+		));
+		$this->assertEquals($yb, $byte->getValue());
 	}
 
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -8,50 +8,48 @@
 
 namespace Acme\Domain\Value;
 
+use Acme\Domain\Value\AbstractValue;
 use Acme\Domain\Value\ValueInterface;
-use Acme\Domain\Value\ValueTrait;
 
 /**
  * URI
  *
  * @author k.holy74@gmail.com
  */
-class Uri implements ValueInterface, \ArrayAccess
+class Uri extends AbstractValue implements ValueInterface, \ArrayAccess
 {
-
-	use ValueTrait;
 
 	private static $pattern = '~\A(?:([^:/?#]+):)*(?://([^/?#]*))*([^?#]*)(?:\?([^#]*))?(?:#(.*))?\z~i';
 
 	/**
 	 * @var string
 	 */
-	private $value;
+	protected $value;
 
 	/**
 	 * @var string
 	 */
-	private $scheme;
+	protected $scheme;
 
 	/**
 	 * @var string
 	 */
-	private $host;
+	protected $host;
 
 	/**
 	 * @var string
 	 */
-	private $path;
+	protected $path;
 
 	/**
 	 * @var string
 	 */
-	private $query;
+	protected $query;
 
 	/**
 	 * @var string
 	 */
-	private $fragment;
+	protected $fragment;
 
 	/**
 	 * __construct()

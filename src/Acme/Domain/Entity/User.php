@@ -13,7 +13,7 @@ use Acme\Domain\Entity\EntityTrait;
 
 use Acme\Domain\Value\DateTime;
 
-use Acme\Security\PasswordProcessorInterface;
+use Acme\Security\HashProcessorInterface;
 
 /**
  * ユーザー
@@ -48,7 +48,7 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * @var string
 	 */
-	private $name;
+	private $nickname;
 
 	/**
 	 * @var Acme\Domain\Value\DateTime
@@ -61,9 +61,9 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $updatedAt;
 
 	/**
-	 * @var Acme\Security\PasswordProcessorInterface
+	 * @var Acme\Security\HashProcessorInterface
 	 */
-	private $passwordProcessor;
+	private $hashProcessor;
 
 	/**
 	 * このオブジェクトのIDを返します。
@@ -98,11 +98,11 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	/**
 	 * パスワード処理クラスをセットします。
 	 *
-	 * @param Acme\Security\PasswordProcessorInterface パスワード処理インタフェース
+	 * @param Acme\Security\HashProcessorInterface ハッシュ処理インタフェース
 	 */
-	private function setPasswordProcessor(PasswordProcessorInterface $passwordProcessor)
+	private function setHashProcessor(HashProcessorInterface $hashProcessor)
 	{
-		$this->passwordProcessor = $passwordProcessor;
+		$this->hashProcessor = $hashProcessor;
 	}
 
 	/**
@@ -113,7 +113,7 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	 */
 	public function verifyPassword($password)
 	{
-		return ($this->loginPassword === $this->passwordProcessor->encode($password, $this->hashSalt));
+		return ($this->loginPassword === $this->hashProcessor->hash($password, $this->hashSalt));
 	}
 
 }

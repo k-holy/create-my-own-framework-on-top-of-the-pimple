@@ -9,11 +9,11 @@
 namespace Acme\Security;
 
 /**
- * パスワード処理クラス
+ * ハッシュ処理クラス
  *
  * @author k.holy74@gmail.com
  */
-class PasswordProcessor implements PasswordProcessorInterface
+class HashProcessor implements HashProcessorInterface
 {
 
 	/**
@@ -39,12 +39,12 @@ class PasswordProcessor implements PasswordProcessorInterface
 	public function initialize($configurations = array())
 	{
 		$this->config = array();
-		$this->config['algorithm'           ] = 'sha256';
-		$this->config['stretchingCount'     ] = 0;
-		$this->config['saltLength'          ] = 64;
-		$this->config['saltChars'           ] = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-		$this->config['randomPasswordChars' ] = 10;
-		$this->config['randomPasswordLength'] = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#%&+-./:=?[]_';
+		$this->config['algorithm'      ] = 'sha256';
+		$this->config['stretchingCount'] = 0;
+		$this->config['saltLength'     ] = 64;
+		$this->config['saltChars'      ] = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		$this->config['randomChars'    ] = 10;
+		$this->config['randomLength'   ] = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#%&+-./:=?[]_';
 		if (!empty($configurations)) {
 			foreach ($configurations as $name => $value) {
 				$this->config($name, $value);
@@ -71,7 +71,7 @@ class PasswordProcessor implements PasswordProcessorInterface
 				switch ($name) {
 				case 'algorithm':
 				case 'saltChars':
-				case 'randomPasswordChars':
+				case 'randomChars':
 					if (!is_string($value)) {
 						throw new \InvalidArgumentException(
 							sprintf('The config parameter "%s" only accepts string.', $name));
@@ -79,7 +79,7 @@ class PasswordProcessor implements PasswordProcessorInterface
 					break;
 				case 'stretchingCount':
 				case 'saltLength':
-				case 'randomPasswordLength':
+				case 'randomLength':
 					if (!is_int($value) && !ctype_digit($value)) {
 						throw new \InvalidArgumentException(
 							sprintf('The config parameter "%s" only accepts numeric.', $name));
@@ -99,16 +99,19 @@ class PasswordProcessor implements PasswordProcessorInterface
 	}
 
 	/**
-	 * パスワードを非可逆ハッシュ化して返します。
+	 * 文字列を非可逆ハッシュ化して返します。
 	 *
-	 * @param string パスワード
+	 * @param string 文字列
 	 * @param string ハッシュソルト
-	 * @return string パスワードハッシュ
+	 * @return string 文字列ハッシュ
 	 */
-	public function encode($password, $hashSalt = null)
+	public function hash($data, $salt = null)
 	{
-		if (!isset($hashSalt)) {
-			$hashSalt = $this->createHashSalt();
+		if ($salt === null) {
+			$salt = $this->createRandom(
+				$this->config('saltLength'),
+				$this->config('saltChars')
+			);
 		}
 
 		$stretchingCount = $this->config('stretchingCount');
@@ -122,65 +125,37 @@ class PasswordProcessor implements PasswordProcessorInterface
 			);
 		}
 
-		$encoded = $password;
+		$hashed = $data;
 		for ($i = 0; $i < $stretchingCount; $i++) {
-			$encoded = hash($algorithm, $encoded . $password . $hashSalt, false);
+			$hashed = hash($algorithm, $hashed . $data . $salt, false);
 		}
 
-		return $encoded;
+		return $hashed;
 	}
 
 	/**
-	 * ランダムパスワードを生成します。
+	 * ランダム文字列を生成します。
 	 *
-	 * @param string パスワードに利用する文字
-	 * @param int パスワードの桁数
-	 * @return string ランダムパスワード
+	 * @param string ランダム文字列に利用する文字
+	 * @param int ランダム文字列の桁数
+	 * @return string ランダム文字列
 	 */
-	public function createRandomPassword($length = null, $chars = null)
+	public function createRandom($length = null, $chars = null)
 	{
-		if (is_null($length)) {
-			$length = $this->config('randomPasswordLength');
+		if ($length === null) {
+			$length = $this->config('randomLength');
 		}
 
 		if (empty($length)) {
-			throw new \RuntimeException('Unspecified length for randomPassword().');
+			throw new \RuntimeException('Unspecified length for random().');
 		}
 
-		if (is_null($chars)) {
-			$chars = $this->config('randomPasswordChars') ?: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-		}
-
-		if (strlen($chars) === 0) {
-			throw new \RuntimeException('Unspecified characters for randomPassword().');
-		}
-
-		return self::createRandomString($length, $chars);
-	}
-
-	/**
-	 * ハッシュソルトを生成します。
-	 *
-	 * @param string ソルトに利用する文字
-	 * @param int ソルトの桁数
-	 * @return string ソルト文字列
-	 */
-	public function createHashSalt($length = null, $chars = null)
-	{
-		if (is_null($length)) {
-			$length = $this->config('saltLength');
-		}
-
-		if (empty($length)) {
-			throw new \RuntimeException('Unspecified length for randomPassword().');
-		}
-
-		if (is_null($chars)) {
-			$chars = $this->config('saltChars') ?: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		if ($chars === null) {
+			$chars = $this->config('randomChars') ?: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 		}
 
 		if (strlen($chars) === 0) {
-			throw new \RuntimeException('Unspecified characters for randomPassword().');
+			throw new \RuntimeException('Unspecified characters for random().');
 		}
 
 		return self::createRandomString($length, $chars);

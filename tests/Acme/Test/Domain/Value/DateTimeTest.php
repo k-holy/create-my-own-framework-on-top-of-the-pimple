@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -282,6 +282,16 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotSame($datetime->value, $cloned->value);
 		$this->assertEquals($datetime->timezone, $cloned->timezone);
 		$this->assertNotSame($datetime->timezone, $cloned->timezone);
+	}
+
+	public function testGetValue()
+	{
+		$utc = new \DateTime(sprintf('@%d', time()));
+		$datetime = new DateTime($utc, array(
+			'timezone' => new \DateTimeZone('Asia/Tokyo'),
+		));
+		$this->assertEquals($utc, $datetime->getValue());
+		$this->assertNotSame($utc, $datetime->getValue());
 	}
 
 }
