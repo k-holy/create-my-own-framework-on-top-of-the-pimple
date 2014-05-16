@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -8,33 +8,31 @@
 
 namespace Acme\Domain\Value;
 
+use Acme\Domain\Value\AbstractValue;
 use Acme\Domain\Value\ValueInterface;
-use Acme\Domain\Value\ValueTrait;
 
 /**
  * バイト数
  *
  * @author k.holy74@gmail.com
  */
-class Byte implements ValueInterface, \ArrayAccess
+class Byte extends AbstractValue implements ValueInterface, \ArrayAccess
 {
-
-	use ValueTrait;
 
 	/**
 	 * @var string
 	 */
-	private $value;
+	protected $value;
 
 	/**
 	 * @var int
 	 */
-	private $decimals;
+	protected $decimals;
 
 	/**
 	 * @var array バイト単位
 	 */
-	private static $units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+	protected static $units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
 
 	/**
 	 * __construct()
@@ -83,7 +81,7 @@ class Byte implements ValueInterface, \ArrayAccess
 	 * @param string バイト数または単位付きバイト数(B,KB,MB,GB,TB,PB,EB,ZB,YB)
 	 * @return mixed バイト数またはFALSE
 	 */
-	private function unitToValue($data)
+	protected function unitToValue($data)
 	{
 		$pattern = sprintf('/\A(\d+)(%s)*\z/i', implode('|', self::$units));
 		if (preg_match($pattern, $data, $matches)) {
@@ -122,7 +120,7 @@ class Byte implements ValueInterface, \ArrayAccess
 		return number_format($number, $decimals) . $unit;
 	}
 
-	private function mulAndPow($num, $pow)
+	protected function mulAndPow($num, $pow)
 	{
 		if (function_exists('gmp_pow')) {
 			return gmp_strval(gmp_mul($num, gmp_pow('1024', $pow)));

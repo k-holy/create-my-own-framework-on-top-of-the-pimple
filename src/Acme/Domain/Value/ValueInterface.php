@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -15,6 +15,13 @@ namespace Acme\Domain\Value;
  */
 interface ValueInterface
 {
+
+	/**
+	 * このオブジェクトの素の値を返します。
+	 *
+	 * @return mixed
+	 */
+	public function getValue();
 
 	/**
 	 * このオブジェクトを配列に変換して返します。

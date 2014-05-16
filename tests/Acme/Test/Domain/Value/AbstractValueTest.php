@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -156,6 +156,18 @@ class AbstractValueTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotSame($test->value, $cloned->value);
 		$this->assertEquals($test->timezone, $cloned->timezone);
 		$this->assertNotSame($test->timezone, $cloned->timezone);
+	}
+
+	public function testGetValue()
+	{
+		$now = new \DateTime();
+		$timezone = new \DateTimeZone('Asia/Tokyo');
+		$test = new AbstractValueTestData($now, array(
+			'format' => 'Y-m-d H:i:s',
+			'timezone' => $timezone,
+		));
+		$this->assertEquals($now, $test->getValue());
+		$this->assertNotSame($now, $test->getValue());
 	}
 
 }

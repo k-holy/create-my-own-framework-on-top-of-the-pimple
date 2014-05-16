@@ -11,6 +11,7 @@ include_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Acme\Application;
 use Acme\Domain\Value\DateTime;
+use Acme\Security\HashProcessor;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -245,6 +246,20 @@ $app->db = $app->share(function(Application $app) {
 //-----------------------------------------------------------------------------
 $app->transaction = $app->share(function(Application $app) {
     return new PdoTransaction($app->pdo);
+});
+
+//-----------------------------------------------------------------------------
+// ハッシュ処理クラス
+//-----------------------------------------------------------------------------
+$app->hashProcessor = $app->share(function(Application $app) {
+    return new HashProcessor(array(
+        'algorithm' => 'sha256',
+        'stretchingCount' => 100,
+        'saltLength' => 64,
+        'saltChars' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+        'randomLength' => 10,
+        'randomChars'  => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#%&+-./:=?[]_',
+    ));
 });
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -58,6 +58,16 @@ abstract class AbstractValue
 		}
 		$this->value = (is_object($value)) ? clone $value : $value;
 		return $this;
+	}
+
+	/**
+	 * このオブジェクトの素の値を返します。
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return $this->value;
 	}
 
 	/**

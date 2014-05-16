@@ -1,6 +1,6 @@
 <?php
 /**
- * Create my own framework on top of the Pimple
+ * バリューオブジェクト
  *
  * @copyright k-holy <k.holy74@gmail.com>
  * @license The MIT License (MIT)
@@ -8,33 +8,31 @@
 
 namespace Acme\Domain\Value;
 
+use Acme\Domain\Value\AbstractValue;
 use Acme\Domain\Value\ValueInterface;
-use Acme\Domain\Value\ValueTrait;
 
 /**
  * 日時
  *
  * @author k.holy74@gmail.com
  */
-class DateTime implements ValueInterface, \ArrayAccess
+class DateTime extends AbstractValue implements ValueInterface, \ArrayAccess
 {
-
-	use ValueTrait;
 
 	/**
 	 * @var \DateTime
 	 */
-	private $value;
+	protected $value;
 
 	/**
 	 * @var \DateTimeZone タイムゾーン
 	 */
-	private $timezone;
+	protected $timezone;
 
 	/**
 	 * @var string 出力用書式
 	 */
-	private $format;
+	protected $format;
 
 	/**
 	 * __construct()
@@ -122,7 +120,7 @@ class DateTime implements ValueInterface, \ArrayAccess
 	 *
 	 * @param mixed
 	 */
-	private function setTimezone(\DateTimeZone $timezone)
+	protected function setTimezone(\DateTimeZone $timezone)
 	{
 		$this->timezone = $timezone;
 	}
@@ -132,7 +130,7 @@ class DateTime implements ValueInterface, \ArrayAccess
 	 *
 	 * @param string
 	 */
-	private function setFormat($format)
+	protected function setFormat($format)
 	{
 		$this->format = $format;
 	}
