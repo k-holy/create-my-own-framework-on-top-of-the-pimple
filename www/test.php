@@ -78,7 +78,7 @@ $app->on('GET|POST', function($app, $method) {
 
         // 秘密のキーを変更
         if (isset($form['change_secret_key'])) {
-            $app->config->secret_key = bin2hex(openssl_random_pseudo_bytes(32));
+            $app->config->security->secret_key = bin2hex(openssl_random_pseudo_bytes(32));
         }
 
         // CSRFトークンの検証
