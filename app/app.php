@@ -39,7 +39,7 @@ $app = new Application();
 //-----------------------------------------------------------------------------
 // アプリケーション設定オブジェクトを生成
 //-----------------------------------------------------------------------------
-$app->config = $app->share(function(Application $app) {
+$app->config = function(Application $app) {
     $config = new Configuration(array(
         'debug'      => true,
         'app_id'     => 'acme',
@@ -67,29 +67,29 @@ $app->config = $app->share(function(Application $app) {
         return $config['log_dir'] . DIRECTORY_SEPARATOR . $config['log_file'];
     };
     return $config;
-});
+};
 
 //-----------------------------------------------------------------------------
 // Timezone
 //-----------------------------------------------------------------------------
-$app->timezone = $app->share(function(Application $app) {
+$app->timezone = function(Application $app) {
     return new \DateTimeZone($app->config->timezone);
-});
+};
 
 //-----------------------------------------------------------------------------
 // システム時計
 //-----------------------------------------------------------------------------
-$app->clock = $app->share(function(Application $app) {
+$app->clock = function(Application $app) {
     return new DateTime(
         new \DateTime(sprintf('@%d', $_SERVER['REQUEST_TIME'])),
         ['timezone' => $app->timezone]
     );
-});
+};
 
 //-----------------------------------------------------------------------------
 // レンダラオブジェクト
 //-----------------------------------------------------------------------------
-$app->renderer = $app->share(function(Application $app) {
+$app->renderer = function(Application $app) {
     $renderer = new Renderer(new PhpTalAdapter(new \PHPTAL(), array(
         'outputMode'         => \PHPTAL::XHTML,
         'encoding'           => 'UTF-8',
@@ -100,12 +100,12 @@ $app->renderer = $app->share(function(Application $app) {
     // アプリケーション設定
     $renderer->assign('config', $app->config);
     return $renderer;
-});
+};
 
 //-----------------------------------------------------------------------------
 // ロガー
 //-----------------------------------------------------------------------------
-$app->logger = $app->share(function(Application $app) {
+$app->logger = function(Application $app) {
     $app->logHandler = function() use ($app) {
         return new StreamHandler(
             $app->config->error_log,
@@ -115,7 +115,7 @@ $app->logger = $app->share(function(Application $app) {
     $logger = new Logger($app->config->app_id);
     $logger->pushHandler($app->logHandler);
     return $logger;
-});
+};
 
 //-----------------------------------------------------------------------------
 // ログ
@@ -140,30 +140,30 @@ $app->errorView = $app->protect(function(\Exception $exception, $title = null, $
 //-----------------------------------------------------------------------------
 // エラーフォーマッタ
 //-----------------------------------------------------------------------------
-$app->errorFormatter = $app->share(function(Application $app) {
+$app->errorFormatter = function(Application $app) {
     return new ErrorFormatter();
-});
+};
 
 //-----------------------------------------------------------------------------
 // 例外フォーマッタ
 //-----------------------------------------------------------------------------
-$app->exceptionFormatter = $app->share(function(Application $app) {
+$app->exceptionFormatter = function(Application $app) {
     return new ExceptionFormatter();
-});
+};
 
 //-----------------------------------------------------------------------------
 // トレースフォーマッタ
 //-----------------------------------------------------------------------------
-$app->traceFormatter = $app->share(function(Application $app) {
+$app->traceFormatter = function(Application $app) {
     return new TraceFormatter();
-});
+};
 
 //-----------------------------------------------------------------------------
 // スタックトレースイテレータ
 //-----------------------------------------------------------------------------
-$app->stackTrace = $app->share(function(Application $app) {
+$app->stackTrace = function(Application $app) {
     return new StackTraceIterator($app->traceFormatter);
-});
+};
 
 //-----------------------------------------------------------------------------
 // エラーログ
@@ -213,45 +213,45 @@ $app->errorLevelToLogLevel = $app->protect(function($level) {
 //-----------------------------------------------------------------------------
 // DSN
 //-----------------------------------------------------------------------------
-$app->dsn = $app->share(function(Application $app) {
+$app->dsn = function(Application $app) {
     return Dsn::createFromString($app->config->database->dsn);
-});
+};
 
 //-----------------------------------------------------------------------------
 // PDO
 //-----------------------------------------------------------------------------
-$app->pdo = $app->share(function(Application $app) {
+$app->pdo = function(Application $app) {
     return PdoFactory::createFromDsn($app->dsn);
-});
+};
 
 //-----------------------------------------------------------------------------
 // メタキャッシュ
 //-----------------------------------------------------------------------------
-$app->metaCache = $app->share(function(Application $app) {
+$app->metaCache = function(Application $app) {
     $cache = DoctrineCacheFactory::create('phpFile', array(
         'directory' => $app->config->database->meta_cache_dir,
     ));
     return new DoctrineCacheProcessor($cache);
-});
+};
 
 //-----------------------------------------------------------------------------
 // データベースドライバ
 //-----------------------------------------------------------------------------
-$app->db = $app->share(function(Application $app) {
+$app->db = function(Application $app) {
     return new PdoDriver($app->pdo, new SqliteMetaDataProcessor($app->metaCache));
-});
+};
 
 //-----------------------------------------------------------------------------
 // データベーストランザクション
 //-----------------------------------------------------------------------------
-$app->transaction = $app->share(function(Application $app) {
+$app->transaction = function(Application $app) {
     return new PdoTransaction($app->pdo);
-});
+};
 
 //-----------------------------------------------------------------------------
 // ハッシュ処理クラス
 //-----------------------------------------------------------------------------
-$app->hashProcessor = $app->share(function(Application $app) {
+$app->hashProcessor = function(Application $app) {
     return new HashProcessor(array(
         'algorithm' => 'sha256',
         'stretchingCount' => 100,
@@ -260,7 +260,7 @@ $app->hashProcessor = $app->share(function(Application $app) {
         'randomLength' => 10,
         'randomChars'  => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#%&+-./:=?[]_',
     ));
-});
+};
 
 //-----------------------------------------------------------------------------
 // エンティティオブジェクトファクトリ

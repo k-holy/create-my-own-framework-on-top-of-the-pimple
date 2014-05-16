@@ -28,7 +28,7 @@ use Volcanus\FileUploader\Uploader\SymfonyHttpFoundationUploader;
 //-----------------------------------------------------------------------------
 // セッションオブジェクト
 //-----------------------------------------------------------------------------
-$app->session = $app->share(function(Application $app) {
+$app->session = function(Application $app) {
     return new Session(
         new NativeSessionStorage(
             array(
@@ -42,12 +42,12 @@ $app->session = $app->share(function(Application $app) {
             new NativeFileSessionHandler($app->config->app_root . DIRECTORY_SEPARATOR . 'session')
         )
     );
-});
+};
 
 //-----------------------------------------------------------------------------
 // フラッシュメッセージ
 //-----------------------------------------------------------------------------
-$app->flash = $app->share(function(Application $app) {
+$app->flash = function(Application $app) {
     return new DataObject(array(
         'add' => function($name, $message) use ($app) {
             $app->session->getFlashBag()->add($name, $message);
@@ -103,12 +103,12 @@ $app->flash = $app->share(function(Application $app) {
             return $app->flash->get('info');
         },
     ));
-});
+};
 
 //-----------------------------------------------------------------------------
 // トークンオブジェクト
 //-----------------------------------------------------------------------------
-$app->token = $app->share(function(Application $app) {
+$app->token = function(Application $app) {
     return new DataObject(array(
         'name'  => function() use ($app) {
             return hash('sha256', $app->config->security->secret_key, false);
@@ -123,14 +123,14 @@ $app->token = $app->share(function(Application $app) {
             return ($value === $app->token->value());
         },
     ));
-});
+};
 
 //-----------------------------------------------------------------------------
 // リクエストオブジェクト
 //-----------------------------------------------------------------------------
-$app->request = $app->share(function(Application $app) {
+$app->request = function(Application $app) {
     return Request::createFromGlobals();
-});
+};
 
 //-----------------------------------------------------------------------------
 // ファイルバリデータを生成
