@@ -26,11 +26,6 @@ final class AbstractEntityTestData extends AbstractEntity implements EntityInter
 	protected $datetime;
 	protected $dateFormat;
 
-	public function getId()
-	{
-		return $this->id;
-	}
-
 	protected function setDateTime(\DateTime $datetime)
 	{
 		$this->datetime = $datetime;

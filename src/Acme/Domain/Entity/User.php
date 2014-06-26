@@ -66,16 +66,6 @@ class User implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $hashProcessor;
 
 	/**
-	 * このオブジェクトのIDを返します。
-	 *
-	 * @return string
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
 	 * 登録日をセットします。
 	 *
 	 * @param Acme\Domain\Value\DateTime

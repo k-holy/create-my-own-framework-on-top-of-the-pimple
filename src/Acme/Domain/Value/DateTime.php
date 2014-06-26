@@ -8,7 +8,6 @@
 
 namespace Acme\Domain\Value;
 
-use Acme\Domain\Value\AbstractValue;
 use Acme\Domain\Value\ValueInterface;
 
 /**
@@ -16,23 +15,25 @@ use Acme\Domain\Value\ValueInterface;
  *
  * @author k.holy74@gmail.com
  */
-class DateTime extends AbstractValue implements ValueInterface, \ArrayAccess
+class DateTime implements ValueInterface, \ArrayAccess
 {
+
+	use \Acme\Domain\Value\ValueTrait;
 
 	/**
 	 * @var \DateTime
 	 */
-	protected $value;
+	private $value;
 
 	/**
 	 * @var \DateTimeZone タイムゾーン
 	 */
-	protected $timezone;
+	private $timezone;
 
 	/**
 	 * @var string 出力用書式
 	 */
-	protected $format;
+	private $format;
 
 	/**
 	 * __construct()
@@ -46,7 +47,7 @@ class DateTime extends AbstractValue implements ValueInterface, \ArrayAccess
 		if ($value === null) {
 			$value = new \DateTime();
 		} else {
-			if ($value instanceof \DateTime) {
+			if ($value instanceof \DateTimeInterface) {
 				if (!isset($options['timezone'])) {
 					$options['timezone'] = $value->getTimezone();
 				}
@@ -55,7 +56,7 @@ class DateTime extends AbstractValue implements ValueInterface, \ArrayAccess
 			} elseif (is_string($value)) {
 				$value = new \DateTime($value);
 			}
-			if (false === ($value instanceof \DateTime)) {
+			if (false === ($value instanceof \DateTimeInterface)) {
 				throw new \InvalidArgumentException(
 					sprintf('Invalid type:%s', (is_object($value))
 						? get_class($value)
@@ -81,12 +82,26 @@ class DateTime extends AbstractValue implements ValueInterface, \ArrayAccess
 			}
 		}
 
-		$value->setTimezone($options['timezone']);
+		if ($value instanceof \DateTimeImmutable) {
+			$value = $value->setTimezone($options['timezone']);
+		} else {
+			$value->setTimezone($options['timezone']);
+		}
 
 		if (!isset($options['format'])) {
 			$options['format'] = 'Y-m-d H:i:s';
 		}
 		$this->initialize($value, $options);
+	}
+
+	/**
+	 * このオブジェクトの素の値を返します。
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return $this->value;
 	}
 
 	/**
@@ -120,7 +135,7 @@ class DateTime extends AbstractValue implements ValueInterface, \ArrayAccess
 	 *
 	 * @param mixed
 	 */
-	protected function setTimezone(\DateTimeZone $timezone)
+	private function setTimezone(\DateTimeZone $timezone)
 	{
 		$this->timezone = $timezone;
 	}
@@ -130,7 +145,7 @@ class DateTime extends AbstractValue implements ValueInterface, \ArrayAccess
 	 *
 	 * @param string
 	 */
-	protected function setFormat($format)
+	private function setFormat($format)
 	{
 		$this->format = $format;
 	}

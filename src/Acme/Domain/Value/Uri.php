@@ -8,7 +8,6 @@
 
 namespace Acme\Domain\Value;
 
-use Acme\Domain\Value\AbstractValue;
 use Acme\Domain\Value\ValueInterface;
 
 /**
@@ -16,40 +15,42 @@ use Acme\Domain\Value\ValueInterface;
  *
  * @author k.holy74@gmail.com
  */
-class Uri extends AbstractValue implements ValueInterface, \ArrayAccess
+class Uri implements ValueInterface, \ArrayAccess
 {
+
+	use \Acme\Domain\Value\ValueTrait;
 
 	private static $pattern = '~\A(?:([^:/?#]+):)*(?://([^/?#]*))*([^?#]*)(?:\?([^#]*))?(?:#(.*))?\z~i';
 
 	/**
 	 * @var string
 	 */
-	protected $value;
+	private $value;
 
 	/**
 	 * @var string
 	 */
-	protected $scheme;
+	private $scheme;
 
 	/**
 	 * @var string
 	 */
-	protected $host;
+	private $host;
 
 	/**
 	 * @var string
 	 */
-	protected $path;
+	private $path;
 
 	/**
 	 * @var string
 	 */
-	protected $query;
+	private $query;
 
 	/**
 	 * @var string
 	 */
-	protected $fragment;
+	private $fragment;
 
 	/**
 	 * __construct()
@@ -86,6 +87,16 @@ class Uri extends AbstractValue implements ValueInterface, \ArrayAccess
 		}
 
 		$this->initialize($value, $options);
+	}
+
+	/**
+	 * このオブジェクトの素の値を返します。
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return $this->value;
 	}
 
 	/**

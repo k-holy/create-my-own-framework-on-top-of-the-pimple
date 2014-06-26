@@ -43,7 +43,7 @@ class EntityTraitTest extends \PHPUnit_Framework_TestCase
 			'null'   => null,
 		));
 		$this->assertTrue(isset($test->string));
-		$this->assertFalse(isset($test->null));
+		$this->assertTrue(isset($test->null)); // !! CAUTION !!
 		$this->assertFalse(isset($test->undefined_property));
 	}
 

@@ -8,7 +8,6 @@
 
 namespace Acme\Domain\Value;
 
-use Acme\Domain\Value\AbstractValue;
 use Acme\Domain\Value\ValueInterface;
 
 /**
@@ -16,23 +15,25 @@ use Acme\Domain\Value\ValueInterface;
  *
  * @author k.holy74@gmail.com
  */
-class Byte extends AbstractValue implements ValueInterface, \ArrayAccess
+class Byte implements ValueInterface, \ArrayAccess
 {
+
+	use \Acme\Domain\Value\ValueTrait;
 
 	/**
 	 * @var string
 	 */
-	protected $value;
+	private $value;
 
 	/**
 	 * @var int
 	 */
-	protected $decimals;
+	private $decimals;
 
 	/**
 	 * @var array バイト単位
 	 */
-	protected static $units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+	private static $units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
 
 	/**
 	 * __construct()
@@ -64,6 +65,16 @@ class Byte extends AbstractValue implements ValueInterface, \ArrayAccess
 	}
 
 	/**
+	 * このオブジェクトの素の値を返します。
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return $this->value;
+	}
+
+	/**
 	 * 数値をバイト単位で整形します。
 	 *
 	 * @return string
@@ -81,7 +92,7 @@ class Byte extends AbstractValue implements ValueInterface, \ArrayAccess
 	 * @param string バイト数または単位付きバイト数(B,KB,MB,GB,TB,PB,EB,ZB,YB)
 	 * @return mixed バイト数またはFALSE
 	 */
-	protected function unitToValue($data)
+	private function unitToValue($data)
 	{
 		$pattern = sprintf('/\A(\d+)(%s)*\z/i', implode('|', self::$units));
 		if (preg_match($pattern, $data, $matches)) {
@@ -120,7 +131,7 @@ class Byte extends AbstractValue implements ValueInterface, \ArrayAccess
 		return number_format($number, $decimals) . $unit;
 	}
 
-	protected function mulAndPow($num, $pow)
+	private function mulAndPow($num, $pow)
 	{
 		if (function_exists('gmp_pow')) {
 			return gmp_strval(gmp_mul($num, gmp_pow('1024', $pow)));

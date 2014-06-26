@@ -27,11 +27,6 @@ final class EntityTraitTestData implements EntityInterface, \ArrayAccess, \Itera
 	private $datetime;
 	private $dateFormat;
 
-	public function getId()
-	{
-		return $this->id;
-	}
-
 	private function setDateTime(\DateTime $datetime)
 	{
 		$this->datetime = $datetime;

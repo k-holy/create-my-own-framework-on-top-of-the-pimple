@@ -61,30 +61,6 @@ abstract class AbstractValue
 	}
 
 	/**
-	 * このオブジェクトの素の値を返します。
-	 *
-	 * @return mixed
-	 */
-	public function getValue()
-	{
-		return $this->value;
-	}
-
-	/**
-	 * このオブジェクトを配列に変換して返します。
-	 *
-	 * @return array
-	 */
-	public function toArray()
-	{
-		$values = array();
-		foreach (array_keys(get_object_vars($this)) as $name) {
-			$values[$name] = $this->__get($name);
-		}
-		return $values;
-	}
-
-	/**
 	 * __isset
 	 *
 	 * @param mixed
@@ -92,7 +68,7 @@ abstract class AbstractValue
 	 */
 	public function __isset($name)
 	{
-		return (property_exists($this, $name) && $this->{$name} !== null);
+		return property_exists($this, $name);
 	}
 
 	/**

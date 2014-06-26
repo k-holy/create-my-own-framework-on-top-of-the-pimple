@@ -79,7 +79,7 @@ abstract class AbstractEntity
 	 */
 	public function __isset($name)
 	{
-		return (property_exists($this, $name) && $this->{$name} !== null);
+		return property_exists($this, $name);
 	}
 
 	/**

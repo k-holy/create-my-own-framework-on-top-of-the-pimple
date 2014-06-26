@@ -55,16 +55,6 @@ class Comment implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $image;
 
 	/**
-	 * このオブジェクトのIDを返します。
-	 *
-	 * @return string
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
 	 * postedAtの値をセットします。
 	 *
 	 * @param Acme\Domain\Value\DateTime

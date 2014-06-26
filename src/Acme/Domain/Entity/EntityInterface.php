@@ -17,13 +17,6 @@ interface EntityInterface
 {
 
 	/**
-	 * このオブジェクトのIDを返します。
-	 *
-	 * @return string
-	 */
-	public function getId();
-
-	/**
 	 * このオブジェクトを配列に変換して返します。
 	 *
 	 * @return array

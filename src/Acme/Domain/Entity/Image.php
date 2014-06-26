@@ -94,16 +94,6 @@ class Image implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	}
 
 	/**
-	 * このオブジェクトのIDを返します。
-	 *
-	 * @return string
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
 	 * 登録日時をセットします。
 	 *
 	 * @param Acme\Domain\Value\DateTime
