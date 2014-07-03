@@ -344,4 +344,63 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($yb, $byte->getValue());
 	}
 
+	public function testAddByte()
+	{
+		$byte = new Byte('50', array(
+			'decimals' => 0,
+		));
+		$byte = $byte->add(
+			new Byte('100', array(
+				'decimals' => 0,
+			))
+		);
+		$this->assertEquals('150', $byte->getValue());
+	}
+
+	public function testAddDigit()
+	{
+		$byte = new Byte('50', array(
+			'decimals' => 0,
+		));
+		$byte = $byte->add('100');
+		$this->assertEquals('150', $byte->getValue());
+	}
+
+	public function testSubByte()
+	{
+		$byte = new Byte('50', array(
+			'decimals' => 0,
+		));
+		$byte = $byte->sub(
+			new Byte('10', array(
+				'decimals' => 0,
+			))
+		);
+		$this->assertEquals('40', $byte->getValue());
+	}
+
+	public function testSubDigit()
+	{
+		$byte = new Byte('50', array(
+			'decimals' => 0,
+		));
+		$byte = $byte->sub('10');
+		$this->assertEquals('40', $byte->getValue());
+	}
+
+	/**
+	 * @expectedException \DomainException
+	 */
+	public function testSubRaiseDomainExceptionWhenLessThanZero()
+	{
+		$byte = new Byte('50', array(
+			'decimals' => 0,
+		));
+		$byte = $byte->sub(
+			new Byte('100', array(
+				'decimals' => 0,
+			))
+		);
+	}
+
 }

@@ -85,6 +85,84 @@ class Byte implements ValueInterface, \ArrayAccess
 	}
 
 	/**
+	 * このオブジェクトの値に指定された値を加算したオブジェクトを返します。
+	 *
+	 * @param mixed 加算値
+	 * @return self 加算したオブジェクト
+	 * @throws \RuntimeException GMP関数またはBcMath関数が利用できない場合
+	 * @throws \DomainException 減算結果が範囲外になる場合
+	 */
+	public function add($operand)
+	{
+		if (false === ($operand instanceof Byte)) {
+			$operand = new self($operand, array(
+				'decimals' => $this->decimals,
+			));
+		}
+		if (function_exists('gmp_add')) {
+			$value = gmp_strval(gmp_add(
+				gmp_init($this->value, 10),
+				gmp_init($operand->getValue(), 10)
+			), 10);
+		} elseif (function_exists('bcadd')) {
+			$value = bcadd($this->value, $operand->getValue());
+		} else {
+			throw new \RuntimeException('GMP extension and BcMath extension is not loaded.');
+		}
+		if (isset($value)) {
+			try {
+				return new self($value, array(
+					'decimals' => $this->decimals,
+				));
+			} catch (\InvalidArgumentException $e) {
+				throw new \DomainException(
+					sprintf('Invalid added value "%s"', $value)
+				);
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * このオブジェクトの値から指定された値を減算したオブジェクトを返します。
+	 *
+	 * @param mixed 減算値
+	 * @return self 減算したオブジェクト
+	 * @throws \RuntimeException GMP関数またはBcMath関数が利用できない場合
+	 * @throws \DomainException 減算結果が範囲外になる場合
+	 */
+	public function sub($operand)
+	{
+		if (false === ($operand instanceof Byte)) {
+			$operand = new self($operand, array(
+				'decimals' => $this->decimals,
+			));
+		}
+		if (function_exists('gmp_sub')) {
+			$value = gmp_strval(gmp_sub(
+				gmp_init($this->value, 10),
+				gmp_init($operand->getValue(), 10)
+			), 10);
+		} elseif (function_exists('bcsub')) {
+			$value = bcsub($this->value, $operand->getValue());
+		} else {
+			throw new \RuntimeException('GMP extension and BcMath extension is not loaded.');
+		}
+		if (isset($value)) {
+			try {
+				return new self($value, array(
+					'decimals' => $this->decimals,
+				));
+			} catch (\InvalidArgumentException $e) {
+				throw new \DomainException(
+					sprintf('Invalid substracted value "%s"', $value)
+				);
+			}
+		}
+		return $this;
+	}
+
+	/**
 	 * 単位付きバイト数をバイト数に変換して返します。
 	 * 2GB以上を扱うにはBCMath関数が有効になっている必要があります。
 	 * ファイル最大値の指定が解析不能な場合はfalseを返します。
