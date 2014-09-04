@@ -226,6 +226,19 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotSame($timezone, $datetime->timezone);
 	}
 
+	public function testToArray()
+	{
+		$datetime = new DateTime('2013-05-01 12:34:56', array(
+			'format'   => \DateTime::RFC3339,
+			'timezone' => new \DateTimeZone('Asia/Tokyo'),
+		));
+		$array = $datetime->toArray();
+		$this->assertEquals($datetime->value, $array['value']);
+		$this->assertSame($datetime->value, $array['value']);
+		$this->assertEquals($datetime->timezone, $array['timezone']);
+		$this->assertSame($datetime->timezone, $array['timezone']);
+	}
+
 	public function testSerialize()
 	{
 		$datetime = new DateTime('2013-05-01 12:34:56', array(
