@@ -58,6 +58,37 @@ abstract class AbstractEntity
 	}
 
 	/**
+	 * データを複製します。
+	 * プロパティの配列が指定されていれば、値を書き換えます。
+	 *
+	 * @param array | \ArrayAccess プロパティの配列
+	 * @return Acme\Domain\Entity\EntityInterface
+	 */
+	public function copy($entity = array())
+	{
+		$isArray = is_array($entity);
+		$isArrayAccess = ($entity instanceof \ArrayAccess);
+		if (!$isArray && !$isArrayAccess) {
+			throw new \InvalidArgumentException(
+				sprintf('The entity is not an Array and not instanceof ArrayAccess. type:[%s]',
+					(is_object($entity)) ? get_class($entity) : gettype($entity)
+				)
+			);
+		}
+		$properties = array();
+		foreach (array_keys(get_object_vars($this)) as $name) {
+			if (($isArray && array_key_exists($name, $entity)) ||
+				($isArrayAccess && $entity->offsetExists($name))
+			) {
+				$properties[$name] = $entity[$name];
+			} elseif ($this->{$name} !== null) {
+				$properties[$name] = $this->{$name};
+			}
+		}
+		return new static($properties);
+	}
+
+	/**
 	 * このオブジェクトを配列に変換して返します。
 	 *
 	 * @return array

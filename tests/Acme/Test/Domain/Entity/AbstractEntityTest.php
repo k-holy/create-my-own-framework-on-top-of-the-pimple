@@ -108,6 +108,77 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($now->format(\DateTime::RFC3339), $test->datetimeAsString);
 	}
 
+	public function testCopy()
+	{
+		$now = new \DateTime();
+		$test = new AbstractEntityTestData(array(
+			'string' => 'Foo',
+			'null' => null,
+			'boolean' => true,
+			'datetime' => $now,
+			'dateFormat' => \DateTime::RFC3339,
+		));
+		$copied = $test->copy();
+		$this->assertEquals($test, $copied);
+		$this->assertNotSame($test, $copied);
+		$this->assertEquals('Foo', $copied->string);
+		$this->assertNull($copied->null);
+		$this->assertTrue($copied->boolean);
+		$this->assertEquals($now, $copied->datetime);
+		$this->assertNotSame($now, $copied->datetime);
+	}
+
+	public function testCopyWithArrayAccess()
+	{
+		$now = new \DateTime();
+		$test = new AbstractEntityTestData(array(
+			'string' => 'Foo',
+			'null' => null,
+			'boolean' => true,
+			'datetime' => $now,
+			'dateFormat' => \DateTime::RFC3339,
+		));
+		$copied = $test->copy(new \ArrayObject(array(
+			'string' => 'Bar',
+			'boolean' => null,
+		)));
+		$this->assertEquals('Bar', $copied->string);
+		$this->assertNull($copied->null);
+		$this->assertNull($copied->boolean);
+		$this->assertEquals($now, $copied->datetime);
+		$this->assertNotSame($now, $copied->datetime);
+	}
+
+	public function testCopyWithArray()
+	{
+		$now = new \DateTime();
+		$test = new AbstractEntityTestData(array(
+			'string'     => 'Foo',
+			'null'       => null,
+			'boolean'    => true,
+			'datetime'   => $now,
+			'dateFormat' => \DateTime::RFC3339,
+		));
+		$copied = $test->copy(array(
+			'string' => 'Bar',
+			'boolean' => null,
+		));
+		$this->assertEquals('Bar', $copied->string);
+		$this->assertNull($copied->null);
+		$this->assertNull($copied->boolean);
+		$this->assertEquals($now, $copied->datetime);
+		$this->assertNotSame($now, $copied->datetime);
+	}
+
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	public function testCopyRaiseInvalidArgumentExceptionEntityIsNotArrayAndNotArrayAccess()
+	{
+		$test = new AbstractEntityTestData();
+		$test->copy(new \StdClass());
+	}
+
 	public function testSerialize()
 	{
 		$test = new AbstractEntityTestData(array(
