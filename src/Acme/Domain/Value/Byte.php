@@ -57,8 +57,8 @@ class Byte implements ValueInterface, \ArrayAccess
 			);
 		}
 
-		if (!isset($properties['decimals'])) {
-			$properties['decimals'] = 0;
+		if (!isset($options['decimals'])) {
+			$options['decimals'] = 0;
 		}
 
 		$this->initialize($value, $options);
@@ -94,31 +94,29 @@ class Byte implements ValueInterface, \ArrayAccess
 	 */
 	public function add($operand)
 	{
-		if (false === ($operand instanceof Byte)) {
-			$operand = new self($operand, array(
-				'decimals' => $this->decimals,
-			));
+		if ($operand instanceof Byte) {
+			$operand = $operand->getValue();
 		}
-		if (function_exists('gmp_add')) {
+		if (extension_loaded('gmp')) {
 			$value = gmp_strval(gmp_add(
 				gmp_init($this->value, 10),
-				gmp_init($operand->getValue(), 10)
+				gmp_init($operand, 10)
 			), 10);
-		} elseif (function_exists('bcadd')) {
-			$value = bcadd($this->value, $operand->getValue());
+		} elseif (extension_loaded('bcmath')) {
+			$value = bcadd($this->value, $operand);
 		} else {
-			throw new \RuntimeException('GMP extension and BcMath extension is not loaded.');
+			throw new \RuntimeException(
+				'GMP extension or BcMath extension is required for add().'
+			);
 		}
-		if (isset($value)) {
-			try {
-				return new self($value, array(
-					'decimals' => $this->decimals,
-				));
-			} catch (\InvalidArgumentException $e) {
-				throw new \DomainException(
-					sprintf('Invalid added value "%s"', $value)
-				);
-			}
+		try {
+			return new self($value, array(
+				'decimals' => $this->decimals,
+			));
+		} catch (\InvalidArgumentException $e) {
+			throw new \DomainException(
+				sprintf('Invalid operand "%s" for add().', $operand)
+			);
 		}
 		return $this;
 	}
@@ -133,31 +131,29 @@ class Byte implements ValueInterface, \ArrayAccess
 	 */
 	public function sub($operand)
 	{
-		if (false === ($operand instanceof Byte)) {
-			$operand = new self($operand, array(
-				'decimals' => $this->decimals,
-			));
+		if ($operand instanceof Byte) {
+			$operand = $operand->getValue();
 		}
-		if (function_exists('gmp_sub')) {
+		if (extension_loaded('gmp')) {
 			$value = gmp_strval(gmp_sub(
 				gmp_init($this->value, 10),
-				gmp_init($operand->getValue(), 10)
+				gmp_init($operand, 10)
 			), 10);
-		} elseif (function_exists('bcsub')) {
-			$value = bcsub($this->value, $operand->getValue());
+		} elseif (extension_loaded('bcmath')) {
+			$value = bcsub($this->value, $operand);
 		} else {
-			throw new \RuntimeException('GMP extension and BcMath extension is not loaded.');
+			throw new \RuntimeException(
+				'GMP extension or BcMath extension is required for sub().'
+			);
 		}
-		if (isset($value)) {
-			try {
-				return new self($value, array(
-					'decimals' => $this->decimals,
-				));
-			} catch (\InvalidArgumentException $e) {
-				throw new \DomainException(
-					sprintf('Invalid substracted value "%s"', $value)
-				);
-			}
+		try {
+			return new self($value, array(
+				'decimals' => $this->decimals,
+			));
+		} catch (\InvalidArgumentException $e) {
+			throw new \DomainException(
+				sprintf('Invalid operand "%s" for sub().', $operand)
+			);
 		}
 		return $this;
 	}

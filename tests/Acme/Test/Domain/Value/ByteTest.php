@@ -144,121 +144,140 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($this->getYottaByte(2), $byte->value);
 	}
 
-	public function testFormatByte()
+	public function testFormatByteWithDefaultDecimals()
 	{
 		$byte = new Byte('1', array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1B', $byte->format());
+		$this->assertEquals('1.0B', $byte->format());
 
 		$byte = new Byte('2', array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2B', $byte->format());
+		$this->assertEquals('2.00B', $byte->format());
 	}
 
-	public function testFormatKiloByte()
+	public function testFormatKiloByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getKiloByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1KB', $byte->format());
+		$this->assertEquals('1.0KB', $byte->format());
 
 		$byte = new Byte($this->getKiloByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2KB', $byte->format());
+		$this->assertEquals('2.00KB', $byte->format());
 	}
 
-	public function testFormatMegaByte()
+	public function testFormatMegaByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getMegaByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1MB', $byte->format());
+		$this->assertEquals('1.0MB', $byte->format());
 
 		$byte = new Byte($this->getMegaByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2MB', $byte->format());
+		$this->assertEquals('2.00MB', $byte->format());
 	}
 
-	public function testFormatGigaByte()
+	public function testFormatGigaByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getGigaByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1GB', $byte->format());
+		$this->assertEquals('1.0GB', $byte->format());
 
 		$byte = new Byte($this->getGigaByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2GB', $byte->format());
+		$this->assertEquals('2.00GB', $byte->format());
 	}
 
-	public function testFormatTeraByte()
+	public function testFormatTeraByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getTeraByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1TB', $byte->format());
+		$this->assertEquals('1.0TB', $byte->format());
 
 		$byte = new Byte($this->getTeraByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2TB', $byte->format());
+		$this->assertEquals('2.00TB', $byte->format());
 	}
 
-	public function testFormatPetaByte()
+	public function testFormatPetaByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getPetaByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1PB', $byte->format());
+		$this->assertEquals('1.0PB', $byte->format());
 
 		$byte = new Byte($this->getPetaByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2PB', $byte->format());
+		$this->assertEquals('2.00PB', $byte->format());
 	}
 
-	public function testFormatExaByte()
+	public function testFormatExaByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getExaByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1EB', $byte->format());
+		$this->assertEquals('1.0EB', $byte->format());
 
 		$byte = new Byte($this->getExaByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2EB', $byte->format());
+		$this->assertEquals('2.00EB', $byte->format());
 	}
 
-	public function testFormatZettaByte()
+	public function testFormatZettaByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getZettaByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1ZB', $byte->format());
+		$this->assertEquals('1.0ZB', $byte->format());
 
 		$byte = new Byte($this->getZettaByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2ZB', $byte->format());
+		$this->assertEquals('2.00ZB', $byte->format());
 	}
 
-	public function testFormatYottaByte()
+	public function testFormatYottaByteWithDefaultDecimals()
 	{
 		$byte = new Byte($this->getYottaByte(1), array(
-			'decimals' => 0,
+			'decimals' => 1,
 		));
-		$this->assertEquals('1YB', $byte->format());
+		$this->assertEquals('1.0YB', $byte->format());
 
 		$byte = new Byte($this->getYottaByte(2), array(
-			'decimals' => 0,
+			'decimals' => 2,
 		));
-		$this->assertEquals('2YB', $byte->format());
+		$this->assertEquals('2.00YB', $byte->format());
+	}
+
+	public function testFormatZero()
+	{
+		$byte = new Byte('0');
+		$this->assertEquals('0B', $byte->format());
+	}
+
+	public function testFormatZeroWithDefaultDecimals()
+	{
+		$byte = new Byte('0', array(
+			'decimals' => 1,
+		));
+		$this->assertEquals('0.0B', $byte->format());
+
+		$byte = new Byte('0', array(
+			'decimals' => 2,
+		));
+		$this->assertEquals('0.00B', $byte->format());
 	}
 
 	public function testFormatByteWithDecimals()
@@ -326,65 +345,47 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetValue()
 	{
-		$byte = new Byte('1', array(
-			'decimals' => 0,
-		));
+		$byte = new Byte('1');
 		$this->assertEquals('1', $byte->getValue());
 
 		$kb = $this->getKiloByte(1);
-		$byte = new Byte($kb, array(
-			'decimals' => 0,
-		));
+		$byte = new Byte($kb);
 		$this->assertEquals($kb, $byte->getValue());
 
 		$yb = $this->getYottaByte(1);
-		$byte = new Byte($yb, array(
-			'decimals' => 0,
-		));
+		$byte = new Byte($yb);
 		$this->assertEquals($yb, $byte->getValue());
 	}
 
 	public function testAddByte()
 	{
-		$byte = new Byte('50', array(
-			'decimals' => 0,
-		));
-		$byte = $byte->add(
-			new Byte('100', array(
-				'decimals' => 0,
-			))
-		);
-		$this->assertEquals('150', $byte->getValue());
+		$byte = new Byte('50');
+		$byte = $byte->add(new Byte('10'));
+		$this->assertInstanceOf('Acme\Domain\Value\Byte', $byte);
+		$this->assertEquals('60', $byte->getValue());
 	}
 
 	public function testAddDigit()
 	{
-		$byte = new Byte('50', array(
-			'decimals' => 0,
-		));
-		$byte = $byte->add('100');
-		$this->assertEquals('150', $byte->getValue());
+		$byte = new Byte('50');
+		$byte = $byte->add('10');
+		$this->assertInstanceOf('Acme\Domain\Value\Byte', $byte);
+		$this->assertEquals('60', $byte->getValue());
 	}
 
 	public function testSubByte()
 	{
-		$byte = new Byte('50', array(
-			'decimals' => 0,
-		));
-		$byte = $byte->sub(
-			new Byte('10', array(
-				'decimals' => 0,
-			))
-		);
+		$byte = new Byte('50');
+		$byte = $byte->sub(new Byte('10'));
+		$this->assertInstanceOf('Acme\Domain\Value\Byte', $byte);
 		$this->assertEquals('40', $byte->getValue());
 	}
 
 	public function testSubDigit()
 	{
-		$byte = new Byte('50', array(
-			'decimals' => 0,
-		));
+		$byte = new Byte('50');
 		$byte = $byte->sub('10');
+		$this->assertInstanceOf('Acme\Domain\Value\Byte', $byte);
 		$this->assertEquals('40', $byte->getValue());
 	}
 
@@ -393,14 +394,8 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSubRaiseDomainExceptionWhenLessThanZero()
 	{
-		$byte = new Byte('50', array(
-			'decimals' => 0,
-		));
-		$byte = $byte->sub(
-			new Byte('100', array(
-				'decimals' => 0,
-			))
-		);
+		$byte = new Byte('50');
+		$byte = $byte->sub(new Byte('100'));
 	}
 
 }
