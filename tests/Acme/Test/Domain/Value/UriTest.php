@@ -63,4 +63,12 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('http://www.example.com/foo/bar/baz.ext?param=value#fragment', $uri->getValue());
 	}
 
+	public function testIsHttps()
+	{
+		$uri = new Uri('http://www.example.com/foo/bar/baz?param=value#fragment');
+		$this->assertFalse($uri->isHttps());
+		$uri = new Uri('https://www.example.com/foo/bar/baz?param=value#fragment');
+		$this->assertTrue($uri->isHttps());
+	}
+
 }

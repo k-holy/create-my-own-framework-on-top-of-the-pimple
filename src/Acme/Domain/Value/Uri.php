@@ -129,6 +129,16 @@ class Uri implements ValueInterface, \ArrayAccess
 			: null;
 	}
 
+	/**
+	 * HTTPSかどうかを返します。
+	 *
+	 * @return bool
+	 */
+	public function isHttps()
+	{
+		return ($this->scheme === 'https');
+	}
+
 	private function parse($uri)
 	{
 		$uris = array();
