@@ -24,6 +24,13 @@ interface ValueInterface
 	public function getValue();
 
 	/**
+	 * このオブジェクトを配列に変換して返します。
+	 *
+	 * @return array
+	 */
+	public function toArray();
+
+	/**
 	 * __toString
 	 *
 	 * @return string

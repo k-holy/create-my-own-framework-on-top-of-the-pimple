@@ -63,6 +63,20 @@ trait ValueTrait
 	}
 
 	/**
+	 * このオブジェクトを配列に変換して返します。
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		$values = array();
+		foreach (array_keys(get_object_vars($this)) as $name) {
+			$values[$name] = $this->__get($name);
+		}
+		return $values;
+	}
+
+	/**
 	 * __isset
 	 *
 	 * @param mixed
