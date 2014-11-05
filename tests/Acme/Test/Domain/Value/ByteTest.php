@@ -398,4 +398,129 @@ class ByteTest extends \PHPUnit_Framework_TestCase
 		$byte = $byte->sub(new Byte('100'));
 	}
 
+
+	public function testMulByte()
+	{
+		$byte = new Byte('5000');
+		$byte = $byte->mul(new Byte('5000'));
+		$this->assertInstanceOf('Acme\Domain\Value\Byte', $byte);
+		$this->assertEquals('25000000', $byte->getValue());
+	}
+
+	public function testMulDigit()
+	{
+		$byte = new Byte('5000');
+		$byte = $byte->mul('5000');
+		$this->assertInstanceOf('Acme\Domain\Value\Byte', $byte);
+		$this->assertEquals('25000000', $byte->getValue());
+	}
+
+	public function testEqualTo()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->equalTo(new Byte('5000')));
+		$this->assertFalse($byte->equalTo(new Byte('4999')));
+		$this->assertFalse($byte->equalTo(new Byte('5001')));
+	}
+
+	public function testEq()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->eq(new Byte('5000')));
+		$this->assertFalse($byte->eq(new Byte('4999')));
+		$this->assertFalse($byte->eq(new Byte('5001')));
+	}
+
+	public function testEqualToDigit()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->equalTo('5000'));
+		$this->assertFalse($byte->equalTo('4999'));
+		$this->assertFalse($byte->equalTo('5001'));
+	}
+
+	public function testGreaterThan()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->greaterThan(new Byte('4999')));
+		$this->assertFalse($byte->greaterThan(new Byte('5000')));
+	}
+
+	public function testGt()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->gt(new Byte('4999')));
+		$this->assertFalse($byte->gt(new Byte('5000')));
+	}
+
+	public function testGreaterThanDigit()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->greaterThan('4999'));
+		$this->assertFalse($byte->greaterThan('5000'));
+	}
+
+	public function testGreaterThanOrEqualTo()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->greaterThanOrEqualTo(new Byte('5000')));
+		$this->assertFalse($byte->greaterThanOrEqualTo(new Byte('5001')));
+	}
+
+	public function testGte()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->gte(new Byte('5000')));
+		$this->assertFalse($byte->gte(new Byte('5001')));
+	}
+
+	public function testGreaterThanOrEqualToDigit()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->greaterThanOrEqualTo('5000'));
+		$this->assertFalse($byte->greaterThanOrEqualTo('5001'));
+	}
+
+	public function testLessThan()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->lessThan(new Byte('5001')));
+		$this->assertFalse($byte->lessThan(new Byte('5000')));
+	}
+
+	public function testLt()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->lt(new Byte('5001')));
+		$this->assertFalse($byte->lt(new Byte('5000')));
+	}
+
+	public function testLessThanDigit()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->lessThan('5001'));
+		$this->assertFalse($byte->lessThan('5000'));
+	}
+
+	public function testLessThanOrEqualTo()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->lessThanOrEqualTo(new Byte('5000')));
+		$this->assertFalse($byte->lessThanOrEqualTo(new Byte('4999')));
+	}
+
+	public function testLte()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->lte(new Byte('5000')));
+		$this->assertFalse($byte->lte(new Byte('4999')));
+	}
+
+	public function testLessThanOrEqualToDigit()
+	{
+		$byte = new Byte('5000');
+		$this->assertTrue($byte->lessThanOrEqualTo('5000'));
+		$this->assertFalse($byte->lessThanOrEqualTo('4999'));
+	}
+
 }
