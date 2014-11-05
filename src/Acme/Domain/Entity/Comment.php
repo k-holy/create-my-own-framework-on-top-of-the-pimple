@@ -40,11 +40,6 @@ class Comment implements EntityInterface, \ArrayAccess, \IteratorAggregate
 	private $comment;
 
 	/**
-	 * @var int
-	 */
-	private $imageId;
-
-	/**
 	 * @var Acme\Domain\Value\DateTime
 	 */
 	private $postedAt;

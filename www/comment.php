@@ -105,6 +105,30 @@ $app->on('GET|POST', function($app, $method) {
 
             try {
 
+                // コメントを登録
+                $row = [
+                    'author'   => $form->author->value(),
+                    'comment'  => $form->comment->value(),
+                    'postedAt' => $app->clock,
+                ];
+
+                $statement = $app->db->prepare(<<<'SQL'
+INSERT INTO comments (
+    author
+   ,comment
+   ,posted_at
+) VALUES (
+    :author
+   ,:comment
+   ,:postedAt
+)
+SQL
+                );
+
+                $statement->execute($row);
+
+                $commentId = $app->db->lastInsertId();
+
                 // 画像を登録
                 if (isset($fileInfo)) {
 
@@ -143,32 +167,25 @@ SQL
 
                     $imageId = $app->db->lastInsertId();
 
-                }
+                    $row = [
+                        'commentId' => $commentId,
+                        'imageId' => $imageId,
+                    ];
 
-                // コメントを登録
-                $row = [
-                    'author'   => $form->author->value(),
-                    'comment'  => $form->comment->value(),
-                    'imageId'  => (isset($imageId)) ? $imageId : null,
-                    'postedAt' => $app->clock,
-                ];
-
-                $statement = $app->db->prepare(<<<'SQL'
-INSERT INTO comments (
-    author
-   ,comment
+                    $statement = $app->db->prepare(<<<'SQL'
+INSERT INTO comment_images (
+    comment_id
    ,image_id
-   ,posted_at
 ) VALUES (
-    :author
-   ,:comment
+    :commentId
    ,:imageId
-   ,:postedAt
 )
 SQL
-                );
+                    );
 
-                $statement->execute($row);
+                    $statement->execute($row);
+
+                }
 
                 $app->transaction->commit();
 
