@@ -20,7 +20,7 @@
     },
     "require": {
         "php": ">=5.5",
-        "pimple/pimple": "2.*",
+        "pimple/pimple": "3.*",
         "monolog/monolog": "1.5.*",
         "symfony/http-foundation": "2.5.*",
         "phptal/phptal": "dev-master",
