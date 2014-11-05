@@ -48,12 +48,27 @@ CREATE TABLE comments
      id        INTEGER      NOT NULL PRIMARY KEY
     ,author    VARCHAR(255) NOT NULL
     ,comment   TEXT         NOT NULL
-    ,image_id  INTEGER
     ,posted_at INTEGER      NOT NULL
-    ,FOREIGN KEY(image_id) REFERENCES images(id) ON DELETE SET NULL
 );
 SQL
     );
+
+    $app->db->execute('DROP TABLE IF EXISTS comment_images;');
+    $app->db->execute(<<<'SQL'
+CREATE TABLE comment_images
+(
+     comment_id INTEGER     NOT NULL
+    ,image_id   INTEGER     NOT NULL
+    ,FOREIGN KEY(comment_id) REFERENCES comments(id) ON DELETE CASCADE
+    ,FOREIGN KEY(image_id) REFERENCES images(id) ON DELETE CASCADE
+);
+SQL
+    );
+
+    $app->pdo->sqliteCreateFunction('regexp', function($pattern, $value) {
+        mb_regex_encoding('UTF-8');
+        return (false !== mb_ereg($pattern, $value)) ? 1 : 0;
+    });
 
     $app->metaCache->unsetMetaTables();
     $app->metaCache->unsetMetaColumns('images');

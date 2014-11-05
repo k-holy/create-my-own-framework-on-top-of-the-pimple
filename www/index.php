@@ -18,7 +18,6 @@ SELECT
   com.id
 , com.author
 , com.comment
-, com.image_id
 , com.posted_at
 , img.id AS "image:id"
 , img.file_name AS "image:file_name"
@@ -31,8 +30,11 @@ SELECT
 FROM
   comments com
 LEFT OUTER JOIN
+  comment_images com_img
+ON com.id = com_img.comment_id
+LEFT OUTER JOIN
   images img
-ON com.image_id = img.id
+ON com_img.image_id = img.id
 LIMIT :limit OFFSET :offset
 SQL
     );
@@ -61,7 +63,6 @@ SQL
             'id' => (int)$cols['id'],
             'author' => $cols['author'],
             'comment' => $cols['comment'],
-            'imageId' => (int)$cols['image_id'],
             'postedAt' => $app->createValue('dateTime',$cols['posted_at']),
             'image' => (isset($image)) ? $image : null,
         ]);
