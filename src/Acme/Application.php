@@ -15,7 +15,7 @@ namespace Acme;
  *
  * @author k.holy74@gmail.com
  */
-class Application extends \Pimple
+class Application extends \Pimple\Container
 {
 
 	/**
