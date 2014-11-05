@@ -94,7 +94,7 @@ class Byte implements ValueInterface, \ArrayAccess
 	 */
 	public function add($operand)
 	{
-		if ($operand instanceof Byte) {
+		if ($operand instanceof self) {
 			$operand = $operand->getValue();
 		}
 		if (extension_loaded('gmp')) {
@@ -131,7 +131,7 @@ class Byte implements ValueInterface, \ArrayAccess
 	 */
 	public function sub($operand)
 	{
-		if ($operand instanceof Byte) {
+		if ($operand instanceof self) {
 			$operand = $operand->getValue();
 		}
 		if (extension_loaded('gmp')) {
@@ -156,6 +156,173 @@ class Byte implements ValueInterface, \ArrayAccess
 			);
 		}
 		return $this;
+	}
+
+	/**
+	 * このオブジェクトの値から指定された値を乗算したオブジェクトを返します。
+	 *
+	 * @param mixed 乗算値
+	 * @return self 乗算したオブジェクト
+	 * @throws \RuntimeException GMP関数またはBcMath関数が利用できない場合
+	 * @throws \DomainException 乗算結果が範囲外になる場合
+	 */
+	public function mul($operand)
+	{
+		if ($operand instanceof self) {
+			$operand = $operand->getValue();
+		}
+		if (extension_loaded('gmp')) {
+			$value = gmp_strval(gmp_mul(
+				gmp_init($this->value, 10),
+				gmp_init($operand, 10)
+			), 10);
+		} elseif (extension_loaded('bcmath')) {
+			$value = bcmul($this->value, $operand);
+		} else {
+			throw new \RuntimeException(
+				'GMP extension or BcMath extension is required for mul().'
+			);
+		}
+		try {
+			return new self($value, array(
+				'decimals' => $this->decimals,
+			));
+		} catch (\InvalidArgumentException $e) {
+			throw new \DomainException(
+				sprintf('Invalid operand "%s" for mul().', $operand)
+			);
+		}
+		return $this;
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値と等しいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値より大きいかどうか
+	 */
+	public function equalTo($operand)
+	{
+		try {
+			$sub = $this->sub($operand);
+		} catch (\DomainException $e) {
+			return false;
+		}
+		return ($sub->getValue() === '0');
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値と等しいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値より大きいかどうか
+	 * @see equalTo()
+	 */
+	public function eq($operand)
+	{
+		return $this->equalTo($operand);
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値より大きいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値より大きいかどうか
+	 */
+	public function greaterThan($operand)
+	{
+		try {
+			$sub = $this->sub($operand);
+		} catch (\DomainException $e) {
+			return false;
+		}
+		return ($sub->getValue() !== '0');
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値より大きいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値より大きいかどうか
+	 * @see greaterThan()
+	 */
+	public function gt($operand)
+	{
+		return $this->greaterThan($operand);
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値と等しい、またはより大きいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値と等しい、またはより大きいかどうか
+	 */
+	public function greaterThanOrEqualTo($operand)
+	{
+		try {
+			$sub = $this->sub($operand);
+		} catch (\DomainException $e) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値と等しい、またはより大きいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値と等しい、またはより大きいかどうか
+	 * @see greaterThanOrEqualTo()
+	 */
+	public function gte($operand)
+	{
+		return $this->greaterThanOrEqualTo($operand);
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値より小さいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値より小さいかどうか
+	 */
+	public function lessThan($operand)
+	{
+		return !$this->greaterThanOrEqualTo($operand);
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値より小さいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値より小さいかどうか
+	 * @see lessThan()
+	 */
+	public function lt($operand)
+	{
+		return $this->lessThan($operand);
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値と等しい、またはより小さいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値と等しい、またはより小さいかどうか
+	 */
+	public function lessThanOrEqualTo($operand)
+	{
+		return !$this->greaterThan($operand);
+	}
+
+	/**
+	 * このオブジェクトの値が指定された値と等しい、またはより小さいかどうかを返します。
+	 *
+	 * @param mixed 比較値
+	 * @return bool 比較値と等しい、またはより小さいかどうか
+	 * @see lessThanOrEqualTo()
+	 */
+	public function lte($operand)
+	{
+		return $this->lessThanOrEqualTo($operand);
 	}
 
 	/**

@@ -32,7 +32,6 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 			'id'       => 1,
 			'author'   => 'foo',
 			'comment'  => 'bar',
-			'imageId'  => 2,
 			'postedAt' => $postedAt,
 			'image'    => $image,
 		));
@@ -40,7 +39,6 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1, $comment->id);
 		$this->assertEquals('foo', $comment->author);
 		$this->assertEquals('bar', $comment->comment);
-		$this->assertEquals(2, $comment->imageId);
 		$this->assertInstanceOf('Acme\Domain\Value\DateTime', $comment->postedAt);
 		$this->assertInstanceOf('Acme\Domain\Entity\Image', $comment->image);
 	}
