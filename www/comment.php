@@ -9,6 +9,7 @@
  */
 $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
+use Volcanus\FileUploader\File\SplFile;
 use Volcanus\FileUploader\Exception\UploaderException;
 use Volcanus\FileUploader\Exception\FilenameException;
 use Volcanus\FileUploader\Exception\FilesizeException;
@@ -39,24 +40,22 @@ $app->on('GET|POST', function($app, $method) {
             $app->abort(403, 'リクエストは無効です。');
         }
 
-        $fileInfo = null;
+        $uploadedFile = null;
 
         // 投稿フォーム処理
         if (!$form->image_file_json->isEmpty()) {
-            $upload_file = json_decode($form->image_file_json->value());
-            if (!is_null($upload_file)) {
-                $form->image_file_name = $upload_file->name;
-                $form->image_file_path = $upload_file->path;
+            $upload_file_info = json_decode($form->image_file_json->value());
+            if (!is_null($upload_file_info)) {
+                $form->image_file_name = $upload_file_info->name;
+                $form->image_file_path = $upload_file_info->path;
                 // mimeType および Base64エンコードデータがあればdataURIをフォームにセットする
-                if (file_exists($upload_file->path)) {
-                    $fileInfo = new \SplFileinfo($upload_file->path);
-                    $getMimeTypeFrom = new \finfo(FILEINFO_MIME_TYPE);
-                    $content = file_get_contents($upload_file->path);
-                    $form->image_file_size = $fileInfo->getSize();
-                    $form->image_encoded_data = base64_encode($content);
-                    $form->image_data_uri = sprintf('data:%s;base64,%s', $upload_file->mimeType, $form->image_encoded_data->value());
-                    $form->image_mime_type = $getMimeTypeFrom->file($fileInfo->getRealPath());
-                    if (false !== (list($width, $height, $type, $attr) = getimagesize($upload_file->path))) {
+                if (file_exists($upload_file_info->path)) {
+                    $uploadedFile = new SplFile(new \SplFileInfo($upload_file_info->path));
+                    $form->image_file_size = $uploadedFile->getSize();
+                    $form->image_encoded_data = base64_encode($uploadedFile->getContent());
+                    $form->image_data_uri = $uploadedFile->getContentAsDataUri();
+                    $form->image_mime_type = $uploadedFile->getMimeType();
+                    if (false !== (list($width, $height, $type, $attr) = getimagesize($upload_file_info->path))) {
                         $form->image_width  = $width;
                         $form->image_height = $height;
                     }
@@ -69,16 +68,16 @@ $app->on('GET|POST', function($app, $method) {
                     'maxHeight'        => 400,
                 ]);
                 try {
-                    $fileValidator->validateFilesize($fileInfo->getSize());
-                    $fileValidator->validateExtension($fileInfo->getExtension());
-                    $fileValidator->validateImageType($fileInfo->getRealPath(), $fileInfo->getExtension());
-                    $fileValidator->validateImageSize($fileInfo->getRealPath());
+                    $fileValidator->validateFilesize($uploadedFile);
+                    $fileValidator->validateExtension($uploadedFile);
+                    $fileValidator->validateImageType($uploadedFile);
+                    $fileValidator->validateImageSize($uploadedFile);
                 } catch (FilesizeException $e) {
                     $form->image_file_path->error(sprintf('画像のファイルサイズが %s バイトを超えています。', $fileValidator->config('maxFilesize')));
                 } catch (ExtensionException $e) {
                     $form->image_file_path->error(sprintf('画像のファイルフォーマットが %s 以外です。', $fileValidator->config('allowableType')));
                 } catch (ImageTypeException $e) {
-                    $form->image_file_path->error(sprintf('画像のファイルフォーマットが拡張子 %s と一致しません。', $fileInfo->getExtension()));
+                    $form->image_file_path->error(sprintf('画像のファイルフォーマットが拡張子 %s と一致しません。', $uploadedFile->getClientExtension()));
                 } catch (ImageWidthException $e) {
                     $form->image_file_path->error(sprintf('画像の横幅が %spx を超えています。', $fileValidator->config('maxWidth')));
                 } catch (ImageHeightException $e) {
@@ -130,7 +129,7 @@ SQL
                 $commentId = $app->db->lastInsertId();
 
                 // 画像を登録
-                if (isset($fileInfo)) {
+                if (isset($uploadedFile)) {
 
                     $row = [
                         'fileName'    => $form->image_file_name->value(),

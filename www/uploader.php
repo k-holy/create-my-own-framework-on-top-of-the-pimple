@@ -11,6 +11,7 @@ $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Volcanus\FileUploader\File\SymfonyFile;
 use Volcanus\FileUploader\Exception\UploaderException;
 use Volcanus\FileUploader\Exception\FilenameException;
 use Volcanus\FileUploader\Exception\FilesizeException;
@@ -28,12 +29,12 @@ $app->on('GET|POST', function($app, $method) {
 
         do {
 
-            // \Symfony\Component\HttpFoundation\File\UploadedFile
+            // \Volcanus\FileUploader\File\FileInterface
             $uploadedFile = $app->findFile('upload_file');
 
             try {
-                $uploader = $app->createFileUploader($uploadedFile);
-                $uploader->validate($app->createFileValidator([
+                $uploader = $app->createFileUploader();
+                $uploader->validate($uploadedFile, $app->createFileValidator([
                     'maxFilesize'      => '2M',
                     'allowableType'    => 'gif,jpg,png',
                     'filenameEncoding' => 'UTF-8',
@@ -53,14 +54,10 @@ $app->on('GET|POST', function($app, $method) {
             }
 
             try {
-                $mimeType = $uploadedFile->getMimeType();
-                $client_filename = $uploader->getClientFilename();
-                $moved_path = $uploader->move();
-                $content = file_get_contents($moved_path);
-                $response['file']['path'] = $moved_path;
-                $response['file']['name'] = $client_filename;
-                $response['file']['mimeType'] = $mimeType;
-                $response['data']['dataUri'] = sprintf('data:%s;base64,%s', $mimeType, base64_encode($content));
+                $response['file']['name'] = $uploadedFile->getClientFilename();
+                $response['file']['mimeType'] = $uploadedFile->getMimeType();
+                $response['data']['dataUri'] = $uploadedFile->getContentAsDataUri();
+                $response['file']['path'] = $uploader->move($uploadedFile);
             } catch (\Exception $e) {
                 $errors['upload'] = 'ファイルのアップロードに失敗しました。';
                 $status = 500;

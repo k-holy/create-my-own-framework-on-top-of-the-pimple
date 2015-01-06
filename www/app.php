@@ -23,7 +23,8 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 
 use Volcanus\FileUploader\FileValidator;
-use Volcanus\FileUploader\Uploader\SymfonyHttpFoundationUploader;
+use Volcanus\FileUploader\Uploader;
+use Volcanus\FileUploader\File\SymfonyFile;
 
 //-----------------------------------------------------------------------------
 // セッションオブジェクト
@@ -142,8 +143,8 @@ $app->createFileValidator = $app->protect(function($configurations = array()) us
 //-----------------------------------------------------------------------------
 // ファイルアップローダを生成
 //-----------------------------------------------------------------------------
-$app->createFileUploader = $app->protect(function($file, $configurations = array()) use ($app) {
-    return new SymfonyHttpFoundationUploader($file, $configurations + array(
+$app->createFileUploader = $app->protect(function($configurations = array()) use ($app) {
+    return new Uploader($configurations + array(
         'moveDirectory' => $app->config->app_root . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . 'files',
         'moveRetry'     => 5,
     ));
@@ -254,8 +255,12 @@ $app->findVar = $app->protect(function($key, $name, $default = null) use ($app) 
 // アップロードファイルを取得する
 //-----------------------------------------------------------------------------
 $app->findFile = $app->protect(function($name) use ($app) {
-    // \Symfony\Component\HttpFoundation\File\UploadedFile
-    return $app->request->files->get($name);
+    // Volcanus\FileUploader\File\SymfonyFile
+    $file = $app->request->files->get($name);
+    if ($file !== null) {
+        return new SymfonyFile($file);
+    }
+    return null;
 });
 
 //-----------------------------------------------------------------------------
