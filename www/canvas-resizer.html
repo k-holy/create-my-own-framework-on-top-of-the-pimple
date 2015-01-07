@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head metal:use-macro="__layout.html/head">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<title>CanvasResizer</title>
+</head>
+
+<body metal:use-macro="__layout.html/body">
+
+<div class="container">
+
+	<header class="header">
+		<h1>CanvasResizer@example.com</h1>
+	</header>
+
+	<div class="content" metal:fill-slot="content">
+
+		<div class="alert alert-danger" tal:condition="errors">
+			<button class="close" data-dismiss="alert">×</button>
+			<span class="glyphicon glyphicon-warning-sign"></span><strong>入力値にエラーがあります</strong>
+			<ul>
+				<li tal:repeat="error errors" tal:content="error">名前を入力してください。</li>
+			</ul>
+		</div>
+
+		<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+			<input type="hidden" id="maxWidth" tal:attributes="value form/maxWidth" />
+			<input type="hidden" id="maxHeight" tal:attributes="value form/maxHeight" />
+
+			<legend><span class="glyphicon glyphicon-picture"></span> Volcanus_CanvasResizer.js + Volcanus_FileUploaderのテスト</legend>
+			<fieldset>
+
+				<div class="uploader form-group">
+					<div class="row">
+						<label class="col-md-2 control-label">画像1</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" />
+							<input name="image_1" type="file" accept="image/*" capture="camera" style="visibility:hidden;width:0px;height:0px" />
+						</div>
+						<div class="col-md-4">
+							<button type="button" name="select" class="btn btn-primary btn-sm">ファイルを選択</button>
+							<button type="button" name="reset" class="btn btn-danger btn-sm">リセット</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-2 col-md-10">
+							<div class="thumbnail">
+								<img tal:condition="not:exists:form/image_1/dataUri" data-src="/js/holder.js/400x400" tal:attributes="data-src php:'/js/holder.js/'. form['maxWidth'] . 'x' . form['maxHeight']" />
+								<img tal:condition="exists:form/image_1/dataUri" tal:attributes="src form/image_1/dataUri" />
+								<div class="caption">
+									<h3><span tal:replace="form/image_1/filename|default">未登録です</span></h3>
+									<ul>
+										<li tal:condition="exists:form/image_1/filesize"><span tal:replace="form/image_1/filesize">139608</span>bytes</li>
+										<li tal:condition="exists:form/image_1/mimeType"><span tal:replace="form/image_1/mimeType">image/jpeg</span></li>
+										<li tal:condition="exists:form/image_1/width">W:<span tal:replace="form/image_1/width">640</span>px</li>
+										<li tal:condition="exists:form/image_1/height">H:<span tal:replace="form/image_1/height">480</span>px</li>
+										<li tal:condition="exists:form/image_1/movedPath"><span tal:replace="form/image_1/movedPath">/path/to/moved/file</span></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="uploader form-group">
+					<div class="row">
+						<label class="col-md-2 control-label">画像2</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" />
+							<input name="image_2" type="file" accept="image/*" capture="camera" style="visibility:hidden;width:0px;height:0px" />
+						</div>
+						<div class="col-md-4">
+							<button type="button" name="select" class="btn btn-primary btn-sm">ファイルを選択</button>
+							<button type="button" name="reset" class="btn btn-danger btn-sm">リセット</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-2 col-md-10">
+							<div class="thumbnail">
+								<img tal:condition="not:exists:form/image_2/dataUri" data-src="/js/holder.js/400x400" tal:attributes="data-src php:'/js/holder.js/'. form['maxWidth'] . 'x' . form['maxHeight']" />
+								<img tal:condition="exists:form/image_2/dataUri" tal:attributes="src form/image_2/dataUri" />
+								<div class="caption">
+									<h3><span tal:replace="form/image_2/filename|default">未登録です</span></h3>
+									<ul>
+										<li tal:condition="exists:form/image_2/filesize"><span tal:replace="form/image_2/filesize">139608</span>bytes</li>
+										<li tal:condition="exists:form/image_2/mimeType"><span tal:replace="form/image_2/mimeType">image/jpeg</span></li>
+										<li tal:condition="exists:form/image_2/width">W:<span tal:replace="form/image_2/width">640</span>px</li>
+										<li tal:condition="exists:form/image_2/height">H:<span tal:replace="form/image_2/height">480</span>px</li>
+										<li tal:condition="exists:form/image_2/movedPath"><span tal:replace="form/image_2/movedPath">/path/to/moved/file</span></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" class="btn btn-primary btn-lg" value="送信する" />
+					</div>
+				</div>
+
+			</fieldset>
+
+		</form>
+
+		<script type="text/javascript" src="/js/holder.js"></script>
+		<script type="text/javascript" src="/js/Volcanus/CanvasResizer.js"></script>
+		<script type="text/javascript">/*<![CDATA[*/
+$(function() {
+
+	var maxWidth = $('#maxWidth').val();
+	var maxHeight = $('#maxHeight').val();
+
+	var createThumbnail = function(input, files) {
+		if (files.length === 0) {
+			return;
+		}
+		var file = files[0];
+		if (file.type.substring(0, 6) === 'image/') {
+			$(input).parent().find('input[type="text"]').val(file.name);
+			var thumbnail = Volcanus_CanvasResizer.create({
+				file: file
+				,maxWidth: parseInt(maxWidth, 10)
+				,maxHeight: parseInt(maxHeight, 10)
+				,onLoad: function(image, canvas) {
+					$(input).parent().parent().parent().find('.thumbnail').html(
+						$('<img>').attr('src', canvas.toDataURL('image/png'))
+					).append(
+						$('<div class="caption">').append(
+							$('<h3>').text(file.name)
+						).append(
+							$('<ul>')
+								.append($('<li>').text(file.size + 'bytes'))
+								.append($('<li>').text(file.type))
+								.append($('<li>').text('W:' + image.width + 'px'))
+								.append($('<li>').text('H:' + image.height + 'px'))
+								.append($('<li>').text('lastModified:' + file.lastModifiedDate))
+						)
+					);
+				}
+			});
+		}
+	};
+
+	// ファイル名表示
+	$('.uploader input[type="text"]').on('click', function() {
+		$(this).parent().find('input[type="file"]').click();
+	});
+
+	// ファイル選択
+	$('.uploader button[name="select"]').on('click', function() {
+		$(this).parent().parent().find('input[type="file"]').click();
+	});
+
+	// リセット
+	$('.uploader button[name="reset"]').on('click', function() {
+		if ($(this).parent().parent().find('input[type="file"]').val() === '') {
+			return;
+		}
+		$(this).parent().parent().find('input[type="file"]').val('');
+		$(this).parent().parent().find('input[type="text"]').val('');
+		$(this).parent().parent().parent().find('.thumbnail').html(
+			$('<img>').attr('data-src', '/js/holder.js/' + maxWidth + 'x' + maxHeight)
+		);
+		Holder.run();
+	});
+
+	// ファイル入力
+	$('.uploader input[type="file"]').on('change', function(event) {
+		createThumbnail(this, event.target.files);
+	});
+
+});
+/*]]>*/</script>
+
+	</div>
+
+	<footer class="footer">
+		<p>Copyright &copy; 2014 k-holy &lt;k.holy74@gmail.com&gt; Code licensed under <a href="http://opensource.org/licenses/MIT">MIT</a></p>
+	</footer>
+
+</div>
+
+</body>
+</html>
