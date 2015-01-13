@@ -1,5 +1,20 @@
-// CanvasResizer -----------------------------------------------------------/
-/** createObjectURL or FileReader + Canvas で画像リサイズ **/
+/**
+ * Volcanus_CanvasResizer
+ *
+ * createObjectURL or FileReader + Canvas で画像をリサイズします。
+ *
+ * 使い方の例
+ * Volcanus_CanvasResizer.create({file:file, onLoad:function(image, canvas) {
+ *     $("#thumbnail").html($("<img>").attr('src', canvas.toDataURL("image/png")));
+ * }});
+ * 
+ * 参考元
+ * https://www.cyberagent.co.jp/recruit/techreport/report/id=8548
+ * https://developer.mozilla.org/ja/docs/Using_files_from_web_applications
+ *
+ * @copyright k-holy <k.holy74@gmail.com>
+ * @license The MIT License (MIT)
+ */
 var Volcanus_CanvasResizer = {
     create: function(args) {
         var instance = {
@@ -49,8 +64,8 @@ var Volcanus_CanvasResizer = {
                         url.revokeObjectURL(_self.objectUrl);
                     }
                 };
-                if (createObjectURL) {
-                    image.src = this.objectUrl = createObjectURL(this.file);
+                if (typeof createObjectURL !== 'undefined') {
+                    image.src = this.objectUrl = url.createObjectURL(this.file);
                 } else {
                     var reader = new FileReader();
                     reader.onload = function(event) {
