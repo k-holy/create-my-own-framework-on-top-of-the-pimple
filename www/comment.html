@@ -30,10 +30,11 @@
 
     <form class="form-horizontal" role="form" method="post" tal:attributes="action server/REQUEST_URI">
       <input type="hidden" name="${token/name}" value="${token/value}" tal:condition="exists:token" />
-      <fieldset id="file-upload-fieldset">
+      <input type="hidden" id="MAX_WIDTH" tal:attributes="value uploaderConfig/maxWidth" />
+      <input type="hidden" id="MAX_HEIGHT" tal:attributes="value uploaderConfig/maxHeight" />
+      <input type="hidden" id="MAX_FILESIZE" tal:attributes="value uploaderConfig/maxFilesizeAsByte" />
+      <fieldset>
         <legend><span class="glyphicon glyphicon-comment"></span>投稿フォーム</legend>
-        <input id="file-json" type="hidden" name="image_file_json" value="" tal:attributes="value form/image_file_json/value" />
-        <input id="file-input" type="file" name="upload_file" style="visibility:hidden;width:0px;height:0px" />
         <div class="form-group has-error" tal:attributes="class php:form.author.hasError() ? 'form-group has-error' : 'form-group'">
           <label class="col-md-2 control-label">名前</label>
           <div class="col-md-5">
@@ -52,96 +53,252 @@
             <p class="help-block" tal:content="form/comment/error">コメントを入力してください。</p>
           </div>
         </div>
-        <div class="form-group has-error" tal:attributes="class php:(form.image_file_name.hasError() || form.image_file_path.hasError()) ? 'form-group has-error' : 'form-group'">
-          <label class="col-md-2 control-label">画像</label>
-          <div class="col-md-2">
-            <input id="file-input-show" type="text" name="image_file_name" class="form-control" tal:attributes="value php:form.image_file_name.hasValue() ? form.image_file_name : ''" />
-            <div id="file-show" style="display:none;" tal:attributes="style php:form.image_data_uri.hasValue() ? '' : 'display:none'">
-              <p><img alt="" src="" tal:attributes="src php:form.image_data_uri.hasValue() ? form.image_data_uri : '';alt php:form.image_file_name.hasValue() ? form.image_file_name : ''"/></p>
-              <p><button type="button" id="file-delete" class="btn btn-danger btn-sm">削除</button></p>
+
+        <div class="uploader">
+          <div class="form-group has-error" tal:attributes="class php:(form.image_file_name.hasError() || form.image_file_path.hasError()) ? 'form-group has-error' : 'form-group'">
+            <label class="col-md-2 control-label">画像</label>
+            <div class="col-md-3">
+              <input type="text" name="image_file_name" class="form-control" tal:attributes="value php:form.image_file_name.hasValue() ? form.image_file_name : ''" />
+              <input type="hidden" name="image_file_json" class="image-file-json" tal:attributes="value form/image_file_json/value" />
+              <input type="file" style="visibility:hidden;width:0px;height:0px" />
+              <p class="help-block">※<span tal:replace="uploaderConfig/maxWidth">999</span> x <span tal:replace="uploaderConfig/maxHeight">999</span>, <span tal:replace="uploaderConfig/maxFilesize">1M</span>バイトまで</p>
+            </div>
+            <div class="col-md-2">
+              <button type="button" name="doSelect" class="btn btn-primary btn-sm">選択</button>
+              <button type="button" name="doReset" class="btn btn-danger btn-sm">リセット</button>
+            </div>
+            <div class="col-md-5">
+              <p class="uploading-error text-danger" style="display:none;"></p>
+              <p class="help-block" tal:condition="form/image_file_name/hasError" tal:content="form/image_file_name/error">画像を入力してください。</p>
+              <p class="help-block" tal:condition="form/image_file_path/hasError" tal:content="form/image_file_path/error">画像の横幅が999pxを超えています。</p>
             </div>
           </div>
-          <div class="col-md-3">
-            <button id="file-select" type="button" class="btn btn-primary btn-sm">ファイルを選択</button>
-            <button id="file-upload-button" type="button" class="btn btn-primary btn-sm">アップロード</button>
-          </div>
-          <div class="col-md-5">
-            <p id="file-error" class="error-message text-danger" style="display:none;"></p>
-            <p class="help-block" tal:condition="form/image_file_name/hasError" tal:content="form/image_file_name/error">画像を入力してください。</p>
-            <p class="help-block" tal:condition="form/image_file_path/hasError" tal:content="form/image_file_path/error">画像の横幅が999pxを超えています。</p>
+          <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+              <div class="thumbnail">
+                <img tal:attributes="src php:form.image_data_uri.hasValue() ? form.image_data_uri : '';alt php:form.image_file_name.hasValue() ? form.image_file_name : '';data-src php:form.image_data_uri.hasValue() ? '' : '/js/holder.js/400x400'" />
+              </div>
+            </div>
           </div>
         </div>
+
         <div class="form-group">
           <div class="col-md-offset-2 col-md-5">
-            <input type="submit" value="送信" class="btn btn-primary btn-lg" />
+            <button type="submit" name="doSubmit" class="btn btn-primary btn-lg" data-loading-text="ファイルを送信中…"><span class="glyphicon glyphicon-cloud-upload"></span> 送信</button>
           </div>
         </div>
       </fieldset>
     </form>
 
-    <script type="text/javascript" src="/js/jquery.upload-1.0.2.js"></script>
-    <script type="text/javascript">
-    $(function() {
+    <script type="text/javascript" src="/js/holder.js"></script>
+    <script type="text/javascript" src="/js/Volcanus/CanvasResizer.js"></script>
+    <script type="text/javascript">/*<![CDATA[*/
+$(function() {
 
-      var clearErrors = function() {
-        $('#file-upload-fieldset').find('.error-message').hide();
-        $('#file-input-show').parent().parent().removeClass('has-error');
-        $('#file-error').hide();
-      };
+	$.event.props.push('dataTransfer');
 
-      // ファイルを選択
-      $('#file-select').on('click', function() {
-        $('#file-input').click();
-      });
+	var MAX_WIDTH = $('#MAX_WIDTH').val();
+	var MAX_HEIGHT = $('#MAX_HEIGHT').val();
+	var MAX_FILESIZE = $('#MAX_FILESIZE').val();
 
-      // ファイル送信フォーム
-      $('#file-input').on('change', function(){
-        $('#file-input-show').val((window.File) ? this.files[0].name : $(this).val());
-        clearErrors();
-      });
+	var toSendFiles = [];
 
-      // ファイル表示フォーム
-      $('#file-input-show').on('click', function() {
-        $('#file-input').click();
-      });
+	var clearFile = function(uploader) {
+		$(uploader).find('input[type="file"]').val('');
+		$(uploader).find('input[type="text"]').val('');
+		$(uploader).find('.thumbnail').html(
+			$('<img>').attr('data-src', '/js/holder.js/400x400')
+		);
+		Holder.run();
+	};
 
-      // ファイル削除リンク
-      $('#file-delete').on('click', function() {
-        if (window.confirm('「' + $('#file-show img').attr('alt') + '」を削除します')) {
-          $('input[name="upload_file"]').val('');
-          $('#file-json').val('');
-          $('#file-input-show').val('');
-          $('#file-show').hide();
-        }
-      });
+	var clearErrors = function(uploader) {
+		$(uploader).removeClass('has-error');
+		$(uploader).find('.uploading-error').html('').hide();
+	};
 
-      // アップロードボタン
-      $('#file-upload-button').on('click', function() {
-        if ($('input[name="upload_file"]').val() == '') {
-          $('#file-input-show').parent().parent().addClass('has-error');
-          $('#file-error').text('ファイルを選択してください。').show();
-          return;
-        }
-        var _self = this
-        $('#file-upload-fieldset').upload('/uploader', function(result) {
-          clearErrors();
-          if (result.errors) {
-            for (id in result.errors) {
-              $('#file-input-show').parent().parent().addClass('has-error');
-              $('#file-error').text(result.errors[id]).show();
-            }
-            return;
-          }
-          if (result.file.mimeType.substring(0, 5) == 'image' && result.data.dataUri) {
-            $('#file-show img').attr('alt', result.file.name).attr('src', result.data.dataUri);
-            $('#file-show').show();
-          }
-          $('#file-json').val(JSON.stringify(result.file));
-        }, 'json');
-      });
+	var appendError = function(uploader, message) {
+		$(uploader).addClass('has-error');
+		$(uploader).find('.uploading-error').append($('<div>').text(message)).show();
+	};
 
-    });
-    </script>
+	// バイト数を指定された小数点桁数の単位付き表示に変換
+	var formatBytes = function(bytes, decimals) {
+		var units = ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
+		var number = '';
+		var unit = '';
+		var value = bytes;
+		for (var i = 0; i < units.length; i++) {
+			unit = units[i];
+			number = value;
+			if (value < 1024) {
+				break;
+			}
+			value = value / 1024;
+		}
+		// @via http://www.jacklmoore.com/notes/rounding-in-javascript/
+		return Number(Math.round(number + 'e' + decimals) + 'e-' + decimals).toString() + unit;
+	};
+
+	var preview = function(uploader, file) {
+		if (file.size > parseInt(MAX_FILESIZE, 10)) {
+			appendError(uploader, 'ファイルサイズが' + formatBytes(MAX_FILESIZE, 1) + 'を超えています (' + formatBytes(file.size, 1) + ')');
+			return;
+		}
+		if (file.type.substring(0, 6) === 'image/') {
+			var thumbnail = Volcanus_CanvasResizer.create({
+				file: file
+				,maxWidth: 400
+				,maxHeight: 400
+				,onLoad: function(image, canvas) {
+					var lastModifiedDate = '';
+					if (typeof file.lastModifiedDate !== 'undefined') {
+						lastModifiedDate = file.lastModifiedDate.toUTCString();
+					}
+					$(uploader).find('.thumbnail').html(
+						$('<img>').attr('src', canvas.toDataURL('image/png'))
+					).append(
+						$('<div class="caption">').append(
+							$('<h3>').text(file.name)
+						).append(
+							$('<ul>')
+								.append($('<li>').text('ファイルサイズ：' + formatBytes(file.size, 1)))
+								.append($('<li>').text('ファイル種別：' + file.type))
+								.append($('<li>').text('横幅：' + image.width + 'px'))
+								.append($('<li>').text('高さ：' + image.height + 'px'))
+								.append($('<li>').text('更新日時:' + lastModifiedDate))
+						)
+					);
+					if (image.width > parseInt(MAX_WIDTH, 10)) {
+						appendError(uploader, '画像の横幅が' + MAX_WIDTH + 'pxを超えています (' + image.width + 'px)');
+					}
+					if (image.height > parseInt(MAX_HEIGHT, 10)) {
+						appendError(uploader, '画像の高さが' + MAX_HEIGHT + 'pxを超えています (' + image.height + 'px)');
+					}
+				}
+			});
+			var textElement = $(uploader).find('input[type="text"]');
+			textElement.val(file.name);
+			toSendFiles[textElement.attr('name')] = file;
+		}
+	}
+
+	// ファイルを選択
+	$('.uploader button[name="doSelect"]').on('click', function() {
+		var uploader = $(this).parent().parent().parent()[0];
+		$(uploader).find('input[type="file"]').click();
+	});
+
+	// リセット
+	$('.uploader button[name="doReset"]').on('click', function() {
+		var uploader = $(this).parent().parent().parent()[0];
+		clearErrors(uploader);
+		clearFile(uploader);
+	});
+
+	// ファイル入力
+	$('.uploader input[type="file"]').on('change', function(event) {
+		if (event.target.files.length === 0) {
+			return;
+		}
+		var uploader = $(this).parent().parent().parent()[0];
+		clearErrors(uploader);
+		preview(uploader, event.target.files[0]);
+	});
+
+	// ドラッグover
+	$('.uploader .thumbnail').on('dragover dragenter', function(event) {
+		event.stopPropagation();
+		event.preventDefault();
+		return false;
+	});
+
+	// ファイルドロップ
+	$('.uploader .thumbnail').on('drop', function(event) {
+		var uploader = $(this).parent().parent().parent()[0];
+		event.stopPropagation();
+		event.preventDefault();
+		clearErrors(uploader);
+		preview(uploader, event.originalEvent.dataTransfer.files[0]);
+	});
+
+	// ファイル1件分のアップロード処理
+	var sendData = function(uploader, file) {
+		var defer = $.Deferred();
+		var formData = new FormData();
+		formData.append('upload_file', file);
+		$.ajax({
+			type: 'POST'
+			,timeout: 30000
+			,url: '/uploader'
+			,dataType: 'json'
+			,processData: false
+			,contentType: false
+			,data: formData
+		}).then(function(data, textStatus, jqXHR) {
+			if (typeof data.results !== 'undefined' &&
+				typeof data.results.file !== 'undefined' &&
+				typeof data.results.data !== 'undefined' &&
+				typeof data.results.data.dataUri !== 'undefined' &&
+				typeof data.results.file.mimeType !== 'undefined' &&
+				data.results.file.mimeType.substring(0, 5) == 'image'
+			) {
+				$(uploader).find('.thumbnail').html(
+					$('<img>').attr('alt', data.results.file.name).attr('src', data.results.data.dataUri)
+				);
+				$(uploader).find('input.image-file-json').val(JSON.stringify(data.results.file));
+				defer.resolve();
+			} else {
+				defer.reject();
+			}
+			return defer.promise();
+		}, function(jqXHR, textStatus, errorThrown) {
+			if (jqXHR.responseText) {
+				var data = jQuery.parseJSON(jqXHR.responseText);
+				if (typeof data.results !== 'undefined' &&
+					typeof data.results.errors !== 'undefined'
+				) {
+					for (id in data.results.errors) {
+						appendError(uploader, data.results.errors[id]);
+					}
+				}
+			}
+			defer.reject();
+		});
+		return defer.promise();
+	};
+
+	// フォーム送信
+	var submitForm = function(event) {
+		var tasks = [];
+		var _self = this;
+		event.stopPropagation();
+		event.preventDefault();
+		$('button[name="doSubmit"]').button('loading');
+		$('.uploader input[type="file"]').map(function(index, input) {
+			var uploader = $(input).parent().parent().parent()[0];
+			var name = $(uploader).find('input[type="text"]').attr('name');
+			for (var key in toSendFiles) {
+				if (key === name) {
+					tasks.push(sendData(uploader, toSendFiles[key]));
+				}
+			}
+		});
+		$.when.apply($, tasks).done(function() {
+			$(_self).off('submit', submitForm);
+			$(_self).submit();
+		}).fail(function() {
+			return false;
+		}).always(function() {
+			$('button[name="doSubmit"]').button('reset');
+		});
+	};
+
+	// フォーム送信
+	$('form').on('submit', submitForm);
+
+});
+/*]]>*/</script>
 
   </div>
 

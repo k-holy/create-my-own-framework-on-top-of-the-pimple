@@ -19,6 +19,16 @@ use Volcanus\FileUploader\Exception\ImageHeightException;
 
 $app->on('GET|POST', function($app, $method) {
 
+    $uploaderConfig = [
+        'maxWidth'  => '600',
+        'maxHeight' => '600',
+        'maxFilesize' => '1M',
+    ];
+
+    $uploaderConfig['maxFilesizeAsByte'] = $app->createValue('byte',
+        sprintf('%sB', $uploaderConfig['maxFilesize'])
+    )->getValue();
+
     $form = $app->createForm('commentForm', [
         'author'             => $app->findVar('P', 'author'),
         'comment'            => $app->findVar('P', 'comment'),
@@ -61,11 +71,11 @@ $app->on('GET|POST', function($app, $method) {
                     }
                 }
                 $fileValidator = $app->createFileValidator([
-                    'maxFilesize'      => '2M',
-                    'allowableType'    => 'gif,jpg,png',
+                    'allowableType' => 'gif,jpg,png',
                     'filenameEncoding' => 'UTF-8',
-                    'maxWidth'         => 400,
-                    'maxHeight'        => 400,
+                    'maxFilesize' => $uploaderConfig['maxFilesize'],
+                    'maxWidth' => $uploaderConfig['maxWidth'],
+                    'maxHeight' => $uploaderConfig['maxHeight'],
                 ]);
                 try {
                     $fileValidator->validateFilesize($uploadedFile);
@@ -73,15 +83,15 @@ $app->on('GET|POST', function($app, $method) {
                     $fileValidator->validateImageType($uploadedFile);
                     $fileValidator->validateImageSize($uploadedFile);
                 } catch (FilesizeException $e) {
-                    $form->image_file_path->error(sprintf('画像のファイルサイズが %s バイトを超えています。', $fileValidator->config('maxFilesize')));
+                    $form->image_file_path->error(sprintf('画像のファイルサイズが %s バイトを超えています。', $uploaderConfig['maxFilesize']));
                 } catch (ExtensionException $e) {
                     $form->image_file_path->error(sprintf('画像のファイルフォーマットが %s 以外です。', $fileValidator->config('allowableType')));
                 } catch (ImageTypeException $e) {
                     $form->image_file_path->error(sprintf('画像のファイルフォーマットが拡張子 %s と一致しません。', $uploadedFile->getClientExtension()));
                 } catch (ImageWidthException $e) {
-                    $form->image_file_path->error(sprintf('画像の横幅が %spx を超えています。', $fileValidator->config('maxWidth')));
+                    $form->image_file_path->error(sprintf('画像の横幅が %spx を超えています。', $uploaderConfig['maxWidth']));
                 } catch (ImageHeightException $e) {
-                    $form->image_file_path->error(sprintf('画像の高さが %spx を超えています。', $fileValidator->config('maxHeight')));
+                    $form->image_file_path->error(sprintf('画像の高さが %spx を超えています。', $uploaderConfig['maxHeight']));
                 }
             }
         }
@@ -201,8 +211,9 @@ SQL
     }
 
     return $app->render('comment.html', [
-        'title'  => '投稿フォーム',
-        'form'   => $form,
+        'title' => '投稿フォーム',
+        'form' => $form,
+        'uploaderConfig' => $uploaderConfig,
     ]);
 });
 

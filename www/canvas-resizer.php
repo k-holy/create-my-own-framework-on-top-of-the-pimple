@@ -11,21 +11,38 @@ $app = include __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
 use Volcanus\FileUploader\Uploader;
 use Volcanus\FileUploader\FileValidator;
+use Volcanus\FileUploader\File\NativeFile;
+use Volcanus\FileUploader\Exception\UploaderException;
 use Volcanus\FileUploader\Exception\FilenameException;
 use Volcanus\FileUploader\Exception\FilesizeException;
 use Volcanus\FileUploader\Exception\ExtensionException;
 use Volcanus\FileUploader\Exception\ImageWidthException;
 use Volcanus\FileUploader\Exception\ImageHeightException;
-use Volcanus\FileUploader\Exception\UploaderException;
-use Volcanus\FileUploader\File\FileInterface;
 
 $app->on('GET|POST', function($app, $method) {
 
 	$form = [];
 	$errors = [];
 
-	$form['maxWidth'] = 600;
-	$form['maxHeight'] = 600;
+	$form['allowableType'] = 'jpg,gif,png';
+	$form['maxWidth'] = '600';
+	$form['maxHeight'] = '600';
+	$form['maxFilesize'] = '2M';
+	$form['maxFilesizeAsByte'] = $app->createValue('byte',
+		sprintf('%sB', $form['maxFilesize'])
+	)->getValue();
+
+	$form['acceptType'] = implode(',', array_map(function($type) {
+		switch($type) {
+		case 'jpg':
+		case 'jpeg':
+			return image_type_to_mime_type(IMAGETYPE_JPEG);
+		case 'gif':
+			return image_type_to_mime_type(IMAGETYPE_GIF);
+		case 'png':
+			return image_type_to_mime_type(IMAGETYPE_PNG);
+		}
+	}, explode(',', $form['allowableType'])));
 
 	$form['image_1'] = null;
 	$form['image_2'] = null;
@@ -38,11 +55,11 @@ $app->on('GET|POST', function($app, $method) {
 		]);
 
 		$validator = new FileValidator([
-			'allowableType' => 'jpg,png',
 			'filenameEncoding' => 'UTF-8',
+			'allowableType' => $form['allowableType'],
 			'maxWidth' => $form['maxWidth'],
 			'maxHeight' => $form['maxHeight'],
-			'maxFilesize' => '2M',
+			'maxFilesize' => $form['maxFilesize'],
 		]);
 
 		$labels = [
@@ -53,10 +70,10 @@ $app->on('GET|POST', function($app, $method) {
 		$validFiles = [];
 
 		foreach ($labels as $key => $label) {
-			$uploadedFile = $app->findFile($key);
-			if ($uploadedFile instanceof FileInterface) {
+			if (isset($_FILES[$key])) {
+				$uploadedFile = new NativeFile($_FILES[$key]);
 				$form[$key]['filename'] = $uploadedFile->getClientFilename();
-				$form[$key]['filesize'] = $uploadedFile->getSize();
+				$form[$key]['filesize'] = $app->createValue('byte', $uploadedFile->getSize())->format(1);
 				$form[$key]['mimeType'] = $uploadedFile->getMimeType();
 				if (false !== (list($width, $height, $type, $attr) = getimagesize($uploadedFile->getPath()))) {
 					$form[$key]['width'] = $width;

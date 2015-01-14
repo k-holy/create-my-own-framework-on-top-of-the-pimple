@@ -29,37 +29,39 @@
 		</div>
 
 		<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-			<input type="hidden" id="maxWidth" tal:attributes="value form/maxWidth" />
-			<input type="hidden" id="maxHeight" tal:attributes="value form/maxHeight" />
+			<input type="hidden" id="MAX_WIDTH" tal:attributes="value form/maxWidth" />
+			<input type="hidden" id="MAX_HEIGHT" tal:attributes="value form/maxHeight" />
+			<input type="hidden" id="MAX_FILESIZE" tal:attributes="value form/maxFilesizeAsByte" />
 
 			<legend><span class="glyphicon glyphicon-picture"></span> Volcanus_CanvasResizer.js + Volcanus_FileUploaderのテスト</legend>
 			<fieldset>
 
-				<div class="uploader form-group">
-					<div class="row">
+				<div class="uploader">
+					<div class="form-group">
 						<label class="col-md-2 control-label">画像1</label>
-						<div class="col-md-6">
+						<div class="col-md-3">
 							<input type="text" class="form-control" />
-							<input name="image_1" type="file" accept="image/*" capture="camera" style="visibility:hidden;width:0px;height:0px" />
+							<input name="image_1" type="file" accept="image/*" capture="camera" style="visibility:hidden;width:0;height:0" tal:attributes="accept form/acceptType" />
+							<p class="help-block">対応フォーマット：<span tal:replace="form/allowableType">jpg,gif,png</span><br /><span tal:replace="form/maxWidth">999</span> x <span tal:replace="form/maxHeight">999</span>, <span tal:replace="form/maxFilesize">1M</span>バイトまで</p>
 						</div>
-						<div class="col-md-4">
-							<button type="button" name="select" class="btn btn-primary btn-sm">ファイルを選択</button>
-							<button type="button" name="reset" class="btn btn-danger btn-sm">リセット</button>
+						<div class="col-md-2">
+							<button type="button" name="doSelect" class="btn btn-primary btn-sm">選択</button>
+							<button type="button" name="doReset" class="btn btn-danger btn-sm">リセット</button>
 						</div>
-					</div>
-					<div class="row">
+						<div class="col-md-5">
+							<p class="uploading-error text-danger" style="display:none;"></p>
+						</div>
 						<div class="col-md-offset-2 col-md-10">
 							<div class="thumbnail">
-								<img tal:condition="not:exists:form/image_1/dataUri" data-src="/js/holder.js/400x400" tal:attributes="data-src php:'/js/holder.js/'. form['maxWidth'] . 'x' . form['maxHeight']" />
-								<img tal:condition="exists:form/image_1/dataUri" tal:attributes="src form/image_1/dataUri" />
-								<div class="caption">
-									<h3><span tal:replace="form/image_1/filename|default">未登録です</span></h3>
+								<img tal:attributes="src php:isset(form['image_1']['dataUri']) ? form['image_1']['dataUri'] : '';data-src php:isset(form['image_1']['dataUri']) ? '' : '/js/holder.js/400x400'" />
+								<div class="caption" tal:condition="exists:form/image_1/filename">
+									<h3><span tal:replace="form/image_1/filename">image.png</span></h3>
 									<ul>
-										<li tal:condition="exists:form/image_1/filesize"><span tal:replace="form/image_1/filesize">139608</span>bytes</li>
-										<li tal:condition="exists:form/image_1/mimeType"><span tal:replace="form/image_1/mimeType">image/jpeg</span></li>
-										<li tal:condition="exists:form/image_1/width">W:<span tal:replace="form/image_1/width">640</span>px</li>
-										<li tal:condition="exists:form/image_1/height">H:<span tal:replace="form/image_1/height">480</span>px</li>
-										<li tal:condition="exists:form/image_1/movedPath"><span tal:replace="form/image_1/movedPath">/path/to/moved/file</span></li>
+										<li tal:condition="exists:form/image_1/filesize">ファイルサイズ：<span tal:replace="form/image_1/filesize">1.5KB</span></li>
+										<li tal:condition="exists:form/image_1/mimeType">ファイル種別：<span tal:replace="form/image_1/mimeType">image/jpeg</span></li>
+										<li tal:condition="exists:form/image_1/width">横幅：<span tal:replace="form/image_1/width">640</span></li>
+										<li tal:condition="exists:form/image_1/height">高さ：<span tal:replace="form/image_1/height">480</span></li>
+										<li tal:condition="exists:form/image_1/movedPath">保存先：<span tal:replace="form/image_1/movedPath">/path/to/moved/file</span></li>
 									</ul>
 								</div>
 							</div>
@@ -67,31 +69,32 @@
 					</div>
 				</div>
 
-				<div class="uploader form-group">
-					<div class="row">
+				<div class="uploader">
+					<div class="form-group">
 						<label class="col-md-2 control-label">画像2</label>
-						<div class="col-md-6">
+						<div class="col-md-3">
 							<input type="text" class="form-control" />
-							<input name="image_2" type="file" accept="image/*" capture="camera" style="visibility:hidden;width:0px;height:0px" />
+							<input name="image_2" type="file" accept="image/*" capture="camera" style="visibility:hidden;width:0;height:0" tal:attributes="accept form/acceptType" />
+							<p class="help-block">対応フォーマット：<span tal:replace="form/allowableType">jpg,gif,png</span><br /><span tal:replace="form/maxWidth">999</span> x <span tal:replace="form/maxHeight">999</span>, <span tal:replace="form/maxFilesize">1M</span>バイトまで</p>
 						</div>
-						<div class="col-md-4">
-							<button type="button" name="select" class="btn btn-primary btn-sm">ファイルを選択</button>
-							<button type="button" name="reset" class="btn btn-danger btn-sm">リセット</button>
+						<div class="col-md-2">
+							<button type="button" name="doSelect" class="btn btn-primary btn-sm">選択</button>
+							<button type="button" name="doReset" class="btn btn-danger btn-sm">リセット</button>
 						</div>
-					</div>
-					<div class="row">
+						<div class="col-md-5">
+							<p class="uploading-error text-danger" style="display:none;"></p>
+						</div>
 						<div class="col-md-offset-2 col-md-10">
 							<div class="thumbnail">
-								<img tal:condition="not:exists:form/image_2/dataUri" data-src="/js/holder.js/400x400" tal:attributes="data-src php:'/js/holder.js/'. form['maxWidth'] . 'x' . form['maxHeight']" />
-								<img tal:condition="exists:form/image_2/dataUri" tal:attributes="src form/image_2/dataUri" />
-								<div class="caption">
-									<h3><span tal:replace="form/image_2/filename|default">未登録です</span></h3>
+								<img tal:attributes="src php:isset(form['image_2']['dataUri']) ? form['image_2']['dataUri'] : '';data-src php:isset(form['image_2']['dataUri']) ? '' : '/js/holder.js/400x400'" />
+								<div class="caption" tal:condition="exists:form/image_2/filename">
+									<h3><span tal:replace="form/image_2/filename">image.png</span></h3>
 									<ul>
-										<li tal:condition="exists:form/image_2/filesize"><span tal:replace="form/image_2/filesize">139608</span>bytes</li>
-										<li tal:condition="exists:form/image_2/mimeType"><span tal:replace="form/image_2/mimeType">image/jpeg</span></li>
-										<li tal:condition="exists:form/image_2/width">W:<span tal:replace="form/image_2/width">640</span>px</li>
-										<li tal:condition="exists:form/image_2/height">H:<span tal:replace="form/image_2/height">480</span>px</li>
-										<li tal:condition="exists:form/image_2/movedPath"><span tal:replace="form/image_2/movedPath">/path/to/moved/file</span></li>
+										<li tal:condition="exists:form/image_2/filesize">ファイルサイズ：<span tal:replace="form/image_2/filesize">1.5KB</span></li>
+										<li tal:condition="exists:form/image_2/mimeType">ファイル種別：<span tal:replace="form/image_2/mimeType">image/jpeg</span></li>
+										<li tal:condition="exists:form/image_2/width">横幅：<span tal:replace="form/image_2/width">640</span></li>
+										<li tal:condition="exists:form/image_2/height">高さ：<span tal:replace="form/image_2/height">480</span></li>
+										<li tal:condition="exists:form/image_2/movedPath">保存先：<span tal:replace="form/image_2/movedPath">/path/to/moved/file</span></li>
 									</ul>
 								</div>
 							</div>
@@ -114,66 +117,116 @@
 		<script type="text/javascript">/*<![CDATA[*/
 $(function() {
 
-	var maxWidth = $('#maxWidth').val();
-	var maxHeight = $('#maxHeight').val();
+	var MAX_WIDTH = $('#MAX_WIDTH').val();
+	var MAX_HEIGHT = $('#MAX_HEIGHT').val();
+	var MAX_FILESIZE = $('#MAX_FILESIZE').val();
 
-	var createThumbnail = function(input, files) {
-		if (files.length === 0) {
+	var clearFile = function(uploader) {
+		$(uploader).find('input[type="file"]').val('');
+		$(uploader).find('input[type="text"]').val('');
+		$(uploader).find('.thumbnail').html(
+			$('<img>').attr('data-src', '/js/holder.js/400x400')
+		);
+		Holder.run();
+	};
+
+	var clearErrors = function(uploader) {
+		$(uploader).removeClass('has-error');
+		$(uploader).find('.uploading-error').html('').hide();
+	};
+
+	var appendError = function(uploader, message) {
+		$(uploader).addClass('has-error');
+		$(uploader).find('.uploading-error').append($('<div>').text(message)).show();
+	};
+
+	// バイト数を指定された小数点桁数の単位付き表示に変換
+	var formatBytes = function(bytes, decimals) {
+		var units = ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
+		var number = '';
+		var unit = '';
+		var value = bytes;
+		for (var i = 0; i < units.length; i++) {
+			unit = units[i];
+			number = value;
+			if (value < 1024) {
+				break;
+			}
+			value = value / 1024;
+		}
+		// @via http://www.jacklmoore.com/notes/rounding-in-javascript/
+		return Number(Math.round(number + 'e' + decimals) + 'e-' + decimals).toString() + unit;
+	};
+
+	var preview = function(uploader, file) {
+		if (file.size > parseInt(MAX_FILESIZE, 10)) {
+			appendError(uploader, 'ファイルサイズが' + formatBytes(MAX_FILESIZE, 1) + 'を超えています (' + formatBytes(file.size, 1) + ')');
+			clearFile(uploader);
 			return;
 		}
-		var file = files[0];
 		if (file.type.substring(0, 6) === 'image/') {
-			$(input).parent().find('input[type="text"]').val(file.name);
 			var thumbnail = Volcanus_CanvasResizer.create({
 				file: file
-				,maxWidth: parseInt(maxWidth, 10)
-				,maxHeight: parseInt(maxHeight, 10)
+				,maxWidth: 400
+				,maxHeight: 400
 				,onLoad: function(image, canvas) {
-					$(input).parent().parent().parent().find('.thumbnail').html(
+					var lastModifiedDate = '';
+					if (typeof file.lastModifiedDate !== 'undefined') {
+						lastModifiedDate = file.lastModifiedDate.toUTCString();
+					}
+					$(uploader).find('.thumbnail').html(
 						$('<img>').attr('src', canvas.toDataURL('image/png'))
 					).append(
 						$('<div class="caption">').append(
 							$('<h3>').text(file.name)
 						).append(
 							$('<ul>')
-								.append($('<li>').text(file.size + 'bytes'))
-								.append($('<li>').text(file.type))
-								.append($('<li>').text('W:' + image.width + 'px'))
-								.append($('<li>').text('H:' + image.height + 'px'))
-								.append($('<li>').text('lastModified:' + file.lastModifiedDate))
+								.append($('<li>').text('ファイルサイズ：' + formatBytes(file.size, 1)))
+								.append($('<li>').text('ファイル種別：' + file.type))
+								.append($('<li>').text('横幅：' + image.width))
+								.append($('<li>').text('高さ：' + image.height))
+								.append($('<li>').text('更新日時:' + lastModifiedDate))
 						)
 					);
+					if (image.width > parseInt(MAX_WIDTH, 10)) {
+						appendError(uploader, '画像の横幅が' + MAX_WIDTH + 'pxを超えています (' + image.width + 'px)');
+					}
+					if (image.height > parseInt(MAX_HEIGHT, 10)) {
+						appendError(uploader, '画像の高さが' + MAX_HEIGHT + 'pxを超えています (' + image.height + 'px)');
+					}
 				}
 			});
+			$(uploader).find('input[type="text"]').val(file.name);
 		}
 	};
 
-	// ファイル名表示
+	// ファイル名表示（ダミー）
 	$('.uploader input[type="text"]').on('click', function() {
-		$(this).parent().find('input[type="file"]').click();
+		var uploader = $(this).parent().parent().parent()[0];
+		$(uploader).find('input[type="file"]').click();
 	});
 
-	// ファイル選択
-	$('.uploader button[name="select"]').on('click', function() {
-		$(this).parent().parent().find('input[type="file"]').click();
+	// ファイルを選択
+	$('.uploader button[name="doSelect"]').on('click', function() {
+		var uploader = $(this).parent().parent().parent()[0];
+		$(uploader).find('input[type="file"]').click();
 	});
 
 	// リセット
-	$('.uploader button[name="reset"]').on('click', function() {
-		if ($(this).parent().parent().find('input[type="file"]').val() === '') {
-			return;
-		}
-		$(this).parent().parent().find('input[type="file"]').val('');
-		$(this).parent().parent().find('input[type="text"]').val('');
-		$(this).parent().parent().parent().find('.thumbnail').html(
-			$('<img>').attr('data-src', '/js/holder.js/' + maxWidth + 'x' + maxHeight)
-		);
-		Holder.run();
+	$('.uploader button[name="doReset"]').on('click', function() {
+		var uploader = $(this).parent().parent().parent()[0];
+		clearErrors(uploader);
+		clearFile(uploader);
 	});
 
 	// ファイル入力
 	$('.uploader input[type="file"]').on('change', function(event) {
-		createThumbnail(this, event.target.files);
+		if (event.target.files.length === 0) {
+			return;
+		}
+		var uploader = $(this).parent().parent().parent()[0];
+		clearErrors(uploader);
+		preview(uploader, event.target.files[0]);
 	});
 
 });
